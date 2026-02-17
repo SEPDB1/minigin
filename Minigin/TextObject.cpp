@@ -3,7 +3,7 @@
 #include "TextObject.h"
 #include "Renderer.h"
 #include "Font.h"
-#include "Texture2D.h"
+#include "TextureComponent.h"
 
 dae::TextObject::TextObject(const std::string& text, std::shared_ptr<Font> font, const SDL_Color& color)
 	: m_needsUpdate(true), m_text(text), m_color(color), m_font(std::move(font)), m_textTexture(nullptr)
@@ -24,7 +24,7 @@ void dae::TextObject::Update()
 			throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
 		}
 		SDL_DestroySurface(surf);
-		m_textTexture = std::make_shared<Texture2D>(texture);
+		m_textTexture = std::make_shared<TextureComponent>(texture);
 		m_needsUpdate = false;
 	}
 }

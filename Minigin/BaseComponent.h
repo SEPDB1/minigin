@@ -12,8 +12,5 @@ namespace dae
 		BaseComponent(BaseComponent&& other) = delete;
 		BaseComponent& operator=(BaseComponent&& other) = delete;
 		BaseComponent& operator=(const BaseComponent& other) = delete;
-
-	private:
-		GameObject* m_pOwner{};
 	};
 }

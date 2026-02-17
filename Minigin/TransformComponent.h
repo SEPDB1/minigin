@@ -3,7 +3,7 @@
 
 namespace dae
 {
-	class Transform final
+	class TransformComponent final
 	{
 	public:
 		const glm::vec3& GetPosition() const { return m_position; }

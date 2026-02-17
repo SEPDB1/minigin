@@ -2,12 +2,12 @@
 #include <string>
 #include <memory>
 #include "GameObject.h"
-#include "Transform.h"
+#include "TransformComponent.h"
 
 namespace dae
 {
 	class Font;
-	class Texture2D;
+	class TextureComponent;
 	class TextObject final : public GameObject
 	{
 	public:
@@ -28,8 +28,8 @@ namespace dae
 		bool m_needsUpdate{};
 		std::string m_text{};
 		SDL_Color m_color{ 255, 255, 255, 255 };
-		Transform m_transform{};
+		TransformComponent m_transform{};
 		std::shared_ptr<Font> m_font{};
-		std::shared_ptr<Texture2D> m_textTexture{};
+		std::shared_ptr<TextureComponent> m_textTexture{};
 	};
 }

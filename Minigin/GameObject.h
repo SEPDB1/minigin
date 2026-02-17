@@ -2,16 +2,16 @@
 #include <string>
 #include <memory>
 #include <vector>
-#include "Transform.h"
+#include "TransformComponent.h"
 
 namespace dae
 {
-	class Texture2D;
+	class TextureComponent;
 	class BaseComponent;
 	class GameObject 
 	{
 	public:
-		GameObject() = default;
+		GameObject();
 		virtual ~GameObject();
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
@@ -29,14 +29,48 @@ namespace dae
 		template <typename T>
 		std::shared_ptr<T> AttachComponent()
 		{
-			auto comp = std::make_shared<T>();
-			m_Components.push_back(comp);
-			return comp;
+			m_pComponents.push_back(std::make_shared<T>());
+			return m_pComponents.back();
+		}
+
+		// Removes the component with the templated type
+		template <typename T>
+		void RemoveComponent()
+		{
+			auto it = std::ranges::find_if(
+				m_pComponents,
+				[](auto comp) { return typeid(T) == typeid(*comp); });
+
+			if (it != m_pComponents.end())
+			{
+				m_pComponents.erase(it);
+			}
+		}
+
+		// Returns a shared pointer to the requested component,
+		// returns nullptr when the requested component does not exist
+		template <typename T>
+		std::shared_ptr<T> GetComponent()
+		{
+			if (typeid(T) == typeid(TransformComponent))
+			{
+				return m_Transform;
+			}
+
+			auto it = std::ranges::find_if(
+				m_pComponents,
+				[](auto comp) { return typeid(T) == typeid(*comp); });
+
+			if (it != m_pComponents.end())
+			{
+				return it;
+			}
+			return nullptr;
 		}
 
 	private:
-		Transform m_transform{};
-		std::shared_ptr<Texture2D> m_texture{};
-		std::vector<std::shared_ptr<BaseComponent>> m_Components{};
+		TransformComponent m_Transform{};
+		std::shared_ptr<TextureComponent> m_pTexture{};
+		std::vector<std::shared_ptr<BaseComponent>> m_pComponents{};
 	};
 }
