@@ -1,5 +1,6 @@
 #include <algorithm>
 #include "Scene.h"
+#include "BaseComponent.h"
 
 using namespace dae;
 

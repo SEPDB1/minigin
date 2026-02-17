@@ -1,7 +1,10 @@
 #include <string>
+#include <algorithm>
 #include "GameObject.h"
 #include "ResourceManager.h"
 #include "Renderer.h"
+#include "BaseComponent.h"
+#include <type_traits>
 
 dae::GameObject::~GameObject() = default;
 
@@ -22,3 +25,4 @@ void dae::GameObject::SetPosition(float x, float y)
 {
 	m_transform.SetPosition(x, y, 0.0f);
 }
+
