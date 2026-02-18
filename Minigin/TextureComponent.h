@@ -9,21 +9,23 @@ namespace dae
 	/**
 	 * Simple RAII wrapper for an SDL_Texture
 	 */
-	class TextureComponent : public BaseComponent
+	class TextureComponent final : public BaseComponent
 	{
 	public:
-		SDL_Texture* GetSDLTexture() const;
-		explicit TextureComponent(SDL_Texture* texture);
-		explicit TextureComponent(const std::string& fullPath);
+		TextureComponent();
 		~TextureComponent();
+		TextureComponent(const TextureComponent&) = default;
+		TextureComponent(TextureComponent&&) = default;
+		TextureComponent& operator=(const TextureComponent&) = default;
+		TextureComponent& operator=(TextureComponent&&) = default;
 
+		TextureComponent& SetTexture(SDL_Texture* pTexture);
+		TextureComponent& SetTexture(const std::string& path);
+
+		SDL_Texture* GetSDLTexture() const;
 		glm::vec2 GetSize() const;
 
-		TextureComponent(const TextureComponent &) = delete;
-		TextureComponent(TextureComponent &&) = delete;
-		TextureComponent & operator= (const TextureComponent &) = delete;
-		TextureComponent & operator= (const TextureComponent &&) = delete;
 	private:
-		SDL_Texture* m_Texture;
+		SDL_Texture* m_pTexture{};
 	};
 }

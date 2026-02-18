@@ -1,14 +1,13 @@
 #include <string>
 #include <algorithm>
+#include <type_traits>
 #include "GameObject.h"
 #include "ResourceManager.h"
 #include "Renderer.h"
-#include "BaseComponent.h"
-#include <type_traits>
+#include "TextureComponent.h"
 
 dae::GameObject::GameObject()
 	: m_Transform{}
-	, m_pTexture{}
 	, m_pComponents{}
 {
 }
@@ -22,16 +21,28 @@ void dae::GameObject::Update()
 
 void dae::GameObject::Render() const
 {
-	const auto& pos = m_Transform.GetPosition();
-	Renderer::GetInstance().RenderTexture(*m_pTexture, pos.x, pos.y);
+	auto it = std::ranges::find_if(
+		m_pComponents, 
+		[](auto pComp) { return typeid(*pComp) == typeid(TextureComponent); });
+
+	if (it != m_pComponents.end())
+	{
+		const auto& pos = m_Transform.GetPosition();
+		const auto pTexture = std::dynamic_pointer_cast<TextureComponent>(*it);
+
+		if (pTexture)
+		{
+			Renderer::GetInstance().RenderTexture(*pTexture, pos.x, pos.y);
+		}
+	}
 }
 
-void dae::GameObject::SetTexture(const std::string& filename)
-{
-	m_pTexture = ResourceManager::GetInstance().LoadTexture(filename);
-}
+//void dae::GameObject::SetTexture(const std::string& filename)
+//{
+//	m_pTexture = ResourceManager::GetInstance().LoadTexture(filename);
+//}
 
-void dae::GameObject::SetPosition(float x, float y)
-{
-	m_Transform.SetPosition(x, y, 0.0f);
-}
+//void dae::GameObject::SetPosition(float x, float y)
+//{
+//	m_Transform.SetPosition(x, y, 0.0f);
+//}

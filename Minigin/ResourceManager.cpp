@@ -21,9 +21,15 @@ std::shared_ptr<dae::TextureComponent> dae::ResourceManager::LoadTexture(const s
 {
 	const auto fullPath = m_dataPath/file;
 	const auto filename = fs::path(fullPath).filename().string();
-	if(m_loadedTextures.find(filename) == m_loadedTextures.end())
-		m_loadedTextures.insert(std::pair(filename,std::make_shared<TextureComponent>(fullPath.string())));
-	return m_loadedTextures.at(filename);
+
+	if (m_LoadedTextures.find(filename) == m_LoadedTextures.end())
+	{
+		auto comp = std::make_shared<TextureComponent>();
+		comp->SetTexture(fullPath.string());
+		m_LoadedTextures.insert(std::pair(filename, comp));
+	}
+
+	return m_LoadedTextures.at(filename);
 }
 
 std::shared_ptr<dae::Font> dae::ResourceManager::LoadFont(const std::string& file, uint8_t size)
@@ -31,25 +37,25 @@ std::shared_ptr<dae::Font> dae::ResourceManager::LoadFont(const std::string& fil
 	const auto fullPath = m_dataPath/file;
 	const auto filename = fs::path(fullPath).filename().string();
 	const auto key = std::pair<std::string, uint8_t>(filename, size);
-	if(m_loadedFonts.find(key) == m_loadedFonts.end())
-		m_loadedFonts.insert(std::pair(key,std::make_shared<Font>(fullPath.string(), size)));
-	return m_loadedFonts.at(key);
+	if(m_LoadedFonts.find(key) == m_LoadedFonts.end())
+		m_LoadedFonts.insert(std::pair(key,std::make_shared<Font>(fullPath.string(), size)));
+	return m_LoadedFonts.at(key);
 }
 
 void dae::ResourceManager::UnloadUnusedResources()
 {
-	for (auto it = m_loadedTextures.begin(); it != m_loadedTextures.end();)
+	for (auto it = m_LoadedTextures.begin(); it != m_LoadedTextures.end();)
 	{
 		if (it->second.use_count() == 1)
-			it = m_loadedTextures.erase(it);
+			it = m_LoadedTextures.erase(it);
 		else
 			++it;
 	}
 
-	for (auto it = m_loadedFonts.begin(); it != m_loadedFonts.end();)
+	for (auto it = m_LoadedFonts.begin(); it != m_LoadedFonts.end();)
 	{
 		if (it->second.use_count() == 1)
-			it = m_loadedFonts.erase(it);
+			it = m_LoadedFonts.erase(it);
 		else
 			++it;
 	}

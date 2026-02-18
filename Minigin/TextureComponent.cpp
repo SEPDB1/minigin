@@ -3,50 +3,59 @@
 #include "Renderer.h"
 #include <stdexcept>
 
+dae::TextureComponent::TextureComponent()
+    : m_pTexture{ nullptr }
+{
+
+}
+
 dae::TextureComponent::~TextureComponent()
 {
-	SDL_DestroyTexture(m_Texture);
+	SDL_DestroyTexture(m_pTexture);
 }
 
-glm::vec2 dae::TextureComponent::GetSize() const
+dae::TextureComponent& dae::TextureComponent::SetTexture(SDL_Texture* pTexture)
 {
-    float w{}, h{};
-    SDL_GetTextureSize(m_Texture, &w, &h);
-    return { w, h };
+    m_pTexture = pTexture;
+    assert(m_pTexture != nullptr && "Nullptr is an invalid argument");
+    return *this;
 }
 
-SDL_Texture* dae::TextureComponent::GetSDLTexture() const
+dae::TextureComponent& dae::TextureComponent::SetTexture(const std::string& path)
 {
-	return m_Texture;
-}
-
-dae::TextureComponent::TextureComponent(const std::string &fullPath)
-{
-    SDL_Surface* surface = SDL_LoadPNG(fullPath.c_str());
+    const auto fullPath = Renderer::GetInstance().GetPath() / path;
+    SDL_Surface* surface = SDL_LoadPNG(fullPath.string().c_str());
     if (!surface)
     {
         throw std::runtime_error(
-            std::string("Failed to load PNG: ") + SDL_GetError()
-        );
+            std::string("Failed to load PNG: ") + SDL_GetError());
     }
 
-    m_Texture = SDL_CreateTextureFromSurface(
+    m_pTexture = SDL_CreateTextureFromSurface(
         Renderer::GetInstance().GetSDLRenderer(),
         surface
     );
 
     SDL_DestroySurface(surface);
 
-    if (!m_Texture)
+    if (!m_pTexture)
     {
         throw std::runtime_error(
-            std::string("Failed to create texture from surface: ") + SDL_GetError()
-        );
+            std::string("Failed to create texture from surface: ") + SDL_GetError());
     }
+    
+    return *this;
 }
 
-dae::TextureComponent::TextureComponent(SDL_Texture* texture)	: m_Texture{ texture } 
+
+SDL_Texture* dae::TextureComponent::GetSDLTexture() const
 {
-	assert(m_Texture != nullptr);
+    return m_pTexture;
 }
 
+glm::vec2 dae::TextureComponent::GetSize() const
+{
+    float w{}, h{};
+    SDL_GetTextureSize(m_pTexture, &w, &h);
+    return { w, h };
+}
