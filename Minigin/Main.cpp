@@ -30,11 +30,11 @@ static void load()
 	go->AttachComponent<dae::TransformComponent>()->SetPosition(358, 180);
 	scene.Add(std::move(go));
 
-//auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-//auto to = std::make_unique<dae::TextObject>("Programming 4 Assignment", font);
-//to->SetColor({ 255, 255, 0, 255 });
-//to->SetPosition(292, 20);
-//scene.Add(std::move(to));
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+	auto to = std::make_unique<dae::TextObject>("Programming 4 Assignment", font);
+	to->SetColor({ 255, 255, 0, 255 });
+	to->SetPosition(292, 20);
+	scene.Add(std::move(to));
 }
 
 int main(int, char*[])
