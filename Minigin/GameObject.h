@@ -37,7 +37,6 @@ namespace dae
 		template <typename T>
 		void RemoveComponent()
 		{
-			//go.RemoveComponent<BaseComponent>();
 			auto it = std::ranges::find_if(
 				m_pComponents,
 				[](auto comp) { return typeid(T) == typeid(*comp); });
@@ -51,12 +50,12 @@ namespace dae
 		// Returns a shared pointer to the requested component,
 		// returns a nullptr when the requested component is not attached to the GameObject
 		template <typename T>
-		std::shared_ptr<T> GetComponent()
+		const std::shared_ptr<T> GetComponent() const
 		{
-			if (typeid(T) == typeid(TransformComponent))
-			{
-				return m_Transform;
-			}
+			//if (typeid(T) == typeid(TransformComponent))
+			//{
+			//	return m_Transform;
+			//}
 
 			auto it = std::ranges::find_if(
 				m_pComponents,
@@ -64,13 +63,13 @@ namespace dae
 
 			if (it != m_pComponents.end())
 			{
-				return it;
+				return std::dynamic_pointer_cast<T>(*it);
 			}
 			return nullptr;
 		}
 
 	private:
-		TransformComponent m_Transform{};
+		//TransformComponent m_Transform{};
 		std::vector<std::shared_ptr<BaseComponent>> m_pComponents{};
 	};
 }

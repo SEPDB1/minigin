@@ -7,8 +7,8 @@
 #include "TextureComponent.h"
 
 dae::GameObject::GameObject()
-	: m_Transform{}
-	, m_pComponents{}
+	//: m_Transform{}
+	: m_pComponents{}
 {
 }
 
@@ -27,7 +27,8 @@ void dae::GameObject::Render() const
 
 	if (it != m_pComponents.end())
 	{
-		const auto& pos = m_Transform.GetPosition();
+		//const auto& pos = m_Transform.GetPosition();
+		const auto& pos = GetComponent<TransformComponent>()->GetPosition();
 		const auto pTexture = std::dynamic_pointer_cast<TextureComponent>(*it);
 
 		if (pTexture)
@@ -36,13 +37,3 @@ void dae::GameObject::Render() const
 		}
 	}
 }
-
-//void dae::GameObject::SetTexture(const std::string& filename)
-//{
-//	m_pTexture = ResourceManager::GetInstance().LoadTexture(filename);
-//}
-
-//void dae::GameObject::SetPosition(float x, float y)
-//{
-//	m_Transform.SetPosition(x, y, 0.0f);
-//}
