@@ -2,8 +2,8 @@
 #include <string>
 #include <memory>
 #include <vector>
-#include "TransformComponent.h"
-#include "TextureComponent.h"
+#include "Transform.h"
+#include "Texture2D.h"
 
 namespace dae
 {

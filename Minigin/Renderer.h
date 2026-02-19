@@ -5,7 +5,7 @@
 
 namespace dae
 {
-	class TextureComponent;
+	class Texture2D;
 	/**
 	 * Simple RAII wrapper for the SDL renderer
 	 */
@@ -16,8 +16,8 @@ namespace dae
 		void Render() const;
 		void Destroy();
 
-		void RenderTexture(const TextureComponent& texture, float x, float y) const;
-		void RenderTexture(const TextureComponent& texture, float x, float y, float width, float height) const;
+		void RenderTexture(const Texture2D& texture, float x, float y) const;
+		void RenderTexture(const Texture2D& texture, float x, float y, float width, float height) const;
 
 
 

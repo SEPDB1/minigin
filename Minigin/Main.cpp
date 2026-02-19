@@ -10,8 +10,8 @@
 #include "ResourceManager.h"
 #include "TextObject.h"
 #include "Scene.h"
-#include "TextureComponent.h"
-#include "TransformComponent.h"
+#include "Texture2D.h"
+#include "Transform.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -21,13 +21,13 @@ static void load()
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 
 	auto go = std::make_unique<dae::GameObject>();
-	go->AttachComponent<dae::TransformComponent>();
-	go->AttachComponent<dae::TextureComponent>()->SetTexture("background.png");
+	go->AttachComponent<dae::Transform>();
+	go->AttachComponent<dae::Texture2D>()->SetTexture("background.png");
 	scene.Add(std::move(go));
 
 	go = std::make_unique<dae::GameObject>();
-	go->AttachComponent<dae::TextureComponent>()->SetTexture("logo.png");
-	go->AttachComponent<dae::TransformComponent>()->SetPosition(358, 180);
+	go->AttachComponent<dae::Texture2D>()->SetTexture("logo.png");
+	go->AttachComponent<dae::Transform>()->SetPosition(358, 180);
 	scene.Add(std::move(go));
 
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);

@@ -2,7 +2,7 @@
 #include <SDL3_ttf/SDL_ttf.h>
 #include "ResourceManager.h"
 #include "Renderer.h"
-#include "TextureComponent.h"
+#include "Texture2D.h"
 #include "Font.h"
 
 namespace fs = std::filesystem;
@@ -17,14 +17,14 @@ void dae::ResourceManager::Init(const std::filesystem::path& dataPath)
 	}
 }
 
-std::shared_ptr<dae::TextureComponent> dae::ResourceManager::LoadTexture(const std::string& file)
+std::shared_ptr<dae::Texture2D> dae::ResourceManager::LoadTexture(const std::string& file)
 {
 	const auto fullPath = m_dataPath/file;
 	const auto filename = fs::path(fullPath).filename().string();
 
 	if (m_LoadedTextures.find(filename) == m_LoadedTextures.end())
 	{
-		auto comp = std::make_shared<TextureComponent>();
+		auto comp = std::make_shared<Texture2D>();
 		comp->SetTexture(fullPath.string());
 		m_LoadedTextures.insert(std::pair(filename, comp));
 	}

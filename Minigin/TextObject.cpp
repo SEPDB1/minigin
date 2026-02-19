@@ -3,13 +3,13 @@
 #include "TextObject.h"
 #include "Renderer.h"
 #include "Font.h"
-#include "TextureComponent.h"
+#include "Texture2D.h"
 
 dae::TextObject::TextObject(const std::string& text, std::shared_ptr<Font> font, const SDL_Color& color)
 	: m_NeedsUpdate(true)
 	, m_Text(text)
 	, m_Color(color)
-	, m_pTransform(GameObject::AttachComponent<TransformComponent>())
+	, m_pTransform(GameObject::AttachComponent<Transform>())
 	, m_pFont(std::move(font))
 	, m_pTextTexture()
 {
@@ -30,7 +30,7 @@ void dae::TextObject::Update()
 			throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
 		}
 		SDL_DestroySurface(surf);
-		m_pTextTexture = std::make_shared<TextureComponent>();
+		m_pTextTexture = std::make_shared<Texture2D>();
 		m_pTextTexture->SetTexture(texture);
 		m_NeedsUpdate = false;
 	}
