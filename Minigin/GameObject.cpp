@@ -7,7 +7,6 @@
 #include "TextureComponent.h"
 
 dae::GameObject::GameObject()
-	//: m_Transform{}
 	: m_pComponents{}
 {
 }
@@ -23,17 +22,16 @@ void dae::GameObject::Render() const
 {
 	auto it = std::ranges::find_if(
 		m_pComponents, 
-		[](auto pComp) { return typeid(*pComp) == typeid(TextureComponent); });
+		[](auto& pComp) { return typeid(*pComp) == typeid(TextureComponent); });
 
 	if (it != m_pComponents.end())
 	{
-		//const auto& pos = m_Transform.GetPosition();
 		const auto& pos = GetComponent<TransformComponent>()->GetPosition();
-		const auto pTexture = std::dynamic_pointer_cast<TextureComponent>(*it);
+		const auto pTextureComp = dynamic_cast<TextureComponent*>(it->get());
 
-		if (pTexture)
+		if (pTextureComp)
 		{
-			Renderer::GetInstance().RenderTexture(*pTexture, pos.x, pos.y);
+			Renderer::GetInstance().RenderTexture(*pTextureComp, pos.x, pos.y);
 		}
 	}
 }
