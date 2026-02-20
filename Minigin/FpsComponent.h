@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseComponent.h"
+#include "Timer.h"
 
 namespace dae
 {
@@ -15,11 +16,14 @@ namespace dae
 		FpsComponent& operator=(const FpsComponent& other) = delete;
 		FpsComponent& operator=(FpsComponent&& other) = delete;
 
-		void Update(float) override;
+		void Update() override;
 
 		void SetTextComponent(TextComponent* pTextComponent);
 
 	private:
 		TextComponent* m_pTextComponent;
+		Timer& m_Timer;
+		bool m_NeedsToUpdate;
+		float m_AccuTime;
 	};
 }

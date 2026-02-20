@@ -19,7 +19,7 @@ void dae::GameObject::Update()
 {
 	for (const auto& pComp : m_pComponents)
 	{
-		pComp->Update(1.f);
+		pComp->Update();
 	}
 }
 

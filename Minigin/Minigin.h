@@ -12,7 +12,8 @@ namespace dae
 		explicit Minigin(const std::filesystem::path& dataPath);
 		~Minigin();
 		void Run(const std::function<void()>& load);
-		void RunOneFrame();
+		void Start();
+		void Update();
 
 		Minigin(const Minigin& other) = delete;
 		Minigin(Minigin&& other) = delete;

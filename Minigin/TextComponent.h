@@ -19,9 +19,10 @@ namespace dae
 		TextComponent& operator=(const TextComponent& other) = delete;
 		TextComponent& operator=(TextComponent&& other) = delete;
 
-		void Update(float) override;
+		void Update() override;
 
 		TextComponent& SetText(const std::string& text, std::shared_ptr<Font> font, const SDL_Color& color = { 255, 255, 255, 255 });
+		TextComponent& SetText(const std::string& text);
 		TextComponent& SetColor(const SDL_Color& color);
 
 		Texture2D* GetTexture() const;

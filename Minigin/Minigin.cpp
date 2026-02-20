@@ -15,6 +15,7 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include "Timer.h"
 
 SDL_Window* g_window{};
 
@@ -34,7 +35,7 @@ void LogSDLVersion(const std::string& message, int major, int minor, int patch)
 
 void LoopCallback(void* arg)
 {
-	static_cast<dae::Minigin*>(arg)->RunOneFrame();
+	static_cast<dae::Minigin*>(arg)->Update();
 }
 #endif
 
@@ -90,15 +91,21 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	load();
 #ifndef __EMSCRIPTEN__
 	while (!m_quit)
-		RunOneFrame();
+		Update();
 #else
 	emscripten_set_main_loop_arg(&LoopCallback, this, 0, true);
 #endif
 }
 
-void dae::Minigin::RunOneFrame()
+void dae::Minigin::Start()
+{
+
+}
+
+void dae::Minigin::Update()
 {
 	m_quit = !InputManager::GetInstance().ProcessInput();
 	SceneManager::GetInstance().Update();
+	Timer::GetInstance().Update();
 	Renderer::GetInstance().Render();
 }

@@ -19,7 +19,7 @@ namespace dae
 		RenderComponent& operator=(RenderComponent&& other) = delete;
 
 		void Render() const;
-		void Update(float) override;
+		void Update() override;
 
 		RenderComponent& SetTexture(SDL_Texture* pTexture);
 		RenderComponent& SetTexture(const std::string& path);

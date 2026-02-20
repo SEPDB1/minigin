@@ -11,7 +11,7 @@ dae::TextComponent::TextComponent(GameObject* pOwner)
 
 }
 
-void dae::TextComponent::Update(float)
+void dae::TextComponent::Update()
 {
 	if (m_NeedsUpdate)
 	{
@@ -38,6 +38,19 @@ dae::TextComponent& dae::TextComponent::SetText(const std::string & text, std::s
 	m_Text = text;
 	m_pFont = std::move(font);
 	m_Color = color;
+	return *this;
+}
+
+dae::TextComponent& dae::TextComponent::SetText(const std::string& text)
+{
+	// Assume that the user made a mistake if font is still null (should call overload of SetText instead)
+	if (!m_pFont)
+	{
+		throw std::runtime_error(std::string("Font is a nullptr"));
+	}
+
+	m_NeedsUpdate = true;
+	m_Text = text;
 	return *this;
 }
 

@@ -24,7 +24,7 @@ void dae::RenderComponent::Render() const
 	}
 }
 
-void dae::RenderComponent::Update(float)
+void dae::RenderComponent::Update()
 {
 
 }

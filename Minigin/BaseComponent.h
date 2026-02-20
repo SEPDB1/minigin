@@ -13,7 +13,7 @@ namespace dae
 		BaseComponent& operator=(BaseComponent&& other) = delete;
 		BaseComponent& operator=(const BaseComponent& other) = delete;
 
-		virtual void Update(float) = 0;
+		virtual void Update() = 0;
 
 	protected:
 		GameObject* GetOwner() const;
