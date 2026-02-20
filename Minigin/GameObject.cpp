@@ -56,10 +56,9 @@ void dae::GameObject::Render() const
 		}
 		else continue;
 
-		if (pTexture)
-		{
-			const auto& pos = m_Transform.GetPosition();
-			Renderer::GetInstance().RenderTexture(*pTexture, pos.x, pos.y);
-		}
+		assert(pTexture != nullptr && "Component returned a null texture");
+
+		const auto& pos = m_Transform.GetPosition();
+		Renderer::GetInstance().RenderTexture(*pTexture, pos.x, pos.y);
 	}
 }
