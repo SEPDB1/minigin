@@ -4,10 +4,12 @@
 #include "GameObject.h"
 #include "ResourceManager.h"
 #include "Renderer.h"
-#include "Texture2D.h"
+#include "RenderComponent.h"
+#include "TextComponent.h"
 
 dae::GameObject::GameObject()
 	: m_pComponents{}
+	, m_Transform{}
 {
 }
 
@@ -15,23 +17,49 @@ dae::GameObject::~GameObject() = default;
 
 void dae::GameObject::Update()
 {
+	for (const auto& pComp : m_pComponents)
+	{
+		pComp->Update(1.f);
+	}
+}
 
+void dae::GameObject::SetPosition(const float x, const float y, const float z)
+{
+	m_Transform.SetPosition(x, y, z);
+}
+
+void dae::GameObject::SetPosition(const glm::vec3& position)
+{
+	m_Transform.SetPosition(position);
+}
+
+const dae::Transform& dae::GameObject::GetTransform() const
+{
+	return m_Transform;
 }
 
 void dae::GameObject::Render() const
 {
-	auto it = std::ranges::find_if(
-		m_pComponents, 
-		[](auto& pComp) { return typeid(*pComp) == typeid(Texture2D); });
+	Texture2D* pTexture{};
 
-	if (it != m_pComponents.end())
+	for (const auto& pComp : m_pComponents)
 	{
-		const auto& pos = GetComponent<Transform>()->GetPosition();
-		const auto pTextureComp = dynamic_cast<Texture2D*>(it->get());
+		const auto pRawComp{ pComp.get() };
 
-		if (pTextureComp)
+		if (typeid(*pRawComp) == typeid(RenderComponent))
 		{
-			Renderer::GetInstance().RenderTexture(*pTextureComp, pos.x, pos.y);
+			pTexture = dynamic_cast<RenderComponent*>(pRawComp)->GetTexture();
+		}
+		else if (typeid(*pRawComp) == typeid(TextComponent))
+		{
+			pTexture = dynamic_cast<TextComponent*>(pRawComp)->GetTexture();
+		}
+		else continue;
+
+		if (pTexture)
+		{
+			const auto& pos = m_Transform.GetPosition();
+			Renderer::GetInstance().RenderTexture(*pTexture, pos.x, pos.y);
 		}
 	}
 }

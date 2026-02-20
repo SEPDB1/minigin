@@ -9,15 +9,29 @@ dae::Texture2D::Texture2D()
 
 }
 
+dae::Texture2D::Texture2D(SDL_Texture* pTexture)
+    : m_pTexture{ nullptr }
+{
+    SetTexture(pTexture);
+}
+dae::Texture2D::Texture2D(const std::string& path)
+    : m_pTexture{ nullptr }
+{
+    SetTexture(path);
+}
+
 dae::Texture2D::~Texture2D()
 {
-	SDL_DestroyTexture(m_pTexture);
+    DeleteTexture();
 }
 
 dae::Texture2D& dae::Texture2D::SetTexture(SDL_Texture* pTexture)
 {
+    assert(pTexture != nullptr && "Nullptr is an invalid argument");
+
+    DeleteTexture();
+
     m_pTexture = pTexture;
-    assert(m_pTexture != nullptr && "Nullptr is an invalid argument");
     return *this;
 }
 
@@ -30,6 +44,8 @@ dae::Texture2D& dae::Texture2D::SetTexture(const std::string& path)
         throw std::runtime_error(
             std::string("Failed to load PNG: ") + SDL_GetError());
     }
+
+    DeleteTexture();
 
     m_pTexture = SDL_CreateTextureFromSurface(
         Renderer::GetInstance().GetSDLRenderer(),
@@ -58,4 +74,12 @@ glm::vec2 dae::Texture2D::GetSize() const
     float w{}, h{};
     SDL_GetTextureSize(m_pTexture, &w, &h);
     return { w, h };
+}
+
+void dae::Texture2D::DeleteTexture()
+{
+    if (m_pTexture)
+    {
+        SDL_DestroyTexture(m_pTexture);
+    }
 }

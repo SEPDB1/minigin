@@ -9,10 +9,12 @@ namespace dae
 	/**
 	 * Simple RAII wrapper for an SDL_Texture
 	 */
-	class Texture2D final : public BaseComponent
+	class Texture2D final
 	{
 	public:
 		Texture2D();
+		explicit Texture2D(SDL_Texture* pTexture);
+		explicit Texture2D(const std::string& path);
 		~Texture2D();
 		Texture2D(const Texture2D&) = default;
 		Texture2D(Texture2D&&) = default;
@@ -26,6 +28,7 @@ namespace dae
 		glm::vec2 GetSize() const;
 
 	private:
+		void DeleteTexture();
 		SDL_Texture* m_pTexture{};
 	};
 }

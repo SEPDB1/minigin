@@ -7,7 +7,7 @@
 
 namespace dae
 {
-	class GameObject 
+	class GameObject final
 	{
 	public:
 		GameObject();
@@ -17,15 +17,20 @@ namespace dae
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
 
-		virtual void Update();
-		virtual void Render() const;
+		void Update();
+		void Render() const;
+
+		void SetPosition(float x, float y, float z = 0);
+		void SetPosition(const glm::vec3& position);
+
+		const Transform& GetTransform() const;
 
 		// Creates a new component of the requested type and attaches it to the game object,
 		// the type has to be a component
 		template <typename T>
-		T* AttachComponent()
+		T* AttachComponent(GameObject* pOwner)
 		{
-			auto pUniqueComp = std::make_unique<T>();
+			auto pUniqueComp = std::make_unique<T>(pOwner);
 			auto pComp = pUniqueComp.get();
 			m_pComponents.push_back(std::move(pUniqueComp));
 			return pComp;
@@ -62,6 +67,7 @@ namespace dae
 		}
 
 	private:
+		Transform m_Transform{};
 		std::vector<std::unique_ptr<BaseComponent>> m_pComponents{};
 	};
 }

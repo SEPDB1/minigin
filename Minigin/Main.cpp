@@ -8,10 +8,10 @@
 #include "Minigin.h"
 #include "SceneManager.h"
 #include "ResourceManager.h"
-#include "TextObject.h"
 #include "Scene.h"
-#include "Texture2D.h"
 #include "Transform.h"
+#include "TextComponent.h"
+#include "RenderComponent.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -21,20 +21,19 @@ static void load()
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 
 	auto go = std::make_unique<dae::GameObject>();
-	go->AttachComponent<dae::Transform>();
-	go->AttachComponent<dae::Texture2D>()->SetTexture("background.png");
+	go->AttachComponent<dae::RenderComponent>(go.get())->SetTexture("background.png");
 	scene.Add(std::move(go));
 
 	go = std::make_unique<dae::GameObject>();
-	go->AttachComponent<dae::Texture2D>()->SetTexture("logo.png");
-	go->AttachComponent<dae::Transform>()->SetPosition(358, 180);
+	go->SetPosition(358, 180);
+	go->AttachComponent<dae::RenderComponent>(go.get())->SetTexture("logo.png");
 	scene.Add(std::move(go));
 
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	auto to = std::make_unique<dae::TextObject>("Programming 4 Assignment", font);
-	to->SetColor({ 255, 255, 0, 255 });
-	to->SetPosition(292, 20);
-	scene.Add(std::move(to));
+	go = std::make_unique<dae::GameObject>();
+	go->SetPosition(292, 20);
+	go->AttachComponent<dae::TextComponent>(go.get())->SetText("Programming 4 Assignment", font).SetColor({ 255, 255, 0, 255 });
+	scene.Add(std::move(go));
 }
 
 int main(int, char*[])

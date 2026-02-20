@@ -1,10 +1,9 @@
 #pragma once
 #include <glm/glm.hpp>
-#include "BaseComponent.h"
 
 namespace dae
 {
-	class Transform final : public BaseComponent
+	class Transform final
 	{
 	public:
 		Transform();
