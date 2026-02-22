@@ -17,6 +17,7 @@
 #include "ResourceManager.h"
 #include "Timer.h"
 
+
 SDL_Window* g_window{};
 
 void LogSDLVersion(const std::string& message, int major, int minor, int patch)
@@ -29,6 +30,8 @@ void LogSDLVersion(const std::string& message, int major, int minor, int patch)
 	std::cout << message << major << "." << minor << "." << patch << "\n";
 #endif
 }
+
+//#define __EMSCRIPTEN__
 
 #ifdef __EMSCRIPTEN__
 #include "emscripten.h"

@@ -13,6 +13,7 @@
 #include "TextComponent.h"
 #include "RenderComponent.h"
 #include "FpsComponent.h"
+//#include "Test.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -41,6 +42,11 @@ static void load()
 	pTextO->SetText("FPS", font).SetColor({ 255, 255, 0, 255 });
 	go->AttachComponent<dae::FpsComponent>(go.get())->SetTextComponent(pTextO);
 	scene.Add(std::move(go));
+
+	// Test
+	//dae::test::TestSceneGraph();
+	auto pParent = std::make_unique<dae::GameObject>();
+	auto pChild = std::make_unique<dae::GameObject>();
 }
 
 int main(int, char*[])
