@@ -24,9 +24,8 @@ std::shared_ptr<dae::Texture2D> dae::ResourceManager::LoadTexture(const std::str
 
 	if (m_LoadedTextures.find(filename) == m_LoadedTextures.end())
 	{
-		auto comp = std::make_shared<Texture2D>();
-		comp->SetTexture(fullPath.string());
-		m_LoadedTextures.insert(std::pair(filename, comp));
+		auto pTexture = std::make_shared<Texture2D>(fullPath.string());
+		m_LoadedTextures.insert(std::pair(filename, pTexture));
 	}
 
 	return m_LoadedTextures.at(filename);

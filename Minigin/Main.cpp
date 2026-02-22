@@ -23,12 +23,12 @@ static void load()
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 
 	auto go = std::make_unique<dae::GameObject>();
-	go->AttachComponent<dae::RenderComponent>(go.get())->SetTexture("background.png");
+	go->AttachComponent<dae::RenderComponent>(go.get())->LoadTexture("background.png");
 	scene.Add(std::move(go));
 
 	go = std::make_unique<dae::GameObject>();
 	go->SetPosition(358, 180);
-	go->AttachComponent<dae::RenderComponent>(go.get())->SetTexture("logo.png");
+	go->AttachComponent<dae::RenderComponent>(go.get())->LoadTexture("logo.png");
 	scene.Add(std::move(go));
 
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);

@@ -26,8 +26,7 @@ void dae::TextComponent::Update()
 			throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
 		}
 		SDL_DestroySurface(surf);
-		m_pTextTexture = std::make_unique<Texture2D>();
-		m_pTextTexture->SetTexture(texture);
+		m_pTextTexture = std::make_unique<Texture2D>(texture);
 		m_NeedsUpdate = false;
 	}
 }

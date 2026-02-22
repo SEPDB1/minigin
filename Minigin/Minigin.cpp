@@ -31,8 +31,6 @@ void LogSDLVersion(const std::string& message, int major, int minor, int patch)
 #endif
 }
 
-//#define __EMSCRIPTEN__
-
 #ifdef __EMSCRIPTEN__
 #include "emscripten.h"
 

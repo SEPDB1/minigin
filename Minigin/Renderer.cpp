@@ -13,7 +13,7 @@ void dae::Renderer::Init(SDL_Window* window, const std::filesystem::path path)
 	SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1");
 
 #if defined(__EMSCRIPTEN__)
-	m_renderer = SDL_CreateRenderer(window, nullptr);
+	m_Renderer = SDL_CreateRenderer(window, nullptr);
 #else
 	m_Renderer = SDL_CreateRenderer(window, nullptr);
 #endif

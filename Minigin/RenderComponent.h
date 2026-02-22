@@ -21,12 +21,11 @@ namespace dae
 		void Render() const;
 		void Update() override;
 
-		RenderComponent& SetTexture(SDL_Texture* pTexture);
-		RenderComponent& SetTexture(const std::string& path);
+		RenderComponent& LoadTexture(const std::string& path);
 
 		Texture2D* GetTexture() const;
 
 	private:
-		std::unique_ptr<Texture2D> m_pTexture;
+		std::shared_ptr<Texture2D> m_pTexture{ nullptr };
 	};
 }

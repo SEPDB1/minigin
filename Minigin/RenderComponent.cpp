@@ -2,10 +2,10 @@
 #include "Texture2D.h"
 #include "Renderer.h"
 #include "GameObject.h"
+#include "ResourceManager.h"
 
 dae::RenderComponent::RenderComponent(GameObject* pOwner)
 	: BaseComponent(pOwner)
-	, m_pTexture{ std::make_unique<Texture2D>() }
 {
 
 }
@@ -29,15 +29,9 @@ void dae::RenderComponent::Update()
 
 }
 
-dae::RenderComponent& dae::RenderComponent::SetTexture(SDL_Texture* pTexture)
+dae::RenderComponent& dae::RenderComponent::LoadTexture(const std::string& path)
 {
-	m_pTexture->SetTexture(pTexture);
-	return *this;
-}
-
-dae::RenderComponent& dae::RenderComponent::SetTexture(const std::string& path)
-{
-	m_pTexture->SetTexture(path);
+	m_pTexture = ResourceManager::GetInstance().LoadTexture(path);
 	return *this;
 }
 
