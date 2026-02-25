@@ -20,11 +20,13 @@ namespace dae
 		void Update();
 		void Render() const;
 
-		void SetPosition(float x, float y, float z = 0);
-		void SetPosition(const glm::vec3& position);
-		GameObject& SetParent(GameObject* pParent);
+		GameObject& SetPosition(float x, float y, float z = 0);
+		GameObject& SetPosition(const glm::vec3& newPos);
+		GameObject& SetParent(GameObject* pParent, bool keepWorldPosition);
+		void SetPositionDirty() const;
 
-		const Transform& GetTransform() const;
+		const glm::vec3& GetWorldPosition() const;
+		const glm::vec3& GetLocalPosition() const;
 		GameObject* GetParent() const;
 		uint32_t GetChildCount() const;
 		GameObject* GetChildAt(uint32_t index) const;
@@ -75,12 +77,18 @@ namespace dae
 	private:
 		void AddChild(GameObject* pChild);
 		void RemoveChild(GameObject* pChild);
+
+		void UpdateWorldPosition() const;
+
 		bool IsChild(GameObject* pGameObject) const;
 		bool IsParent(GameObject* pGameObject) const;
 
+
 		GameObject* m_pParent{ nullptr };
 		std::vector<GameObject*> m_pChildren{};
-		Transform m_Transform{};
 		std::vector<std::unique_ptr<BaseComponent>> m_pComponents{};
+		mutable Transform m_GlobalTransform{};
+		Transform m_LocalTransform{};
+		mutable bool m_IsPositionDirty{ false };
 	};
 }

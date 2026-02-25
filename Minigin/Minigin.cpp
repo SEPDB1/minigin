@@ -8,15 +8,18 @@
 #endif
 
 #include <SDL3/SDL.h>
-//#include <SDL3_image/SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
+#include <glm/glm.hpp>
 #include "Minigin.h"
 #include "InputManager.h"
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
 #include "Timer.h"
-
+#include "Transform.h"
+#include "TextComponent.h"
+#include "RenderComponent.h"
+#include "FpsComponent.h"
 
 SDL_Window* g_window{};
 
@@ -90,6 +93,7 @@ dae::Minigin::~Minigin()
 void dae::Minigin::Run(const std::function<void()>& load)
 {
 	load();
+	Start();
 #ifndef __EMSCRIPTEN__
 	while (!m_quit)
 		Update();
@@ -100,11 +104,47 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 void dae::Minigin::Start()
 {
+	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 
+	auto go = std::make_unique<dae::GameObject>();
+	go->AttachComponent<dae::RenderComponent>(go.get())->LoadTexture("background.png");
+	m_pBackground = go.get();
+	scene.Add(std::move(go));
+
+	go = std::make_unique<dae::GameObject>();
+	//go->SetPosition(358, 180);
+	go->SetPosition(glm::vec3(358, 180, 0.f));
+	go->AttachComponent<dae::RenderComponent>(go.get())->LoadTexture("logo.png");
+	m_pLogo = go.get();
+	scene.Add(std::move(go));
+
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+	go = std::make_unique<dae::GameObject>();
+	//go->SetPosition(292, 20);
+	go->SetPosition(glm::vec3(292, 20, 0.f));
+	go->AttachComponent<dae::TextComponent>(go.get())->SetText("Programming 4 Assignment", font).SetColor({ 255, 255, 0, 255 });
+	//go->SetParent(m_pLogo, true);
+	m_pTitle = go.get();
+	scene.Add(std::move(go));
+
+	go = std::make_unique<dae::GameObject>();
+	auto pTextO = go->AttachComponent<dae::TextComponent>(go.get());
+	pTextO->SetText("FPS", font).SetColor({ 255, 255, 0, 255 });
+	go->AttachComponent<dae::FpsComponent>(go.get())->SetTextComponent(pTextO);
+	m_pFpsObject = go.get();
+	scene.Add(std::move(go));
 }
 
 void dae::Minigin::Update()
 {
+	//const glm::vec3 startPos{ 358.f, 180.f, 0.f };
+	//const glm::vec3 endPos{ startPos.x + 100.f, startPos.y + 100.f, 0.f };
+
+	//auto lerp = [](const glm::vec3& currentPos, const glm::vec3& desiredPos, float t)
+	//	{ return currentPos * (1 - t) + desiredPos * t;  };
+
+	//m_pLogo->SetPosition(lerp(m_pLogo->GetLocalPosition(), endPos, Timer::GetInstance().GetElapsedTime()));
+
 	m_quit = !InputManager::GetInstance().ProcessInput();
 	SceneManager::GetInstance().Update();
 	Timer::GetInstance().Update();

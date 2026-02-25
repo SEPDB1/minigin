@@ -19,7 +19,7 @@ void dae::RenderComponent::Render() const
 {
 	if (m_pTexture)
 	{
-		const auto& pos = BaseComponent::GetOwner()->GetTransform().GetPosition();
+		const auto& pos = BaseComponent::GetOwner()->GetWorldPosition();
 		Renderer::GetInstance().RenderTexture(*m_pTexture, pos.x, pos.y);
 	}
 }

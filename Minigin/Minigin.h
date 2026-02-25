@@ -5,9 +5,9 @@
 
 namespace dae
 {
+	class GameObject;
 	class Minigin final
 	{
-		bool m_quit{};
 	public:
 		explicit Minigin(const std::filesystem::path& dataPath);
 		~Minigin();
@@ -19,5 +19,13 @@ namespace dae
 		Minigin(Minigin&& other) = delete;
 		Minigin& operator=(const Minigin& other) = delete;
 		Minigin& operator=(Minigin&& other) = delete;
+
+	private:
+		bool m_quit{};
+		
+		GameObject* m_pBackground{};
+		GameObject* m_pLogo{};
+		GameObject* m_pTitle{};
+		GameObject* m_pFpsObject{};
 	};
 }

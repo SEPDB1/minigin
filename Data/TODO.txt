@@ -1,5 +1,2 @@
 - Fix that deleting happens with 'mark dead'
 - Implement not being able to attach 2 components of the same type to 1 game objects
-- Texture2D has a default constructor, Is this safe? Is this needed?
-- Fix the texture loading so it communicates with the ResourceManager again
-- Check if emscripten is broken
