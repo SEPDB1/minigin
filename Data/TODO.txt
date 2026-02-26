@@ -1,2 +1,3 @@
 - Fix that deleting happens with 'mark dead'
 - Implement not being able to attach 2 components of the same type to 1 game objects
+- Add destructor to GameObject, add correct behariour when an object is deleted

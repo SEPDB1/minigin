@@ -30,6 +30,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/RenderComponent.cpp
   Minigin/TextComponent.cpp
   Minigin/FpsComponent.cpp
+  Minigin/RotaterComponent.cpp
   Minigin/Timer.cpp
   )
 

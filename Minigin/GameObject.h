@@ -20,13 +20,13 @@ namespace dae
 		void Update();
 		void Render() const;
 
-		GameObject& SetPosition(float x, float y, float z = 0);
-		GameObject& SetPosition(const glm::vec3& newPos);
+		GameObject& SetPosition(float x, float y);
+		GameObject& SetPosition(const glm::vec2& newPos);
+		GameObject& SetRotation(float radians);
 		GameObject& SetParent(GameObject* pParent, bool keepWorldPosition);
-		void SetPositionDirty() const;
+		void SetTransformDirty() const;
 
-		const glm::vec3& GetWorldPosition() const;
-		const glm::vec3& GetLocalPosition() const;
+		const Transform& GetTransform() const;
 		GameObject* GetParent() const;
 		uint32_t GetChildCount() const;
 		GameObject* GetChildAt(uint32_t index) const;
@@ -78,17 +78,20 @@ namespace dae
 		void AddChild(GameObject* pChild);
 		void RemoveChild(GameObject* pChild);
 
-		void UpdateWorldPosition() const;
+		void UpdateWorldTransform() const;
 
 		bool IsChild(GameObject* pGameObject) const;
 		bool IsParent(GameObject* pGameObject) const;
-
+		glm::vec2 GetWorldPosition() const;
+		glm::vec2 GetLocalPosition() const;
+		float GetWorldRotation() const;
+		float GetLocalRotation() const;
 
 		GameObject* m_pParent{ nullptr };
 		std::vector<GameObject*> m_pChildren{};
 		std::vector<std::unique_ptr<BaseComponent>> m_pComponents{};
 		mutable Transform m_GlobalTransform{};
 		Transform m_LocalTransform{};
-		mutable bool m_IsPositionDirty{ false };
+		mutable bool m_IsTransformDirty{ false };
 	};
 }

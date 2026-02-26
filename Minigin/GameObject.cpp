@@ -40,20 +40,25 @@ void dae::GameObject::Render() const
 	}
 }
 
-dae::GameObject& dae::GameObject::SetPosition(float x, float y, float z)
+dae::GameObject& dae::GameObject::SetPosition(float x, float y)
 {
-	return SetPosition(glm::vec3(x, y, z));
+	return SetPosition(glm::vec3(x, y, 0.f));
 }
 
-// OK
-dae::GameObject& dae::GameObject::SetPosition(const glm::vec3& newPos)
+dae::GameObject& dae::GameObject::SetPosition(const glm::vec2& newPos)
 {
 	m_LocalTransform.SetPosition(newPos);
-	SetPositionDirty();
+	SetTransformDirty();
 	return *this;
 }
 
-// OK
+dae::GameObject& dae::GameObject::SetRotation(float radians)
+{
+	m_LocalTransform.SetRotation(radians);
+	SetTransformDirty();
+	return *this;
+}
+
 dae::GameObject& dae::GameObject::SetParent(GameObject* pNewParent, bool keepWorldPosition)
 {
 	if (pNewParent == this || pNewParent == m_pParent || IsChild(pNewParent))
@@ -68,7 +73,7 @@ dae::GameObject& dae::GameObject::SetParent(GameObject* pNewParent, bool keepWor
 		if (keepWorldPosition)
 			SetPosition(GetWorldPosition() - pNewParent->GetWorldPosition());
 
-		SetPositionDirty();
+		SetTransformDirty();
 	}
 
 	// Remove itself from the previous parent
@@ -84,30 +89,46 @@ dae::GameObject& dae::GameObject::SetParent(GameObject* pNewParent, bool keepWor
 	return *this;
 }
 
-// OK
-void dae::GameObject::SetPositionDirty() const
+void dae::GameObject::SetTransformDirty() const
 {
-	if (!m_IsPositionDirty)
+	if (!m_IsTransformDirty)
 	{
-		m_IsPositionDirty = true;
+		m_IsTransformDirty = true;
 
 		for (auto* child : m_pChildren)
-			child->SetPositionDirty();
+			child->SetTransformDirty();
 	}
 }
 
-// OK
-const glm::vec3& dae::GameObject::GetWorldPosition() const
+const dae::Transform& dae::GameObject::GetTransform() const
 {
-	if (m_IsPositionDirty)
-		UpdateWorldPosition();
+	if (m_IsTransformDirty)
+		UpdateWorldTransform();
+	return m_GlobalTransform;
+}
+
+glm::vec2 dae::GameObject::GetWorldPosition() const
+{
+	if (m_IsTransformDirty)
+		UpdateWorldTransform();
 	return m_GlobalTransform.GetPosition();
 }
 
-// OK
-const glm::vec3& dae::GameObject::GetLocalPosition() const
+glm::vec2 dae::GameObject::GetLocalPosition() const
 {
 	return m_LocalTransform.GetPosition();
+}
+
+float dae::GameObject::GetWorldRotation() const
+{
+	if (m_IsTransformDirty)
+		UpdateWorldTransform();
+	return m_GlobalTransform.GetRotation();
+}
+
+float dae::GameObject::GetLocalRotation() const
+{
+	return m_LocalTransform.GetRotation();
 }
 
 dae::GameObject* dae::GameObject::GetParent() const
@@ -156,17 +177,12 @@ void dae::GameObject::RemoveChild(GameObject* pChild)
 	pChild->SetParent(nullptr, true);
 }
 
-// OK
-void dae::GameObject::UpdateWorldPosition() const
+void dae::GameObject::UpdateWorldTransform() const
 {
-	if(m_IsPositionDirty)
-	{
-		if (!m_pParent)
-			m_GlobalTransform.SetPosition(m_LocalTransform.GetPosition());
-		else
-			m_GlobalTransform.SetPosition(m_pParent->GetWorldPosition() + m_LocalTransform.GetPosition());
-	}
-	m_IsPositionDirty = false;
+	if (!m_pParent) 
+		m_GlobalTransform.SetMatrix(m_LocalTransform.GetMatrix()); 
+	else 
+		m_GlobalTransform.SetMatrix(m_pParent->GetTransform().GetMatrix() * m_LocalTransform.GetMatrix());
 }
 
 bool dae::GameObject::IsChild(GameObject* pGameObject) const

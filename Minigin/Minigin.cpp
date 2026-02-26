@@ -20,6 +20,7 @@
 #include "TextComponent.h"
 #include "RenderComponent.h"
 #include "FpsComponent.h"
+#include "RotaterComponent.h"
 
 SDL_Window* g_window{};
 
@@ -133,6 +134,17 @@ void dae::Minigin::Start()
 	go->AttachComponent<dae::FpsComponent>(go.get())->SetTextComponent(pTextO);
 	m_pFpsObject = go.get();
 	scene.Add(std::move(go));
+
+	// center
+	//go = std::make_unique<dae::GameObject>();
+	//go->SetPosition(glm::vec3(358, 180, 0.f));
+	//
+	//auto player1 = std::make_unique<dae::GameObject>();
+	//player1->SetPosition(glm::vec3(378, 180, 0.f));
+	//player1->AttachComponent<dae::RenderComponent>(go.get())->LoadTexture("logo.png");
+	//player1->SetParent(go.get(), true).AttachComponent<dae::RotaterComponent>(player1.get());
+	//scene.Add(std::move(go));
+	//scene.Add(std::move(player1));
 }
 
 void dae::Minigin::Update()
