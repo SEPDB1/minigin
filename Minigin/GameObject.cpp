@@ -17,27 +17,31 @@ void dae::GameObject::Update()
 
 void dae::GameObject::Render() const
 {
-	Texture2D* pTexture{};
-
 	for (const auto& pComp : m_pComponents)
 	{
-		const auto pRawComp{ pComp.get() };
-
-		if (typeid(*pRawComp) == typeid(RenderComponent))
-		{
-			pTexture = dynamic_cast<RenderComponent*>(pRawComp)->GetTexture();
-		}
-		else if (typeid(*pRawComp) == typeid(TextComponent))
-		{
-			pTexture = dynamic_cast<TextComponent*>(pRawComp)->GetTexture();
-		}
-		else continue;
-
-		assert(pTexture != nullptr && "Component returned a null texture");
-
-		const auto& pos = GetWorldPosition();
-		Renderer::GetInstance().RenderTexture(*pTexture, pos.x, pos.y);
+		pComp->Render();
 	}
+	//Texture2D* pTexture{};
+
+	//for (const auto& pComp : m_pComponents)
+	//{
+	//	const auto pRawComp{ pComp.get() };
+
+	//	if (typeid(*pRawComp) == typeid(RenderComponent))
+	//	{
+	//		pTexture = dynamic_cast<RenderComponent*>(pRawComp)->GetTexture();
+	//	}
+	//	else if (typeid(*pRawComp) == typeid(TextComponent))
+	//	{
+	//		pTexture = dynamic_cast<TextComponent*>(pRawComp)->GetTexture();
+	//	}
+	//	else continue;
+
+	//	assert(pTexture != nullptr && "Component returned a null texture");
+
+	//	const auto& pos = GetWorldPosition();
+	//	Renderer::GetInstance().RenderTexture(*pTexture, pos.x, pos.y);
+	//}
 }
 
 dae::GameObject& dae::GameObject::SetPosition(float x, float y)

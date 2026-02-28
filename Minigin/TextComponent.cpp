@@ -4,11 +4,18 @@
 #include "Font.h"
 #include "Texture2D.h"
 #include "Renderer.h"
+#include "GameObject.h"
 
 dae::TextComponent::TextComponent(GameObject* pOwner)
 	: BaseComponent(pOwner)
 {
 
+}
+
+void dae::TextComponent::Render() const
+{
+	const auto pos{ BaseComponent::GetOwner()->GetTransform().GetPosition() };
+	Renderer::GetInstance().RenderTexture(*m_pTextTexture, pos.x, pos.y);
 }
 
 void dae::TextComponent::Update()

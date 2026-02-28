@@ -7,6 +7,10 @@ dae::RotaterComponent::RotaterComponent(GameObject* pOwner)
 {
 }
 
+void dae::RotaterComponent::Render() const
+{
+}
+
 void dae::RotaterComponent::Update()
 {
 	const auto owner{ BaseComponent::GetOwner() };

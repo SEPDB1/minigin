@@ -16,6 +16,7 @@ namespace dae
 		FpsComponent& operator=(const FpsComponent& other) = delete;
 		FpsComponent& operator=(FpsComponent&& other) = delete;
 
+		void Render() const override;
 		void Update() override;
 
 		void SetTextComponent(TextComponent* pTextComponent);

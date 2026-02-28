@@ -1,5 +1,7 @@
 #include "FpsComponent.h"
 #include "TextComponent.h"
+#include "GameObject.h"
+#include "Renderer.h"
 #include <iomanip>
 #include <sstream>
 
@@ -11,6 +13,12 @@ dae::FpsComponent::FpsComponent(GameObject* pOwner)
 	, m_AccuTime{ 0.9f } // force early update
 {
 
+}
+
+void dae::FpsComponent::Render() const
+{
+	const auto& pos = BaseComponent::GetOwner()->GetTransform().GetPosition();
+	Renderer::GetInstance().RenderTexture(*m_pTextComponent->GetTexture(), pos.x, pos.y);
 }
 
 void dae::FpsComponent::Update()
