@@ -6,6 +6,7 @@
 #include "Renderer.h"
 #include "RenderComponent.h"
 #include "TextComponent.h"
+#include  <stdexcept>
 
 void dae::GameObject::Update()
 {
@@ -21,27 +22,6 @@ void dae::GameObject::Render() const
 	{
 		pComp->Render();
 	}
-	//Texture2D* pTexture{};
-
-	//for (const auto& pComp : m_pComponents)
-	//{
-	//	const auto pRawComp{ pComp.get() };
-
-	//	if (typeid(*pRawComp) == typeid(RenderComponent))
-	//	{
-	//		pTexture = dynamic_cast<RenderComponent*>(pRawComp)->GetTexture();
-	//	}
-	//	else if (typeid(*pRawComp) == typeid(TextComponent))
-	//	{
-	//		pTexture = dynamic_cast<TextComponent*>(pRawComp)->GetTexture();
-	//	}
-	//	else continue;
-
-	//	assert(pTexture != nullptr && "Component returned a null texture");
-
-	//	const auto& pos = GetWorldPosition();
-	//	Renderer::GetInstance().RenderTexture(*pTexture, pos.x, pos.y);
-	//}
 }
 
 dae::GameObject& dae::GameObject::SetPosition(float x, float y)
@@ -99,8 +79,8 @@ void dae::GameObject::SetTransformDirty() const
 	{
 		m_IsTransformDirty = true;
 
-		for (auto* child : m_pChildren)
-			child->SetTransformDirty();
+		for (auto pChild : m_pChildren)
+			pChild->SetTransformDirty();
 	}
 }
 
@@ -145,10 +125,16 @@ uint32_t dae::GameObject::GetChildCount() const
 	return static_cast<uint32_t>(m_pChildren.size());
 }
 
-dae::GameObject* dae::GameObject::GetChildAt(uint32_t index) const
+dae::GameObject* dae::GameObject::GetChildAt(int index) const
 {
-	assert(index < m_pChildren.size() && "Invalid idx entered for GetChildAt");
-	return m_pChildren[index];
+	try
+	{
+		return m_pChildren.at(index); 
+	}
+	catch (const std::out_of_range& e)
+	{
+		throw std::runtime_error(std::string(e.what()));
+	}
 }
 
 void dae::GameObject::AddChild(GameObject* pNewChild)

@@ -24,12 +24,11 @@ namespace dae
 		GameObject& SetPosition(const glm::vec2& newPos);
 		GameObject& SetRotation(float radians);
 		GameObject& SetParent(GameObject* pParent, bool keepWorldPosition);
-		void SetTransformDirty() const;
 
 		const Transform& GetTransform() const;
 		GameObject* GetParent() const;
 		uint32_t GetChildCount() const;
-		GameObject* GetChildAt(uint32_t index) const;
+		GameObject* GetChildAt(int index) const;
 
 #pragma region TemplatedFunctions
 		// Creates a new component of the requested type and attaches it to the game object,
@@ -77,6 +76,7 @@ namespace dae
 	private:
 		void AddChild(GameObject* pChild);
 		void RemoveChild(GameObject* pChild);
+		void SetTransformDirty() const;
 
 		void UpdateWorldTransform() const;
 

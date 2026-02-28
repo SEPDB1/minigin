@@ -16,21 +16,24 @@ namespace dae
 		const glm::mat3x3 GetMatrix() const;
 		glm::vec2 GetPosition() const;
 		float GetRotation() const;
+		glm::vec2 GetScale() const;
 
 		void SetMatrix(const glm::mat3x3& matrix);
-		void SetPosition(float x, float y);
+		void SetPosition(float pos_x, float pos_y);
 		void SetPosition(const glm::vec2& position);
 		void SetRotation(float radians);
+		void SetScale(const glm::vec2& scale);
+		void SetScale(float scale_x, float scale_y);
 
 	private:
-		static glm::mat3x3 CreateTranslationMatrix(float x, float y);
-		static glm::mat3x3 CreateTranslationMatrix(const glm::vec2& translation);
-		// Returns a rotation matrix around the Z axis
-		static glm::mat3x3 CreateRotationMatrix(float radians);
-		static glm::mat3x3 CreateScaleMatrix(float x, float y);
-		static glm::mat3x3 CreateScaleMatrix(const glm::vec2& scale);
+		glm::mat3x3 CreateTranslationMatrix() const;
+		glm::mat3x3 CreateRotationMatrix() const;
+		glm::mat3x3 CreateScaleMatrix() const;
+		void UpdateMatrix() const;
 
-		glm::mat3x3 m_Matrix{};
+		mutable glm::mat3x3 m_Matrix{ 1.f };
+		mutable bool m_IsMatrixDirty{ false };
+		glm::vec2 m_Scale{ 1.f, 1.f};
 		float m_Rotation{ 0.f };
 	};
 }

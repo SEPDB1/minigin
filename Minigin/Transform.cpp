@@ -11,6 +11,9 @@ dae::Transform::~Transform() = default;
 
 const glm::mat3x3 dae::Transform::GetMatrix() const
 {
+	if (m_IsMatrixDirty)
+		UpdateMatrix();
+
 	return m_Matrix;
 }
 
@@ -24,15 +27,21 @@ float dae::Transform::GetRotation() const
 	return m_Rotation;
 }
 
+glm::vec2 dae::Transform::GetScale() const
+{
+	return m_Scale;
+}
+
 void dae::Transform::SetMatrix(const glm::mat3x3& matrix)
 {
 	m_Matrix = matrix;
 }
 
-void dae::Transform::SetPosition(float x, float y)
+void dae::Transform::SetPosition(float pos_x, float pos_y)
 {
-	m_Matrix[0][2] = x;
-	m_Matrix[1][2] = y;
+	m_Matrix[0][2] = pos_x;
+	m_Matrix[1][2] = pos_y;
+	// position can be set without transform getting dirty
 }
 
 void dae::Transform::SetPosition(const glm::vec2& position) 
@@ -43,42 +52,48 @@ void dae::Transform::SetPosition(const glm::vec2& position)
 void dae::Transform::SetRotation(float radians)
 {
 	m_Rotation = radians;
-	m_Matrix[0][0] = glm::cos(radians);
-	m_Matrix[0][1] = -glm::sin(radians);
-	m_Matrix[1][0] = glm::cos(radians);
-	m_Matrix[1][1] = glm::sin(radians);
+	m_IsMatrixDirty = true;
 }
 
-glm::mat3x3 dae::Transform::CreateTranslationMatrix(float x, float y)
+void dae::Transform::SetScale(const glm::vec2& scale)
+{
+	m_Scale = scale;
+	m_IsMatrixDirty = true;
+}
+
+void dae::Transform::SetScale(float scale_x, float scale_y)
+{
+	SetScale(glm::vec2(scale_x, scale_y));
+}
+
+glm::mat3x3 dae::Transform::CreateTranslationMatrix() const
 {
 	return glm::mat3x3(
-		glm::vec3(1.f, 0.f, x), 
-		glm::vec3(0.f, 1.f, y), 
+		glm::vec3(1.f, 0.f, m_Matrix[0][2]),
+		glm::vec3(0.f, 1.f, m_Matrix[1][2]),
 		glm::vec3(0.f, 0.f, 1.f));
 }
 
-glm::mat3x3 dae::Transform::CreateTranslationMatrix(const glm::vec2& translation)
-{
-	return CreateTranslationMatrix(translation.x, translation.y);
-}
-
-glm::mat3x3 dae::Transform::CreateRotationMatrix(float radians)
+glm::mat3x3 dae::Transform::CreateRotationMatrix() const
 {
 	return glm::mat3x3(
-		glm::vec3(glm::cos(radians), -glm::sin(radians), 0),
-		glm::vec3(glm::sin(radians), glm::cos(radians), 0),
+		glm::vec3(glm::cos(m_Rotation), -glm::sin(m_Rotation), 0),
+		glm::vec3(glm::sin(m_Rotation), glm::cos(m_Rotation), 0),
 		glm::vec3(0.f, 0.f, 1.f));
 }
 
-glm::mat3x3 dae::Transform::CreateScaleMatrix(float x, float y)
+glm::mat3x3 dae::Transform::CreateScaleMatrix() const
 {
 	return glm::mat3x3(
-		glm::vec3(x, 0.f, 0.f),
-		glm::vec3(0.f, y, 0.f),
+		glm::vec3(m_Scale.x, 0.f, 0.f),
+		glm::vec3(0.f, m_Scale.y, 0.f),
 		glm::vec3(0.f, 0.f, 1.f));
 }
 
-glm::mat3x3 dae::Transform::CreateScaleMatrix(const glm::vec2& scale)
+void dae::Transform::UpdateMatrix() const
 {
-	return CreateScaleMatrix(scale.x, scale.y);
+	if (!m_IsMatrixDirty) return;
+
+	m_Matrix = CreateTranslationMatrix() * CreateRotationMatrix() * CreateScaleMatrix();
+	m_IsMatrixDirty = false;
 }
