@@ -79,7 +79,7 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
 
-	Renderer::GetInstance().Init(g_window, dataPath);
+	Renderer::GetInstance().Init(g_window);
 	ResourceManager::GetInstance().Init(dataPath);
 }
 
@@ -136,14 +136,14 @@ void dae::Minigin::Start()
 	scene.Add(std::move(go));
 
 	// center
-	go = std::make_unique<dae::GameObject>();
-	go->SetPosition(glm::vec2(358, 180));
-	
-	auto player1 = std::make_unique<dae::GameObject>();
-	player1->SetPosition(glm::vec2(-50, -50)).AttachComponent<dae::RenderComponent>(player1.get())->LoadTexture("logo.png");
-	player1->SetParent(go.get(), false).AttachComponent<dae::RotaterComponent>(player1.get())->SetRotationSpeed(1.f);
-	scene.Add(std::move(go));
-	scene.Add(std::move(player1));
+	//go = std::make_unique<dae::GameObject>();
+	//go->SetPosition(glm::vec2(358, 180));
+	//
+	//auto player1 = std::make_unique<dae::GameObject>();
+	//player1->SetPosition(glm::vec2(-50, -50)).AttachComponent<dae::RenderComponent>(player1.get())->LoadTexture("logo.png");
+	//player1->SetParent(go.get(), false).AttachComponent<dae::RotaterComponent>(player1.get())->SetRotationSpeed(1.f);
+	//scene.Add(std::move(go));
+	//scene.Add(std::move(player1));
 }
 
 void dae::Minigin::Update()

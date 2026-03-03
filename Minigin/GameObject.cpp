@@ -73,6 +73,7 @@ dae::GameObject& dae::GameObject::SetParent(GameObject* pNewParent, bool keepWor
 	//	SetTransformDirty();
 	//}
 
+	// TO DO fix this ****
 		if (keepWorldPosition)
 		{
 			if (pNewParent)
@@ -102,42 +103,6 @@ dae::GameObject& dae::GameObject::SetParent(GameObject* pNewParent, bool keepWor
 	// Update transform
 	return *this;
 }
-
-//dae::GameObject& dae::GameObject::SetParent(GameObject* pNewParent, bool keepWorldTransform)
-//{
-//	if (pNewParent == this || pNewParent == m_pParent || IsChild(pNewParent))
-//		return *this;
-//
-//	// Cache current world matrix
-//	glm::mat3 world = GetTransform().GetMatrix();
-//
-//	// Remove from old parent
-//	if (m_pParent)
-//		m_pParent->RemoveChild(this);
-//
-//	m_pParent = pNewParent;
-//
-//	if (m_pParent)
-//		m_pParent->AddChild(this);
-//
-//	if (keepWorldTransform)
-//	{
-//		if (pNewParent)
-//		{
-//			// local = inverse(parentWorld) * world
-//			glm::mat3 parentWorldInv = pNewParent->GetTransform().Inversed();
-//			m_LocalTransform.SetMatrix(parentWorldInv * world);
-//		}
-//		else
-//		{
-//			// No parent → local = world
-//			m_LocalTransform.SetMatrix(world);
-//		}
-//	}
-//
-//	SetTransformDirty();
-//	return *this;
-//}
 
 
 void dae::GameObject::SetTransformDirty() const
