@@ -1,11 +1,9 @@
 #include "Transform.h"
 
+# define M_PI           3.1415926536f
+# define M_PI_MUL_2     6.2821833072f
+
 dae::Transform::Transform() = default;
-//{
-//	m_Matrix = glm::mat3x3(0.f, 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f);
-//	auto val1 = m_Matrix[2][2];
-//	val1 += val1;
-//}
 
 dae::Transform::~Transform() = default;
 
@@ -32,26 +30,66 @@ glm::vec2 dae::Transform::GetScale() const
 	return m_Scale;
 }
 
+glm::mat3x3 dae::Transform::Inversed() const
+{
+	glm::mat3x3 inv;
+
+	const float a = m_Matrix[0][0];
+	const float b = m_Matrix[0][1];
+	const float tx = m_Matrix[0][2];
+	const float c = m_Matrix[1][0];
+	const float d = m_Matrix[1][1];
+	const float ty = m_Matrix[1][2];
+
+	const float det = a * d - b * c;
+	const float invDet = 1.0f / det;
+
+	// Inverse of the 2x2 rotation-scale block
+	inv[0][0] = d * invDet;
+	inv[0][1] = -b * invDet;
+	inv[1][0] = -c * invDet;
+	inv[1][1] = a * invDet;
+
+	// Inverse translation
+	inv[0][2] = (b * ty - d * tx) * invDet;
+	inv[1][2] = (c * tx - a * ty) * invDet;
+
+	// Last row stays the same
+	inv[2][0] = 0.0f;
+	inv[2][1] = 0.0f;
+	inv[2][2] = 1.0f;
+
+	return inv;
+}
+
+
 void dae::Transform::SetMatrix(const glm::mat3x3& matrix)
 {
 	m_Matrix = matrix;
+	m_IsMatrixDirty = false;
 }
 
 void dae::Transform::SetPosition(float pos_x, float pos_y)
 {
-	m_Matrix[0][2] = pos_x;
-	m_Matrix[1][2] = pos_y;
-	// position can be set without transform getting dirty
+	SetPosition(glm::vec2(pos_x, pos_y));
 }
 
 void dae::Transform::SetPosition(const glm::vec2& position) 
 { 
-	SetPosition(position.x, position.y);
+	m_Translation = position;
+	m_IsMatrixDirty = true;
 }
 
 void dae::Transform::SetRotation(float radians)
 {
 	m_Rotation = radians;
+
+	while (radians > M_PI_MUL_2)
+		m_Rotation -= M_PI;
+
+	while (radians < -M_PI_MUL_2)
+		m_Rotation += M_PI;
+
 	m_IsMatrixDirty = true;
 }
 
@@ -69,8 +107,8 @@ void dae::Transform::SetScale(float scale_x, float scale_y)
 glm::mat3x3 dae::Transform::CreateTranslationMatrix() const
 {
 	return glm::mat3x3(
-		glm::vec3(1.f, 0.f, m_Matrix[0][2]),
-		glm::vec3(0.f, 1.f, m_Matrix[1][2]),
+		glm::vec3(1.f, 0.f, m_Translation.x),
+		glm::vec3(0.f, 1.f, m_Translation.y),
 		glm::vec3(0.f, 0.f, 1.f));
 }
 

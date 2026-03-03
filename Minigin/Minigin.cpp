@@ -122,7 +122,7 @@ void dae::Minigin::Start()
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	go = std::make_unique<dae::GameObject>();
 	//go->SetPosition(292, 20);
-	go->SetPosition(glm::vec3(292, 20, 0.f));
+	go->SetPosition(glm::vec2(292, 20));
 	go->AttachComponent<dae::TextComponent>(go.get())->SetText("Programming 4 Assignment", font).SetColor({ 255, 255, 0, 255 });
 	//go->SetParent(m_pLogo, true);
 	m_pTitle = go.get();
@@ -136,15 +136,14 @@ void dae::Minigin::Start()
 	scene.Add(std::move(go));
 
 	// center
-	//go = std::make_unique<dae::GameObject>();
-	//go->SetPosition(glm::vec3(358, 180, 0.f));
-	//
-	//auto player1 = std::make_unique<dae::GameObject>();
-	//player1->SetPosition(glm::vec3(378, 180, 0.f));
-	//player1->AttachComponent<dae::RenderComponent>(go.get())->LoadTexture("logo.png");
-	//player1->SetParent(go.get(), true).AttachComponent<dae::RotaterComponent>(player1.get());
-	//scene.Add(std::move(go));
-	//scene.Add(std::move(player1));
+	go = std::make_unique<dae::GameObject>();
+	go->SetPosition(glm::vec2(358, 180));
+	
+	auto player1 = std::make_unique<dae::GameObject>();
+	player1->SetPosition(glm::vec2(-50, -50)).AttachComponent<dae::RenderComponent>(player1.get())->LoadTexture("logo.png");
+	player1->SetParent(go.get(), false).AttachComponent<dae::RotaterComponent>(player1.get())->SetRotationSpeed(1.f);
+	scene.Add(std::move(go));
+	scene.Add(std::move(player1));
 }
 
 void dae::Minigin::Update()

@@ -20,6 +20,6 @@ namespace dae
 		RotaterComponent& SetRotationSpeed(float speed);
 
 	private:
-		float m_RotationSpeed{ 1.f };
+		float m_RotationSpeed{ 0.5f };
 	};
 }

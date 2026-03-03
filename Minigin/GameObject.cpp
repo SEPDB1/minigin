@@ -1,6 +1,5 @@
-#include <string>
+﻿#include <string>
 #include <algorithm>
-#include <type_traits>
 #include "GameObject.h"
 #include "ResourceManager.h"
 #include "Renderer.h"
@@ -26,12 +25,12 @@ void dae::GameObject::Render() const
 
 dae::GameObject& dae::GameObject::SetPosition(float x, float y)
 {
-	return SetPosition(glm::vec3(x, y, 0.f));
+	return SetPosition(glm::vec2(x, y));
 }
 
-dae::GameObject& dae::GameObject::SetPosition(const glm::vec2& newPos)
+dae::GameObject& dae::GameObject::SetPosition(const glm::vec2& pos)
 {
-	m_LocalTransform.SetPosition(newPos);
+	m_LocalTransform.SetPosition(pos);
 	SetTransformDirty();
 	return *this;
 }
@@ -43,22 +42,53 @@ dae::GameObject& dae::GameObject::SetRotation(float radians)
 	return *this;
 }
 
+dae::GameObject& dae::GameObject::SetScale(float x, float y)
+{
+	SetScale(glm::vec2(x, y));
+	SetTransformDirty();
+	return *this;
+}
+
+dae::GameObject& dae::GameObject::SetScale(const glm::vec2& scale)
+{
+	m_LocalTransform.SetScale(scale);
+	SetTransformDirty();
+	return *this;
+}
+
 dae::GameObject& dae::GameObject::SetParent(GameObject* pNewParent, bool keepWorldPosition)
 {
 	if (pNewParent == this || pNewParent == m_pParent || IsChild(pNewParent))
 		return *this;
 
-	if (!pNewParent)
-	{
-		SetPosition(GetWorldPosition());
-	}
-	else
-	{
-		if (keepWorldPosition)
-			SetPosition(GetWorldPosition() - pNewParent->GetWorldPosition());
+	//if (!pNewParent)
+	//{
+	//	SetPosition(GetWorldPosition());
+	//}
+	//else
+	//{
+	//	if (keepWorldPosition)
+	//		SetPosition(GetWorldPosition() - pNewParent->GetWorldPosition());
 
-		SetTransformDirty();
-	}
+	//	SetTransformDirty();
+	//}
+
+		if (keepWorldPosition)
+		{
+			if (pNewParent)
+			{
+				// local = inverse(parentWorld) * world
+				glm::mat3 parentWorldInv = pNewParent->GetTransform().Inversed();
+				m_LocalTransform.SetMatrix(parentWorldInv * m_GlobalTransform.GetMatrix());
+			}
+			else
+			{
+				// No parent → local = world
+				m_LocalTransform.SetMatrix(m_GlobalTransform.GetMatrix());
+			}
+		}
+
+	SetTransformDirty();
 
 	// Remove itself from the previous parent
 	if (m_pParent) m_pParent->RemoveChild(this);
@@ -73,11 +103,48 @@ dae::GameObject& dae::GameObject::SetParent(GameObject* pNewParent, bool keepWor
 	return *this;
 }
 
+//dae::GameObject& dae::GameObject::SetParent(GameObject* pNewParent, bool keepWorldTransform)
+//{
+//	if (pNewParent == this || pNewParent == m_pParent || IsChild(pNewParent))
+//		return *this;
+//
+//	// Cache current world matrix
+//	glm::mat3 world = GetTransform().GetMatrix();
+//
+//	// Remove from old parent
+//	if (m_pParent)
+//		m_pParent->RemoveChild(this);
+//
+//	m_pParent = pNewParent;
+//
+//	if (m_pParent)
+//		m_pParent->AddChild(this);
+//
+//	if (keepWorldTransform)
+//	{
+//		if (pNewParent)
+//		{
+//			// local = inverse(parentWorld) * world
+//			glm::mat3 parentWorldInv = pNewParent->GetTransform().Inversed();
+//			m_LocalTransform.SetMatrix(parentWorldInv * world);
+//		}
+//		else
+//		{
+//			// No parent → local = world
+//			m_LocalTransform.SetMatrix(world);
+//		}
+//	}
+//
+//	SetTransformDirty();
+//	return *this;
+//}
+
+
 void dae::GameObject::SetTransformDirty() const
 {
-	if (!m_IsTransformDirty)
+	if (!m_IsWorldTransformDirty)
 	{
-		m_IsTransformDirty = true;
+		m_IsWorldTransformDirty = true;
 
 		for (auto pChild : m_pChildren)
 			pChild->SetTransformDirty();
@@ -86,34 +153,34 @@ void dae::GameObject::SetTransformDirty() const
 
 const dae::Transform& dae::GameObject::GetTransform() const
 {
-	if (m_IsTransformDirty)
+	if (m_IsWorldTransformDirty)
 		UpdateWorldTransform();
 	return m_GlobalTransform;
 }
 
-glm::vec2 dae::GameObject::GetWorldPosition() const
-{
-	if (m_IsTransformDirty)
-		UpdateWorldTransform();
-	return m_GlobalTransform.GetPosition();
-}
-
-glm::vec2 dae::GameObject::GetLocalPosition() const
-{
-	return m_LocalTransform.GetPosition();
-}
-
-float dae::GameObject::GetWorldRotation() const
-{
-	if (m_IsTransformDirty)
-		UpdateWorldTransform();
-	return m_GlobalTransform.GetRotation();
-}
-
-float dae::GameObject::GetLocalRotation() const
-{
-	return m_LocalTransform.GetRotation();
-}
+//glm::vec2 dae::GameObject::GetWorldPosition() const
+//{
+//	if (m_IsWorldTransformDirty)
+//		UpdateWorldTransform();
+//	return m_GlobalTransform.GetPosition();
+//}
+//
+//glm::vec2 dae::GameObject::GetLocalPosition() const
+//{
+//	return m_LocalTransform.GetPosition();
+//}
+//
+//float dae::GameObject::GetWorldRotation() const
+//{
+//	if (m_IsWorldTransformDirty)
+//		UpdateWorldTransform();
+//	return m_GlobalTransform.GetRotation();
+//}
+//
+//float dae::GameObject::GetLocalRotation() const
+//{
+//	return m_LocalTransform.GetRotation();
+//}
 
 dae::GameObject* dae::GameObject::GetParent() const
 {

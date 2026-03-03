@@ -13,9 +13,10 @@ void dae::RotaterComponent::Render() const
 
 void dae::RotaterComponent::Update()
 {
-	const auto owner{ BaseComponent::GetOwner() };
-	const float eTime{ Timer::GetInstance().GetElapsedTime() };
-	owner->SetRotation(owner->GetTransform().GetRotation() + eTime * m_RotationSpeed);
+	const auto pOwner{ BaseComponent::GetOwner() };
+	const float deltaTime{ Timer::GetInstance().GetElapsedTime() };
+
+	pOwner->SetRotation(pOwner->GetTransform().GetRotation() + m_RotationSpeed * deltaTime);
 }
 
 dae::RotaterComponent& dae::RotaterComponent::SetRotationSpeed(float speed)

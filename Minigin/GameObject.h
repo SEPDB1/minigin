@@ -21,8 +21,10 @@ namespace dae
 		void Render() const;
 
 		GameObject& SetPosition(float x, float y);
-		GameObject& SetPosition(const glm::vec2& newPos);
+		GameObject& SetPosition(const glm::vec2& pos);
 		GameObject& SetRotation(float radians);
+		GameObject& SetScale(float x, float y);
+		GameObject& SetScale(const glm::vec2& scale);
 		GameObject& SetParent(GameObject* pParent, bool keepWorldPosition);
 
 		const Transform& GetTransform() const;
@@ -82,16 +84,12 @@ namespace dae
 
 		bool IsChild(GameObject* pGameObject) const;
 		bool IsParent(GameObject* pGameObject) const;
-		glm::vec2 GetWorldPosition() const;
-		glm::vec2 GetLocalPosition() const;
-		float GetWorldRotation() const;
-		float GetLocalRotation() const;
 
 		GameObject* m_pParent{ nullptr };
 		std::vector<GameObject*> m_pChildren{};
 		std::vector<std::unique_ptr<BaseComponent>> m_pComponents{};
 		mutable Transform m_GlobalTransform{};
 		Transform m_LocalTransform{};
-		mutable bool m_IsTransformDirty{ false };
+		mutable bool m_IsWorldTransformDirty{ false };
 	};
 }

@@ -17,6 +17,7 @@ namespace dae
 		glm::vec2 GetPosition() const;
 		float GetRotation() const;
 		glm::vec2 GetScale() const;
+		glm::mat3x3 Inversed() const;
 
 		void SetMatrix(const glm::mat3x3& matrix);
 		void SetPosition(float pos_x, float pos_y);
@@ -33,6 +34,7 @@ namespace dae
 
 		mutable glm::mat3x3 m_Matrix{ 1.f };
 		mutable bool m_IsMatrixDirty{ false };
+		glm::vec2 m_Translation{ 0.f, 0.f };
 		glm::vec2 m_Scale{ 1.f, 1.f};
 		float m_Rotation{ 0.f };
 	};
