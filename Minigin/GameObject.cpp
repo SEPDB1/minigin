@@ -74,20 +74,20 @@ dae::GameObject& dae::GameObject::SetParent(GameObject* pNewParent, bool keepWor
 	//}
 
 	// TO DO fix this ****
-		if (keepWorldPosition)
+	if (keepWorldPosition)
+	{
+		if (pNewParent)
 		{
-			if (pNewParent)
-			{
-				// local = inverse(parentWorld) * world
-				glm::mat3 parentWorldInv = pNewParent->GetTransform().Inversed();
-				m_LocalTransform.SetMatrix(parentWorldInv * m_GlobalTransform.GetMatrix());
-			}
-			else
-			{
-				// No parent → local = world
-				m_LocalTransform.SetMatrix(m_GlobalTransform.GetMatrix());
-			}
+			// local = inverse(parentWorld) * world
+			glm::mat3 parentWorldInv = pNewParent->GetTransform().Inversed();
+			m_LocalTransform.SetMatrix(parentWorldInv * m_GlobalTransform.GetMatrix());
 		}
+		else
+		{
+			// No parent → local = world
+			m_LocalTransform.SetMatrix(m_GlobalTransform.GetMatrix());
+		}
+	}
 
 	SetTransformDirty();
 
