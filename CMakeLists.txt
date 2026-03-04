@@ -145,7 +145,7 @@ target_include_directories(imgui_plot PUBLIC
 
 target_link_libraries(imgui_plot PUBLIC imgui)
 
-# define for math stuff
+# math operators have to be defined
 target_compile_definitions(imgui PUBLIC IMGUI_DEFINE_MATH_OPERATORS)
 
 # enable c++20 features

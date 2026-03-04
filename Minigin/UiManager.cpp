@@ -138,6 +138,19 @@ void dae::UiManager::RenderExercise2() const
 			ImGui::Plot("plot2", conf);
 		}
 
+		if (m_Exercise2aData.isVisible && m_Exercise2bData.isVisible)
+		{
+			const float* list[] = { m_Exercise2aData.ys.data(), m_Exercise2bData.ys.data() };
+			ImU32 colors[3] = { ImColor(255, 255, 0), ImColor(0, 255, 255) };
+
+			conf.values.ys = nullptr;
+			conf.values.ys_list = list;
+			conf.values.ys_count = 2;
+			conf.scale.max = std::max(m_Exercise2aData.ys[0], m_Exercise2bData.ys[0]);
+			conf.values.colors = colors;
+			ImGui::Plot("combinedPlot", conf);
+		}
+
 	}
 
 	ImGui::End();
