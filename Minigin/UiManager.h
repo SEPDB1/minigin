@@ -6,7 +6,9 @@ namespace dae
 {
 	struct GraphData
 	{
-		std::vector<long long> results;
+		std::vector<long long> sumResults;
+		std::vector<float> xs;
+		std::vector<float> ys;
 		int numberOfSamples;
 		bool isVisible;
 	};
@@ -19,11 +21,13 @@ namespace dae
 	private:
 		void RenderExercise1() const;
 		void RenderExercise2() const;
-		void CalculateResults() const;
+
+		template <typename T>
+		void CalculateResults(GraphData& data) const;
 
 		const int m_NumberOfSteps{ 11 };
-		mutable GraphData m_Exercise1{ std::vector<long long>(), 20, false };
-		mutable GraphData m_Exercise2a{ std::vector<long long>(), 100, false };
-		mutable GraphData m_Exercise2b{ std::vector<long long>(), 100, false};
+		mutable GraphData m_Exercise1Data{ std::vector<long long>(), std::vector<float>(), std::vector<float>(), 20, false };
+		mutable GraphData m_Exercise2aData{ std::vector<long long>(), std::vector<float>(), std::vector<float>(), 100, false };
+		mutable GraphData m_Exercise2bData{ std::vector<long long>(), std::vector<float>(), std::vector<float>(), 100, false};
 	};
 }

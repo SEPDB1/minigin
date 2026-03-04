@@ -20,18 +20,33 @@ struct Transform
 		0,0,0,1 };
 };
 
-class GameObject3D
+
+struct GameObject3D
 {
-public:
 	Transform transform{};
-	int ID;
+	int ID{};
+
+	/* it doesnt make sense to be able to multiply the ID
+	   its just for changing something to the GameObject in CalculateResults*/
+	GameObject3D& operator*=(int scalar) 
+	{ 
+		this->ID *= scalar;
+		return *this;
+	}
 };
 
-class GameObject3DAlt
+struct GameObject3DAlt
 {
-public:
 	Transform* pTransform{};
-	int ID;
+	int ID{};
+
+	/* it doesnt make sense to be able to multiply the ID
+	   its just for changing something to the GameObject in CalculateResults*/
+	GameObject3DAlt& operator*=(int scalar)
+	{
+		this->ID *= scalar;
+		return *this;
+	}
 };
 
 void dae::UiManager::Render() const
@@ -44,20 +59,31 @@ void dae::UiManager::RenderExercise1() const
 {
 	bool isOpen{};
 	ImGui::Begin("Exercise 1", &isOpen);
-	ImGui::InputInt("# samples", &m_Exercise1.numberOfSamples);
+	ImGui::InputInt("# samples", &m_Exercise1Data.numberOfSamples);
 	bool isPressed = ImGui::Button("Trash the cache");
 
 	if (isPressed)
 	{
-		CalculateResults();
-		m_Exercise1.isVisible = true;
+		CalculateResults<int>(m_Exercise1Data);
+		m_Exercise1Data.isVisible = true;
 	}
 
-	if (m_Exercise1.isVisible)
+	if (m_Exercise1Data.isVisible)
 	{
 		ImGui::PlotConfig conf{};
-		//conf.frame_size = ImVec2(50.f, 50.f);
-		//conf.values.ys = static_cast<>(m_Exercise1.results.data());
+		conf.values.xs = m_Exercise1Data.xs.data();
+		conf.values.count = m_NumberOfSteps;
+		conf.values.ys = m_Exercise1Data.ys.data();
+		conf.values.color = ImColor(0, 255, 0);
+		conf.frame_size = ImVec2(225, 150);
+		conf.scale.min = 0;
+		conf.scale.max = m_Exercise1Data.ys[0];
+		conf.tooltip.show = true;
+		conf.tooltip.format = "x=%.2f, y=%.2f";
+		conf.grid_x.show = true;
+		conf.grid_y.show = true;
+		conf.line_thickness = 2.f;
+		
 		ImGui::Plot("plot", conf);
 	}
 
@@ -68,37 +94,85 @@ void dae::UiManager::RenderExercise2() const
 {
 	bool isOpen{};
 	ImGui::Begin("Exercise 2", &isOpen);
-	ImGui::InputInt("# samples", &m_Exercise2a.numberOfSamples);
-	ImGui::Button("Trash the cache with GameObject3D");
-	ImGui::Button("Trash the cache with GameObject3DAlt");
+	ImGui::InputInt("# samples", &m_Exercise2aData.numberOfSamples);
+
+	if (ImGui::Button("Trash the cache with GameObject3D"))
+	{
+		CalculateResults<GameObject3D>(m_Exercise2aData);
+		m_Exercise2aData.isVisible = true;
+	}
+
+	if (ImGui::Button("Trash the cache with GameObject3DAlt"))
+	{
+		CalculateResults<GameObject3DAlt>(m_Exercise2bData);
+		m_Exercise2bData.isVisible = true;
+	}
+
+	if (m_Exercise2aData.isVisible || m_Exercise2bData.isVisible)
+	{
+		ImGui::PlotConfig conf{};
+		conf.values.count = m_NumberOfSteps;
+		conf.frame_size = ImVec2(225, 150);
+		conf.scale.min = 0;
+		conf.tooltip.show = true;
+		conf.tooltip.format = "x=%.2f, y=%.2f";
+		conf.grid_x.show = true;
+		conf.grid_y.show = true;
+		conf.line_thickness = 2.f;
+
+		if (m_Exercise2aData.isVisible)
+		{
+			conf.scale.max = m_Exercise2aData.ys[0];
+			conf.values.ys = m_Exercise2aData.ys.data();
+			conf.values.color = ImColor(255, 255, 0);
+			conf.values.xs = m_Exercise2aData.xs.data();
+			ImGui::Plot("plot1", conf);
+		}
+
+		if (m_Exercise2bData.isVisible)
+		{
+			conf.scale.max = m_Exercise2bData.ys[0];
+			conf.values.ys = m_Exercise2bData.ys.data();
+			conf.values.color = ImColor(0, 255, 255);
+			conf.values.xs = m_Exercise2bData.xs.data();
+			ImGui::Plot("plot2", conf);
+		}
+
+	}
+
 	ImGui::End();
 }
 
-void dae::UiManager::CalculateResults() const
+template <typename T>
+void dae::UiManager::CalculateResults(GraphData& data) const
 {
-	m_Exercise1.results.resize(m_Exercise1.numberOfSamples);
+	data.sumResults.resize(m_NumberOfSteps);
+	data.xs.resize(m_NumberOfSteps);
+	data.ys.resize(m_NumberOfSteps);
 
-	//constexpr int size{ 64'000'000 };
-	//int* pArray = new int[size]{ 5 };
-	//long long* totalsArr = new long long[m_NumberOfSteps] {};
+	// Make an array of the requested type
+	constexpr int size{ 15'000'000 };
+	T* pArray = new T[size]{};
 
-	//// Fill array with total results
-	//for (int count{ 0 }; count < m_NumberSamplesExercise1; ++count)
-	//{
-	//	for (int step{ 0 }; step < m_NumberOfSteps; ++step)
-	//	{
-	//		const int stepsize = static_cast<int>(std::roundf(std::powf(2.f, static_cast<float>(step))));
-	//		const auto start = std::chrono::high_resolution_clock::now();
+	for (int count{ 0 }; count < data.numberOfSamples; ++count)
+	{
+		for (int step{ 0 }; step < m_NumberOfSteps; ++step)
+		{
+			const int stepsize = static_cast<int>(std::roundf(std::powf(2.f, static_cast<float>(step))));
+			const auto start = std::chrono::high_resolution_clock::now();
 
-	//		for (int i{ 0 }; i < size; i += stepsize)
-	//			pArray[i] *= 2;
+			for (int i{ 0 }; i < size; i += stepsize)
+				pArray[i] *= 2;
 
-	//		const auto end = std::chrono::high_resolution_clock::now();
-	//		totalsArr[step] += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-	//	}
-	//}
+			const auto end = std::chrono::high_resolution_clock::now();
+			data.sumResults[step] += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+			data.xs[step] = static_cast<float>(stepsize);
+		}
+	}
 
-	//// Divide the total to retrieve the average
-	//for (int step{ 0 }; step < m_NumberOfSteps; ++step)
-	//	totalsArr[step] /= m_NumberSamplesExercise1;
+	// Divide the total to retrieve the average
+	for (int step{ 0 }; step < m_NumberOfSteps; ++step)
+		data.ys[step] = static_cast<float>(data.sumResults[step] / data.numberOfSamples);
+
+	delete pArray;
 }
