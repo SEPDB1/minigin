@@ -1,7 +1,7 @@
 #include "Transform.h"
 
-# define M_PI           3.1415926536f
-# define M_PI_MUL_2     6.2821833072f
+# define PI_F           3.1415926536f
+# define PI_F_MUL_2     6.2821853072f
 
 dae::Transform::Transform() = default;
 
@@ -84,11 +84,11 @@ void dae::Transform::SetRotation(float radians)
 {
 	m_Rotation = radians;
 
-	while (radians > M_PI_MUL_2)
-		m_Rotation -= M_PI;
+	while (radians > PI_F_MUL_2)
+		m_Rotation -= PI_F;
 
-	while (radians < -M_PI_MUL_2)
-		m_Rotation += M_PI;
+	while (radians < -PI_F_MUL_2)
+		m_Rotation += PI_F;
 
 	m_IsMatrixDirty = true;
 }
