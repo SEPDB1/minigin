@@ -187,5 +187,5 @@ void dae::UiManager::CalculateResults(GraphData& data) const
 	for (int step{ 0 }; step < m_NumberOfSteps; ++step)
 		data.ys[step] = static_cast<float>(data.sumResults[step] / data.numberOfSamples);
 
-	delete pArray;
+	delete[] pArray;
 }
