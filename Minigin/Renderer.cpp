@@ -11,6 +11,7 @@
 // project includes
 #include "Renderer.h"
 #include "SceneManager.h"
+#include "UiManager.h"
 #include "Texture2D.h"
 
 void dae::Renderer::Init(SDL_Window* window)
@@ -45,7 +46,9 @@ void dae::Renderer::Render() const
 	ImGui_ImplSDL3_NewFrame();
 	ImGui::NewFrame();
 
-	ImGui::ShowDemoWindow(); // For demonstration purposes, do not keep this in your engine
+	UiManager::GetInstance().Render();
+
+	//ImGui::ShowDemoWindow(); // For demonstration purposes, do not keep this in your engine
 
 	ImGui::Render();
 

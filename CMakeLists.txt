@@ -32,7 +32,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/FpsComponent.cpp
   Minigin/RotaterComponent.cpp
   Minigin/Timer.cpp
-  )
+  Minigin/UiManager.cpp)
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
@@ -118,6 +118,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(imgui)
 
+# ImGui_Plot
+include(FetchContent)
+FetchContent_Declare(
+    imgui_plot
+    GIT_REPOSITORY https://github.com/soulthreads/imgui-plot.git)
+FetchContent_MakeAvailable(imgui_plot)
+
 add_library(imgui STATIC
   ${imgui_SOURCE_DIR}/imgui.cpp
   ${imgui_SOURCE_DIR}/imgui_draw.cpp
@@ -125,13 +132,25 @@ add_library(imgui STATIC
   ${imgui_SOURCE_DIR}/imgui_widgets.cpp
   ${imgui_SOURCE_DIR}/imgui_demo.cpp
   ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp
-  ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp
-)
+  ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp)
 
-target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR} ${sdl3_SOURCE_DIR}/include)
+target_include_directories(imgui PUBLIC 
+    ${imgui_SOURCE_DIR} 
+    ${sdl3_SOURCE_DIR}/include)
 target_link_libraries(imgui PUBLIC SDL3::SDL3)
+
+target_include_directories(imgui_plot PUBLIC 
+    ${imgui_SOURCE_DIR} 
+    ${imgui_plot}/include)
+
+target_link_libraries(imgui_plot PUBLIC imgui)
+
+# define for math stuff
+target_compile_definitions(imgui PUBLIC IMGUI_DEFINE_MATH_OPERATORS)
+
 # enable c++20 features
 target_compile_features(imgui PUBLIC cxx_std_20)
+
 
 if (WIN32)
   # Add VLD (Visual Leak Detector) for memory leak detection on Windows
@@ -142,18 +161,6 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/steam")
 find_package(Steamworks QUIET)
 
-#target_include_directories("${TARGET_NAME}" PUBLIC
-#  ${CMAKE_SOURCE_DIR}/Minigin/
-#  ${VLD_INCLUDE_DIR}
-#)
-#
-#target_link_libraries("${TARGET_NAME}" PUBLIC
-#  SDL3::SDL3
-#  SDL3_ttf::SDL3_ttf
-#  glm::glm
-#  ${VLD_LIBRARIES}
-#)
-
 target_include_directories("${TARGET_NAME}" PUBLIC 
   ${CMAKE_SOURCE_DIR}/Minigin/
   ${glm_SOURCE_DIR}
@@ -161,6 +168,7 @@ target_include_directories("${TARGET_NAME}" PUBLIC
   ${sdl3_image_SOURCE_DIR}/include
   ${sdl3_ttf_SOURCE_DIR}/include
   ${imgui_SOURCE_DIR}
+  ${imgui_plot_SOURCE_DIR}/include
   ${VLD_INCLUDE_DIR}
 )
 
@@ -168,6 +176,7 @@ target_link_libraries("${TARGET_NAME}" PUBLIC
   SDL3::SDL3 
   SDL3_ttf::SDL3_ttf
   imgui
+  imgui_plot
   ${VLD_LIBRARIES}
 )
 
