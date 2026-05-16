@@ -5,7 +5,7 @@
 
 namespace dae
 {
-	class GameObject;
+	class Game;
 	class Minigin final
 	{
 	public:
@@ -22,10 +22,6 @@ namespace dae
 
 	private:
 		bool m_quit{};
-		
-		GameObject* m_pBackground{};
-		GameObject* m_pLogo{};
-		GameObject* m_pTitle{};
-		GameObject* m_pFpsObject{};
+		std::unique_ptr<Game> m_pGame{};
 	};
 }

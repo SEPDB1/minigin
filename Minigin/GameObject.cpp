@@ -123,30 +123,6 @@ const dae::Transform& dae::GameObject::GetTransform() const
 	return m_GlobalTransform;
 }
 
-//glm::vec2 dae::GameObject::GetWorldPosition() const
-//{
-//	if (m_IsWorldTransformDirty)
-//		UpdateWorldTransform();
-//	return m_GlobalTransform.GetPosition();
-//}
-//
-//glm::vec2 dae::GameObject::GetLocalPosition() const
-//{
-//	return m_LocalTransform.GetPosition();
-//}
-//
-//float dae::GameObject::GetWorldRotation() const
-//{
-//	if (m_IsWorldTransformDirty)
-//		UpdateWorldTransform();
-//	return m_GlobalTransform.GetRotation();
-//}
-//
-//float dae::GameObject::GetLocalRotation() const
-//{
-//	return m_LocalTransform.GetRotation();
-//}
-
 dae::GameObject* dae::GameObject::GetParent() const
 {
 	return m_pParent;

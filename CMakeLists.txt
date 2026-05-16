@@ -17,6 +17,8 @@ endif()
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/Font.cpp
   Minigin/GameObject.cpp
+  Minigin/InputAction.cpp
+  Minigin/InputDevice.cpp
   Minigin/InputManager.cpp
   Minigin/Main.cpp
   Minigin/Minigin.cpp
@@ -31,11 +33,16 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/TextComponent.cpp
   Minigin/FpsComponent.cpp
   Minigin/RotaterComponent.cpp
+  Minigin/PlayerInputComponent.cpp
   Minigin/Timer.cpp
-  Minigin/UiManager.cpp)
+  Minigin/UiManager.cpp
+  Minigin/Command.cpp
+  Minigin/Gamepad.cpp
+  Minigin/Keyboard.cpp
+  Minigin/Game.cpp)
 
-# enable c++20 features
-target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
+# enable c++23 features
+target_compile_features(${TARGET_NAME} PUBLIC cxx_std_23)
 
 include(FetchContent)
 # add glm
@@ -148,8 +155,9 @@ target_link_libraries(imgui_plot PUBLIC imgui)
 # math operators have to be defined
 target_compile_definitions(imgui PUBLIC IMGUI_DEFINE_MATH_OPERATORS)
 
-# enable c++20 features
-target_compile_features(imgui PUBLIC cxx_std_20)
+# enable c++23 features
+target_compile_features(imgui PUBLIC cxx_std_23)
+
 
 
 if (WIN32)
@@ -177,6 +185,7 @@ target_link_libraries("${TARGET_NAME}" PUBLIC
   SDL3_ttf::SDL3_ttf
   imgui
   imgui_plot
+  Xinput
   ${VLD_LIBRARIES}
 )
 
