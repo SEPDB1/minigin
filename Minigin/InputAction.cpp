@@ -30,7 +30,7 @@ dae::InputActionID dae::InputActionBase::GetID() const
 // BUTTON
 // ***********
 dae::InputActionButton::InputActionButton(std::string_view name, UButton button)
-    : InputActionBase(name, std::vector<UButton>(button))
+    : InputActionBase(name, std::vector<UButton>{ button })
 {
 
 }

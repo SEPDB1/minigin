@@ -31,6 +31,7 @@ namespace dae
 			thumbRighty		= 0x0008'0000,
 		};
 
+		Gamepad() = default;
 		Gamepad(DWORD deviceIdx);
 		~Gamepad() = default;
 		Gamepad(const Gamepad& other) = delete;

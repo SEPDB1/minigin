@@ -33,6 +33,7 @@ namespace dae
 
     class InputActionButton final : public InputActionBase
     {
+    public:
         InputActionButton(std::string_view name, UButton button);
         ~InputActionButton() = default;
         InputActionButton(const InputActionButton& other) = delete;
@@ -45,6 +46,7 @@ namespace dae
 
     class InputActionAxis2D final : public InputActionBase
     {
+    public:
         InputActionAxis2D(std::string_view name, UButton left, UButton right, UButton up, UButton down);
         ~InputActionAxis2D() = default;
         InputActionAxis2D(const InputActionAxis2D& other) = delete;

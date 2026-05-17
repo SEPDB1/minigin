@@ -7,10 +7,12 @@
 #include "RenderComponent.h"
 #include "FpsComponent.h"
 #include "RotaterComponent.h"
+#include "PlayerInputComponent.h"
 #include "ResourceManager.h"
 #include "Scene.h"
 #include "InputManager.h"
 #include "Gamepad.h"
+#include "Command.h"
 
 dae::Game::Game(Scene* pScene)
 	: m_pScene{ pScene }
@@ -56,8 +58,11 @@ void dae::Game::Start()
 	//scene.Add(std::move(go));
 	//scene.Add(std::move(player1));
 
-	//auto& inputManager{ InputManager::GetInstance() };
-	//InputDeviceID gamepadID{ inputManager.CreateNewDevice(std::make_unique<Gamepad>()) };
+	auto& inputManager{ InputManager::GetInstance() };
+	InputDeviceID gamepadID{ inputManager.CreateNewDevice(std::make_unique<Gamepad>()) };
+	inputManager.CreateNewAction(std::make_unique<InputActionButton>("trigger", static_cast<UButton>(Gamepad::Button::a)));
+	inputManager.BindCommand(gamepadID, std::make_unique<MoveCommand>(m_pLogo));
+	//m_pLogo->AttachComponent<dae::PlayerInputComponent>(m_pLogo);
 }
 
 void dae::Game::Update()

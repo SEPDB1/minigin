@@ -1,25 +1,25 @@
 #pragma once
 #include <glm/vec2.hpp>
-#include <InputTypes.h>
 
 namespace dae
 {
 	class GameObject;
+	struct InputContext;
 	class Command
 	{
-	protected:
+	public:
 		virtual ~Command() = default;
 
-		virtual void Execute(ActionValue value) = 0;
+		virtual void Execute(InputContext context) = 0;
 	};
 
 	class GameObjectCommand : public Command
 	{
 	protected:
-		GameObjectCommand(GameObject* actor);
-		virtual ~GameObjectCommand() override = default;
+		GameObjectCommand(GameObject* pGameObject);
+		virtual ~GameObjectCommand() = default;
 
-		GameObject* GetGameActor() const;
+		GameObject* GetGameObject() const;
 
 	private:
 		GameObject* m_pGameObject;
@@ -28,10 +28,19 @@ namespace dae
 	class MoveCommand final : public GameObjectCommand
 	{
 	public:
-		MoveCommand(GameObject* actor);
+		MoveCommand(GameObject* pGameObject);
 
-		void Execute(ActionValue value) override;
+		void Execute(InputContext context) override;
+
 	private:
 		float m_MovementSpeed{ 2.f };
+	};
+
+	class TestCommand final : public GameObjectCommand
+	{
+	public:
+		TestCommand(GameObject* pGameObject);
+
+		void Execute(InputContext context) override;
 	};
 }

@@ -58,14 +58,14 @@ void dae::InputManager::EraseAction(std::string_view name)
 	EraseAction(GetActionIDByActionName(name));
 }
 
-void dae::InputManager::BindCommand(InputActionID ID, Command command)
+void dae::InputManager::BindCommand(InputActionID ID, std::unique_ptr<Command> pCommand)
 {
-	m_CommandBindings[ID] = command;
+	m_CommandBindings[ID] = std::move(pCommand);
 }
 
-void dae::InputManager::BindCommand(std::string_view name, Command command)
+void dae::InputManager::BindCommand(std::string_view name, std::unique_ptr<Command> pCommand)
 {
-	BindCommand(GetActionIDByActionName(name), command);
+	BindCommand(GetActionIDByActionName(name), std::move(pCommand));
 }
 
 std::string_view dae::InputManager::GetActionNameByActionID(dae::InputActionID ID) const
@@ -105,12 +105,12 @@ dae::InputContext dae::InputManager::GetContextByButton(UButton button, InputDev
 	return pDevice->GetContext(button);
 }
 
-const dae::Command& dae::InputManager::GetCommand(InputActionID actionId) const
+dae::Command* dae::InputManager::GetCommand(InputActionID actionId) const
 {
-	return m_CommandBindings.at(actionId);
+	return m_CommandBindings.at(actionId).get();
 }
 
-const dae::Command& dae::InputManager::GetCommand(std::string_view name) const
+dae::Command* dae::InputManager::GetCommand(std::string_view name) const
 {
 	return GetCommand(GetActionIDByActionName(name));
 }

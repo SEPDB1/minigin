@@ -35,10 +35,10 @@ namespace dae
 #pragma region TemplatedFunctions
 		// Creates a new component of the requested type and attaches it to the game object,
 		// the type has to be a component
-		template <typename T>
-		T* AttachComponent(GameObject* pOwner)
+		template <typename T, typename... Args>
+		T* AttachComponent(GameObject* pOwner, Args&&... args)
 		{
-			auto pUniqueComp = std::make_unique<T>(pOwner);
+			auto pUniqueComp = std::make_unique<T>(pOwner, std::forward<Args>(args)...);
 			auto pComp = pUniqueComp.get();
 			m_pComponents.push_back(std::move(pUniqueComp));
 			return pComp;
