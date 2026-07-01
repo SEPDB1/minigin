@@ -1,13 +1,12 @@
 #pragma once
-#include <cstdint>
-#include "InputTypes.h"
+#include "InputUtility.h"
 
 namespace dae
 {
 	class InputDevice
 	{
 	public:
-		InputDevice();
+		InputDevice() = default;
 		virtual ~InputDevice() = default;
 		InputDevice(const InputDevice& other) = delete;
 		InputDevice(InputDevice&& other) = delete;
@@ -16,13 +15,10 @@ namespace dae
 
 		virtual void Update() = 0;
 
-		virtual InputContext GetContext(UButton uButton) const = 0;
+		virtual bool IsButtonCompatible(Button button) const = 0;
 
-		InputDeviceID GetID() const;
-
-	private:
-		InputDeviceID m_ID{};
-
-		static inline InputDeviceID m_NextID{ 0 };
+		virtual bool IsDownThisFrame(Button button) const = 0;
+		virtual bool IsUpThisFrame(Button button) const = 0;
+		virtual bool IsPressed(Button button) const = 0;
 	};
 }

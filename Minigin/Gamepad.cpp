@@ -1,9 +1,8 @@
 #include "Gamepad.h"
 #include <utility>
-#include "MathHelpers.h"
 
-dae::Gamepad::Gamepad(DWORD deviceIdx)
-	: m_DeviceIdx{ deviceIdx }
+dae::Gamepad::Gamepad()
+	: m_DeviceIdx{ 0 }
 {
 }
 
@@ -21,51 +20,28 @@ void dae::Gamepad::Update()
 	}
 }
 
-dae::InputContext dae::Gamepad::GetContext(UButton uButton) const
+bool dae::Gamepad::IsButtonCompatible(Button button) const
 {
-	Button button{ static_cast<Button>(uButton) };
-
+	// TO DO: look into alternative ways, this is messy
 	switch (button)
 	{
-	case dae::Gamepad::Button::thumbLeftx:
-		return CreateContextJoystick(m_PreviousState.Gamepad.sThumbLX, m_CurrentState.Gamepad.sThumbLX, 
-			static_cast<SHORT>(XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-		);
-		break;
-	case dae::Gamepad::Button::thumbLefty:
-		return CreateContextJoystick(m_PreviousState.Gamepad.sThumbLY, m_CurrentState.Gamepad.sThumbLY,
-			static_cast<SHORT>(XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
-		);
-		break;
-	case dae::Gamepad::Button::thumbRightx:
-		return CreateContextJoystick(m_PreviousState.Gamepad.sThumbRX, m_CurrentState.Gamepad.sThumbRX,
-			static_cast<SHORT>(XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
-		);
-		break;
-	case dae::Gamepad::Button::thumbRighty:
-		return CreateContextJoystick(m_PreviousState.Gamepad.sThumbRY,m_CurrentState.Gamepad.sThumbRY,
-			static_cast<SHORT>(XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
-		);
-		break;
-	default:
-
-		InputContext context{ 0.f };
-		context.started = IsDownThisFrame(button);
-		context.isPressed = IsPressed(button);
-		context.canceled = IsUpThisFrame(button);
-		context.value = static_cast<float>(context.isPressed);
-
-		return context;
+	case dae::Button::gamepadA:
+	case dae::Button::gamepadB:
+	case dae::Button::gamepadX:
+	case dae::Button::gamepadY:
+		return true;
 		break;
 	}
+
+	return false;
 }
 
-bool dae::Gamepad::IsDownThisFrame(Button button) const
+bool dae::Gamepad::IsDownThisFrame(dae::Button button) const
 {
 	return m_ButtonsPressedThisFrame & std::to_underlying(button);
 }
 
-bool dae::Gamepad::IsUpThisFrame(Button button) const
+bool dae::Gamepad::IsUpThisFrame(dae::Button button) const
 {
 	return m_ButtonsReleasedThisFrame & std::to_underlying(button);
 }
@@ -73,23 +49,4 @@ bool dae::Gamepad::IsUpThisFrame(Button button) const
 bool dae::Gamepad::IsPressed(Button button) const
 {
 	return m_CurrentState.Gamepad.wButtons & std::to_underlying(button);
-}
-
-dae::InputContext dae::Gamepad::CreateContextJoystick(SHORT previousValue, SHORT currentValue, SHORT deadzone) const
-{
-	// Convert value from [MINSHORT, MAXSHORT] to [0.f, 1.f]
-	InputContext context{ 
-		dae::math::InverseLerp(
-			static_cast<float>(MINSHORT), 
-			static_cast<float>(MAXSHORT), 
-			static_cast<float>(currentValue)) 
-	};
-
-	bool wasPressed{ static_cast<SHORT>(std::abs(previousValue)) > deadzone };
-
-	context.isPressed = static_cast<SHORT>(std::abs(currentValue)) > deadzone;
-	context.started = !wasPressed && context.isPressed;
-	context.canceled = wasPressed && !context.isPressed;;
-
-	return context;
 }

@@ -1,69 +1,58 @@
 #include "InputAction.h"
 #include "InputManager.h"
 
-// ***********
-// BASE
-// ***********
-dae::InputActionBase::InputActionBase(std::string_view name, std::vector<UButton> buttons)
-    : m_Buttons{ std::move(buttons) }
-    ,m_Name{ name }
-    , m_ID{ m_NextID++ }
+// 'macro's' for clarity sake
+inline constexpr uint32_t IDX_LEFT{ 0 };
+inline constexpr uint32_t IDX_RIGHT{ 1 };
+inline constexpr uint32_t IDX_UP{ 2 };
+inline constexpr uint32_t IDX_DOWN{ 3 };
+
+
+dae::InputAction::InputAction(Button button)
+	: m_Buttons{ button, Button::invalid, Button::invalid, Button::invalid }
+	, m_Type{ ActionType::button }
 {
 }
 
-const std::vector<dae::UButton>& dae::InputActionBase::GetButtons() const
+dae::InputAction::InputAction(Button left, Button right)
+	: m_Buttons{ left, right, Button::invalid, Button::invalid }
+	, m_Type{ ActionType::axis1D }
 {
-    return m_Buttons;
 }
 
-std::string_view dae::InputActionBase::GetName() const
+dae::InputAction::InputAction(Button left, Button right, Button up, Button down)
+	: m_Buttons{ left, right, up, down }
+	, m_Type{ ActionType::axis2D }
 {
-    return m_Name;
 }
 
-dae::InputActionID dae::InputActionBase::GetID() const
+dae::InputContext dae::InputAction::GetActionContext(const InputDevice* pDevice) const
 {
-    return m_ID;
-}
+	auto& inputManager{ InputManager::GetInstance() };
 
-// ***********
-// BUTTON
-// ***********
-dae::InputActionButton::InputActionButton(std::string_view name, UButton button)
-    : InputActionBase(name, std::vector<UButton>{ button })
-{
+	InputContext cxt{};
+	switch (m_Type)
+	{
+	case dae::InputAction::ActionType::button:
 
-}
+		cxt.value = inputManager.IsButtonPressed(m_Buttons[IDX_LEFT], pDevice);
+		cxt.isDownThisFrame = inputManager.IsButtonDownThisFrame(m_Buttons[IDX_LEFT], pDevice);
+		cxt.isUpThisFrame = inputManager.IsButtonUpThisFrame(m_Buttons[IDX_LEFT], pDevice);
+		break;
+	case dae::InputAction::ActionType::axis1D:
 
-dae::InputContext dae::InputActionButton::GetContext(InputDeviceID deviceID) const
-{
-    return InputManager::GetInstance().GetContextByButton(InputActionBase::GetButtons().at(0), deviceID);
-}
+		// Only the value field matters
+		cxt.value = - inputManager.GetButtonValue(m_Buttons[IDX_LEFT], pDevice) + inputManager.GetButtonValue(m_Buttons[IDX_RIGHT], pDevice);
+		break;
+	case dae::InputAction::ActionType::axis2D:
 
-// ***********
-// AXIS2D
-// ***********
-dae::InputActionAxis2D::InputActionAxis2D(std::string_view name, UButton left, UButton right, UButton up, UButton down)
-    : InputActionBase(name, std::vector<UButton>{ left, right, up, down })
-{
+		// Only the value field matters
+		cxt.value = glm::vec2{ 
+			-inputManager.GetButtonValue(m_Buttons[IDX_LEFT], pDevice) + inputManager.GetButtonValue(m_Buttons[IDX_RIGHT], pDevice),
+			-inputManager.GetButtonValue(m_Buttons[IDX_UP], pDevice) + inputManager.GetButtonValue(m_Buttons[IDX_DOWN], pDevice),
+		};
+		break;
+	}
 
-}
-
-dae::InputContext dae::InputActionAxis2D::GetContext(InputDeviceID deviceID) const
-{
-    const auto& buttons{ InputActionBase::GetButtons() };
-    const auto& inputManager{ InputManager::GetInstance() };
-
-    InputContext left { inputManager.GetContextByButton(buttons.at(0), deviceID) };
-    InputContext right{ inputManager.GetContextByButton(buttons.at(1), deviceID) };
-    InputContext up   { inputManager.GetContextByButton(buttons.at(2), deviceID) };
-    InputContext down { inputManager.GetContextByButton(buttons.at(3), deviceID) };
-
-    const glm::vec2 combinedValue
-    { 
-    	-std::get<float>(left.value) + std::get<float>(right.value),
-    	-std::get<float>(down.value) + std::get<float>(up.value) 
-    };
-
-    return InputContext{ combinedValue };
+	return cxt;
 }

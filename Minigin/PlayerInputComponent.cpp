@@ -1,41 +1,41 @@
 #include "PlayerInputComponent.h"
-#include "InputAction.h"
-#include "InputManager.h"
 #include <algorithm>
+#include <exception>
+#include <iostream>
+#include "InputAction.h"
 
-dae::PlayerInputComponent::PlayerInputComponent(GameObject* pOwner, InputDeviceID deviceID)
+dae::PlayerInputComponent::PlayerInputComponent(GameObject* pOwner, const InputDevice* pDevice)
 	: BaseComponent(pOwner)
-	, m_DeviceID{ deviceID }
+	, m_pDevice{ pDevice }
+{
+}
+
+void dae::PlayerInputComponent::Render() const
 {
 }
 
 void dae::PlayerInputComponent::Update()
 {
-	//for (InputActionID actionID : m_ActionsIDs)
-	//{
-	//	const auto& command = InputManager::GetInstance().GetCommand(actionID);
-	//	const auto& context = InputManager::GetInstance().GetActionContext(actionID, m_DeviceID);
-
-	//	// Execute command
-	//	command(context);
-	//}
-}
-
-void dae::PlayerInputComponent::BindAction(InputActionID id)
-{
-	m_ActionsIDs.push_back(id);
-}
-
-void dae::PlayerInputComponent::BindAction(const std::vector<InputActionID>& ids)
-{
-	m_ActionsIDs.insert(m_ActionsIDs.end(), ids.begin(), ids.end());
-}
-
-void dae::PlayerInputComponent::EraseAction(InputActionID idToRemove)
-{
-	std::erase_if(m_ActionsIDs, 
-		[idToRemove](auto id) { 
-			return idToRemove == id; 
+	for (auto& binding : m_CommandBindingTable)
+	{
+		try // catch invalidaded pointers
+		{
+			if (binding.second)
+				binding.second->Execute(binding.first->GetActionContext(m_pDevice));
 		}
-	);
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << "\n";
+		}
+	}
+}
+
+void dae::PlayerInputComponent::AddInputAction(const InputAction* pAction)
+{
+	m_CommandBindingTable.emplace(pAction, nullptr);
+}
+
+void dae::PlayerInputComponent::DeleteInputAction(const InputAction* pActionToDelete)
+{
+	std::erase_if(m_CommandBindingTable, [pActionToDelete](const auto& pair) { return pair.first == pActionToDelete; });
 }

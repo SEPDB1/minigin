@@ -12,6 +12,7 @@
 #include "Scene.h"
 #include "InputManager.h"
 #include "Gamepad.h"
+#include "Keyboard.h"
 #include "Command.h"
 
 dae::Game::Game(Scene* pScene)
@@ -23,46 +24,53 @@ dae::Game::Game(Scene* pScene)
 
 void dae::Game::Start()
 {
-	auto go = std::make_unique<dae::GameObject>();
-	go->AttachComponent<dae::RenderComponent>(go.get())->LoadTexture("background.png");
-	m_pBackground = go.get();
-	m_pScene->Add(std::move(go));
-
-	go = std::make_unique<dae::GameObject>();
-	go->SetPosition(glm::vec3(358, 180, 0.f));
-	go->AttachComponent<dae::RenderComponent>(go.get())->LoadTexture("logo.png");
-	m_pLogo = go.get();
-	m_pScene->Add(std::move(go));
-
+	auto& inputManager{ InputManager::GetInstance() };
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+
+	auto pGamepad{ inputManager.CreateInputDevice<dae::Gamepad>() };
+	auto pKeyboard{ inputManager.CreateInputDevice<dae::Keyboard>() };
+	
+	const InputAction* pMoveActionDpad{ inputManager.AddInputAction(
+		InputAction{ Button::gamepadDpadLeft, Button::gamepadDpadRight, Button::gamepadDpadUp, Button::gamepadDpadDown }) 
+	};
+	const InputAction* pMoveActionKeyboard{ inputManager.AddInputAction(
+		InputAction{ Button::keyboardA, Button::keyboardD, Button::keyboardW, Button::keyboardS })
+	};
+
+	// Create background
+	auto go = std::make_unique<dae::GameObject>();
+	m_pBackground = go.get();
+	m_pBackground->AttachComponent<dae::RenderComponent>(m_pBackground)->LoadTexture("background.png");
+	m_pScene->Add(std::move(go));
+
+	// Create movable logo
 	go = std::make_unique<dae::GameObject>();
+	m_pLogo = go.get();
+	m_pLogo->SetPosition(glm::vec3(358, 180, 0.f));
+	m_pLogo->AttachComponent<dae::RenderComponent>(m_pLogo)->LoadTexture("logo.png");
+	auto pPlayerInput{ m_pLogo->AttachComponent<dae::PlayerInputComponent>(m_pLogo, pKeyboard) };
+	pPlayerInput->AddCommandBinding(pMoveActionKeyboard, std::move(std::make_unique<MoveCommand>(m_pLogo, 2.f)));
+	m_pScene->Add(std::move(go));
+
+	// Create movable title
+	go = std::make_unique<dae::GameObject>();
+	m_pTitle = go.get();
 	go->SetPosition(glm::vec2(292, 20));
 	go->AttachComponent<dae::TextComponent>(go.get())->SetText("Programming 4 Assignment", font).SetColor({ 255, 255, 0, 255 });
-	m_pTitle = go.get();
+	pPlayerInput = m_pTitle->AttachComponent<dae::PlayerInputComponent>(m_pTitle, pGamepad);
+	pPlayerInput->AddCommandBinding(pMoveActionDpad, std::move(std::make_unique<MoveCommand>(m_pTitle, 4.f)));
 	m_pScene->Add(std::move(go));
 
+	// Create FPS object
 	go = std::make_unique<dae::GameObject>();
-	auto pTextO = go->AttachComponent<dae::TextComponent>(go.get());
-	pTextO->SetText("FPS", font).SetColor({ 255, 255, 0, 255 });
-	go->AttachComponent<dae::FpsComponent>(go.get())->SetTextComponent(pTextO);
 	m_pFpsObject = go.get();
+	auto pTextO = m_pFpsObject->AttachComponent<dae::TextComponent>(m_pFpsObject);
+	pTextO->SetText("FPS", font).SetColor({ 255, 255, 0, 255 });
+	go->AttachComponent<dae::FpsComponent>(m_pFpsObject)->SetTextComponent(pTextO);
 	m_pScene->Add(std::move(go));
 
-	// center
-	//go = std::make_unique<dae::GameObject>();
-	//go->SetPosition(glm::vec2(358, 180));
-	//
-	//auto player1 = std::make_unique<dae::GameObject>();
-	//player1->SetPosition(glm::vec2(-50, -50)).AttachComponent<dae::RenderComponent>(player1.get())->LoadTexture("logo.png");
-	//player1->SetParent(go.get(), false).AttachComponent<dae::RotaterComponent>(player1.get())->SetRotationSpeed(1.f);
-	//scene.Add(std::move(go));
-	//scene.Add(std::move(player1));
 
-	auto& inputManager{ InputManager::GetInstance() };
-	InputDeviceID gamepadID{ inputManager.CreateNewDevice(std::make_unique<Gamepad>()) };
-	inputManager.CreateNewAction(std::make_unique<InputActionButton>("trigger", static_cast<UButton>(Gamepad::Button::a)));
-	inputManager.BindCommand(gamepadID, std::make_unique<MoveCommand>(m_pLogo));
-	//m_pLogo->AttachComponent<dae::PlayerInputComponent>(m_pLogo);
+	//pPlayerInput->DeleteInputAction(pActionA);
 }
 
 void dae::Game::Update()

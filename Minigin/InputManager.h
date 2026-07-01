@@ -1,17 +1,17 @@
 #pragma once
-#include "Singleton.h"
-#include "InputDevice.h"
-#include "InputAction.h"
-#include "Command.h"
 #include <memory>
 #include <vector>
+#include "Singleton.h"
+#include "InputAction.h"
+#include "InputUtility.h"
+#include "Gamepad.h"
 
 namespace dae
 {
 	class InputManager final : public Singleton<InputManager>
 	{
 	public:
-		InputManager();
+		InputManager() = default;
 		~InputManager() = default;
 		InputManager(const InputManager& other) = delete;
 		InputManager(InputManager&& other) = delete;
@@ -20,28 +20,23 @@ namespace dae
 
 		bool ProcessInput();
 
-		InputDeviceID CreateNewDevice(std::unique_ptr<InputDevice> pInputDevice);
-		InputActionID CreateNewAction(std::unique_ptr<InputActionBase> pAction);
-		
-		void EraseAction(InputActionID actionID);
-		void EraseAction(std::string_view name);
+		// Creates and stores an new instance of a input device T which must derive from InputDevice
+		template<typename T> requires std::derived_from<T, InputDevice>
+		const InputDevice* CreateInputDevice()
+		{
+			m_pDevices.push_back(std::move(std::make_unique<T>()));
+			return m_pDevices.crbegin()->get();
+		}
 
-		void BindCommand(InputActionID actionID, std::unique_ptr<Command> pCommand);
-		void BindCommand(std::string_view name, std::unique_ptr<Command> pCommand);
+		const InputAction* AddInputAction(const InputAction& action);
 
-		std::string_view GetActionNameByActionID(InputActionID actionId) const;
-		InputActionID GetActionIDByActionName(std::string_view name) const;
-		InputContext GetContextByButton(UButton button, InputDeviceID deviceID) const;
-
-		Command* GetCommand(InputActionID actionID) const;
-		Command* GetCommand(std::string_view name) const;
+		bool IsButtonPressed(Button button, const InputDevice* pDevice) const;
+		bool IsButtonDownThisFrame(Button button, const InputDevice* pDevice) const;
+		bool IsButtonUpThisFrame(Button button, const InputDevice* pDevice) const;
+		float GetButtonValue(Button button, const InputDevice* pDevice) const;
 
 	private:
-		InputActionBase* GetActionByActionID(InputActionID actionId) const;
-		InputDevice* GetDeviceByDeviceID(InputDeviceID deviceID) const;
-
-		std::vector<std::unique_ptr<InputDevice>> m_pDevices;
-		std::vector<std::unique_ptr<InputActionBase>> m_pActions;
-		std::unordered_map<InputActionID, std::unique_ptr<Command>> m_CommandBindings;
+		std::vector<std::unique_ptr<InputDevice>> m_pDevices{};
+		std::vector<InputAction> m_InputActions{};
 	};
 }

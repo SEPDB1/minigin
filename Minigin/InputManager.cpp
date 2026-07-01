@@ -1,13 +1,9 @@
 #include "InputManager.h"
 #include "Gamepad.h"
 #include "Keyboard.h"
-#include "InputAction.h"
 #include <backends/imgui_impl_sdl3.h>
 #include <SDL3/SDL.h>
-#include <algorithm>
-#include <stdexcept>
-
-dae::InputManager::InputManager() = default;
+#include <iostream>
 
 bool dae::InputManager::ProcessInput()
 {
@@ -21,124 +17,61 @@ bool dae::InputManager::ProcessInput()
 		ImGui_ImplSDL3_ProcessEvent(&e);
 	}
 
-	for (auto& pDevice : m_pDevices)
+	for (auto& m_pDevice : m_pDevices)
 	{
-		pDevice->Update();
+		m_pDevice->Update();
 	}
 
 	return true;
 }
 
-dae::InputDeviceID dae::InputManager::CreateNewDevice(std::unique_ptr<InputDevice> pInputDevice)
+const dae::InputAction* dae::InputManager::AddInputAction(const InputAction& action)
 {
-	m_pDevices.push_back(std::move(pInputDevice));
-	return m_pDevices.back().get()->GetID();
+	m_InputActions.emplace_back(action);
+	return std::addressof(*m_InputActions.crbegin());
 }
 
-dae::InputActionID dae::InputManager::CreateNewAction(std::unique_ptr<InputActionBase> pAction)
+bool dae::InputManager::IsButtonPressed(Button button, const InputDevice* pDevice) const
 {
-	m_pActions.push_back(std::move(pAction));
-
-	return m_pActions.back().get()->GetID();
+	try
+	{
+		return pDevice->IsPressed(button);
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << e.what() << "\n";
+		return false;
+	}
 }
 
-void dae::InputManager::EraseAction(InputActionID actionId)
+bool dae::InputManager::IsButtonDownThisFrame(Button button, const InputDevice* pDevice) const
 {
-	std::erase_if(m_pActions,
-		[actionId](const auto& action) {
-			return action.get()->GetID() == actionId;
-		}
-	);
+	try
+	{
+		return pDevice->IsDownThisFrame(button);
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << e.what() << "\n";
+		return false;
+	}
 
-	m_CommandBindings.erase(actionId);
 }
 
-void dae::InputManager::EraseAction(std::string_view name)
+bool dae::InputManager::IsButtonUpThisFrame(Button button, const InputDevice* pDevice) const
 {
-	EraseAction(GetActionIDByActionName(name));
+	try
+	{
+		return pDevice->IsUpThisFrame(button);
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << e.what() << "\n";
+		return false;
+	}
 }
 
-void dae::InputManager::BindCommand(InputActionID ID, std::unique_ptr<Command> pCommand)
+float dae::InputManager::GetButtonValue(Button button, const InputDevice* pDevice) const
 {
-	m_CommandBindings[ID] = std::move(pCommand);
-}
-
-void dae::InputManager::BindCommand(std::string_view name, std::unique_ptr<Command> pCommand)
-{
-	BindCommand(GetActionIDByActionName(name), std::move(pCommand));
-}
-
-std::string_view dae::InputManager::GetActionNameByActionID(dae::InputActionID ID) const
-{
-	auto it = std::ranges::find_if
-	(m_pActions,
-		[ID](const auto& pAction) { 
-			return pAction.get()->GetID() == ID;
-		}
-	);
-
-	if (it == m_pActions.end())
-		throw std::runtime_error("Invalid InputAction ID");
-
-	return it->get()->GetName();
-}
-
-dae::InputActionID dae::InputManager::GetActionIDByActionName(std::string_view name) const
-{
-	auto it = std::ranges::find_if
-	(m_pActions, 
-		[name](const auto& pAction) { 
-			return pAction.get()->GetName() == name; 
-		}
-	);
-
-	if (it == m_pActions.end())
-		throw std::runtime_error("Invalid InputAction name");
-
-	return it->get()->GetID();
-}
-
-dae::InputContext dae::InputManager::GetContextByButton(UButton button, InputDeviceID deviceID) const
-{
-	auto pDevice{ GetDeviceByDeviceID(deviceID) };
-
-	return pDevice->GetContext(button);
-}
-
-dae::Command* dae::InputManager::GetCommand(InputActionID actionId) const
-{
-	return m_CommandBindings.at(actionId).get();
-}
-
-dae::Command* dae::InputManager::GetCommand(std::string_view name) const
-{
-	return GetCommand(GetActionIDByActionName(name));
-}
-
-dae::InputActionBase* dae::InputManager::GetActionByActionID(InputActionID actionId) const
-{
-	auto it = std::ranges::find_if(m_pActions, 
-		[actionId](const auto& pAction) { 
-			return pAction.get()->GetID() == actionId; 
-		}
-	);
-
-	if (it == m_pActions.end())
-		throw std::runtime_error("Invalid InputAction ID");
-
-	return it->get();
-}
-
-dae::InputDevice* dae::InputManager::GetDeviceByDeviceID(InputDeviceID deviceID) const
-{
-	auto it = std::ranges::find_if(m_pDevices,
-		[deviceID](const auto& pDEvice) {
-			return pDEvice.get()->GetID() == deviceID;
-		}
-	);
-
-	if (it == m_pDevices.end())
-		throw std::runtime_error("Invalid Device ID");
-
-	return (*it).get();
+	return static_cast<float>(IsButtonPressed(button, pDevice));
 }
