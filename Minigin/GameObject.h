@@ -36,9 +36,9 @@ namespace dae
 		// Creates a new component of the requested type and attaches it to the game object,
 		// the type has to be a component
 		template <typename ComponentT, typename... Args> requires std::derived_from<ComponentT, BaseComponent>
-		ComponentT* AttachComponent(GameObject* pOwner, Args&&... args)
+		ComponentT* AttachComponent(Args&&... args)
 		{
-			auto pUniqueComp{ std::make_unique<ComponentT>(pOwner, std::forward<Args>(args)...) };
+			auto pUniqueComp{ std::make_unique<ComponentT>(this, std::forward<Args>(args)...) };
 			auto pComp = pUniqueComp.get();
 			m_pComponents.push_back(std::move(pUniqueComp));
 			return pComp;

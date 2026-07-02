@@ -68,15 +68,15 @@ void dae::Game::Start()
 	// Create background
 	auto go = std::make_unique<dae::GameObject>();
 	m_pBackground = go.get();
-	m_pBackground->AttachComponent<dae::RenderComponent>(m_pBackground)->LoadTexture("background.png");
+	m_pBackground->AttachComponent<dae::RenderComponent>()->LoadTexture("background.png");
 	m_pScene->Add(std::move(go));
 
 	// Create movable logo
 	go = std::make_unique<dae::GameObject>();
 	m_pLogo = go.get();
 	m_pLogo->SetPosition(glm::vec3(358, 180, 0.f));
-	m_pLogo->AttachComponent<dae::RenderComponent>(m_pLogo)->LoadTexture("logo.png");
-	auto pPlayerInput{ m_pLogo->AttachComponent<dae::PlayerInputComponent>(m_pLogo, pKeyboard) };
+	m_pLogo->AttachComponent<dae::RenderComponent>()->LoadTexture("logo.png");
+	auto pPlayerInput{ m_pLogo->AttachComponent<dae::PlayerInputComponent>(pKeyboard) };
 	pPlayerInput->AddCommandBinding("Move", std::make_unique<MoveCommand>(m_pLogo, 2.f));
 	m_pScene->Add(std::move(go));
 
@@ -84,17 +84,17 @@ void dae::Game::Start()
 	go = std::make_unique<dae::GameObject>();
 	m_pTitle = go.get();
 	go->SetPosition(glm::vec2(292, 20));
-	go->AttachComponent<dae::TextComponent>(go.get())->SetText("Programming 4 Assignment", font).SetColor({ 255, 255, 0, 255 });
-	pPlayerInput = m_pTitle->AttachComponent<dae::PlayerInputComponent>(m_pTitle, pGamepad);
+	go->AttachComponent<dae::TextComponent>()->SetText("Programming 4 Assignment", font).SetColor({ 255, 255, 0, 255 });
+	pPlayerInput = m_pTitle->AttachComponent<dae::PlayerInputComponent>(pGamepad);
 	pPlayerInput->AddCommandBinding("Move", std::make_unique<MoveCommand>(m_pTitle, 4.f));
 	m_pScene->Add(std::move(go));
 
 	// Create FPS object
 	go = std::make_unique<dae::GameObject>();
 	m_pFpsObject = go.get();
-	auto pTextO = m_pFpsObject->AttachComponent<dae::TextComponent>(m_pFpsObject);
+	auto pTextO = m_pFpsObject->AttachComponent<dae::TextComponent>();
 	pTextO->SetText("FPS", font).SetColor({ 255, 255, 0, 255 });
-	go->AttachComponent<dae::FpsComponent>(m_pFpsObject)->SetTextComponent(pTextO);
+	go->AttachComponent<dae::FpsComponent>()->SetTextComponent(pTextO);
 	m_pScene->Add(std::move(go));
 }
 
