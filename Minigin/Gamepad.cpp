@@ -1,5 +1,22 @@
 #include "Gamepad.h"
-#include <utility>
+
+const std::unordered_map<std::string_view, uint32_t> dae::Gamepad::m_ButtonTable
+{ 
+	{ "DpadUp",			0x0001 },
+	{ "DpadDown",		0x0002 },
+	{ "DpadLeft",		0x0004 },
+	{ "DpadRight",		0x0008 },
+	{ "Start",			0x0010 },
+	{ "Back",			0x0020 },
+	{ "LeftThumb",		0x0040 },
+	{ "RightThumb",		0x0080 },
+	{ "LeftShoulder",	0x0100 },
+	{ "RightShoulder",	0x0200 },
+	{ "A",				0x1000 },
+	{ "B",				0x2000 },
+	{ "X",				0x4000 },
+	{ "Y",				0x8000 },
+};
 
 dae::Gamepad::Gamepad()
 	: m_DeviceIdx{ 0 }
@@ -20,33 +37,22 @@ void dae::Gamepad::Update()
 	}
 }
 
-bool dae::Gamepad::IsButtonCompatible(Button button) const
+bool dae::Gamepad::IsButtonCompatible(const Button& button) const
 {
-	// TO DO: look into alternative ways, this is messy
-	switch (button)
-	{
-	case dae::Button::gamepadA:
-	case dae::Button::gamepadB:
-	case dae::Button::gamepadX:
-	case dae::Button::gamepadY:
-		return true;
-		break;
-	}
-
-	return false;
+	return button.deviceType == DeviceType::gamepad;
 }
 
-bool dae::Gamepad::IsDownThisFrame(dae::Button button) const
+bool dae::Gamepad::IsDownThisFrame(const Button& button) const
 {
-	return m_ButtonsPressedThisFrame & std::to_underlying(button);
+	return m_ButtonsPressedThisFrame & m_ButtonTable.at(button.name);
 }
 
-bool dae::Gamepad::IsUpThisFrame(dae::Button button) const
+bool dae::Gamepad::IsUpThisFrame(const Button& button) const
 {
-	return m_ButtonsReleasedThisFrame & std::to_underlying(button);
+	return m_ButtonsReleasedThisFrame & m_ButtonTable.at(button.name);
 }
 
-bool dae::Gamepad::IsPressed(Button button) const
+bool dae::Gamepad::IsPressed(const Button& button) const
 {
-	return m_CurrentState.Gamepad.wButtons & std::to_underlying(button);
+	return m_CurrentState.Gamepad.wButtons & m_ButtonTable.at(button.name);
 }

@@ -3,6 +3,7 @@
 #include <exception>
 #include <iostream>
 #include "InputAction.h"
+#include "InputManager.h"
 
 dae::PlayerInputComponent::PlayerInputComponent(GameObject* pOwner, const InputDevice* pDevice)
 	: BaseComponent(pOwner)
@@ -18,24 +19,6 @@ void dae::PlayerInputComponent::Update()
 {
 	for (auto& binding : m_CommandBindingTable)
 	{
-		try // catch invalidaded pointers
-		{
-			if (binding.second)
-				binding.second->Execute(binding.first->GetActionContext(m_pDevice));
-		}
-		catch (const std::exception& e)
-		{
-			std::cout << e.what() << "\n";
-		}
+		binding.second->Execute(InputManager::GetInstance().GetActionByName(binding.first)->GetActionContext(m_pDevice));
 	}
-}
-
-void dae::PlayerInputComponent::AddInputAction(const InputAction* pAction)
-{
-	m_CommandBindingTable.emplace(pAction, nullptr);
-}
-
-void dae::PlayerInputComponent::DeleteInputAction(const InputAction* pActionToDelete)
-{
-	std::erase_if(m_CommandBindingTable, [pActionToDelete](const auto& pair) { return pair.first == pActionToDelete; });
 }

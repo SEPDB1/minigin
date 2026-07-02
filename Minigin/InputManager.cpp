@@ -25,53 +25,37 @@ bool dae::InputManager::ProcessInput()
 	return true;
 }
 
-const dae::InputAction* dae::InputManager::AddInputAction(const InputAction& action)
+const dae::InputAction* dae::InputManager::GetActionByName(const std::string& actionName) const
 {
-	m_InputActions.emplace_back(action);
-	return std::addressof(*m_InputActions.crbegin());
+	auto it{ m_pInputActions.find(actionName) };
+
+	if (it != m_pInputActions.end())
+		return it->second.get();
+
+	return nullptr;
 }
 
-bool dae::InputManager::IsButtonPressed(Button button, const InputDevice* pDevice) const
+bool dae::InputManager::IsButtonPressed(const Button& button, const InputDevice* pDevice) const
 {
-	try
-	{
-		return pDevice->IsPressed(button);
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << e.what() << "\n";
-		return false;
-	}
+	return pDevice->IsPressed(button);
 }
 
-bool dae::InputManager::IsButtonDownThisFrame(Button button, const InputDevice* pDevice) const
+bool dae::InputManager::IsButtonDownThisFrame(const Button& button, const InputDevice* pDevice) const
 {
-	try
-	{
-		return pDevice->IsDownThisFrame(button);
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << e.what() << "\n";
-		return false;
-	}
-
+	return pDevice->IsDownThisFrame(button);
 }
 
-bool dae::InputManager::IsButtonUpThisFrame(Button button, const InputDevice* pDevice) const
+bool dae::InputManager::IsButtonUpThisFrame(const Button& button, const InputDevice* pDevice) const
 {
-	try
-	{
-		return pDevice->IsUpThisFrame(button);
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << e.what() << "\n";
-		return false;
-	}
+	return pDevice->IsUpThisFrame(button);
 }
 
-float dae::InputManager::GetButtonValue(Button button, const InputDevice* pDevice) const
+float dae::InputManager::GetButtonValue(const Button& button, const InputDevice* pDevice) const
 {
 	return static_cast<float>(IsButtonPressed(button, pDevice));
+}
+
+bool dae::InputManager::IsButtonCompatible(const Button& button, const InputDevice* pDevice) const
+{
+	return pDevice->IsButtonCompatible(button);
 }

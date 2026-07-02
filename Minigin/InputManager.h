@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include <string>
 #include "Singleton.h"
 #include "InputAction.h"
 #include "InputUtility.h"
@@ -20,23 +21,33 @@ namespace dae
 
 		bool ProcessInput();
 
-		// Creates and stores an new instance of a input device T which must derive from InputDevice
-		template<typename T> requires std::derived_from<T, InputDevice>
+		// Creates and stores an new instance of the requested input device which must derive from InputDevice
+		template<typename InputDeviceT> requires std::derived_from<InputDeviceT, InputDevice>
 		const InputDevice* CreateInputDevice()
 		{
-			m_pDevices.push_back(std::move(std::make_unique<T>()));
+			m_pDevices.push_back(std::move(std::make_unique<InputDeviceT>()));
 			return m_pDevices.crbegin()->get();
 		}
 
-		const InputAction* AddInputAction(const InputAction& action);
+		// Creates a new InputAction of the requested type by forwarding args to the InputAction's constructor 
+		// and maps it to the name, the requested type has to derive from InputAction
+		template <typename ActionT> requires std::derived_from<ActionT, InputAction>
+		void AddInputAction(const std::string& name, std::unique_ptr<ActionT> pAction)
+		{
+			assert(pAction != nullptr && "InputAction should not be null");
+			m_pInputActions.insert_or_assign(name, std::move(pAction));
+		}
 
-		bool IsButtonPressed(Button button, const InputDevice* pDevice) const;
-		bool IsButtonDownThisFrame(Button button, const InputDevice* pDevice) const;
-		bool IsButtonUpThisFrame(Button button, const InputDevice* pDevice) const;
-		float GetButtonValue(Button button, const InputDevice* pDevice) const;
+		const InputAction* GetActionByName(const std::string& actionName) const;
+			
+		bool IsButtonPressed(const Button& button, const InputDevice* pDevice) const;
+		bool IsButtonDownThisFrame(const Button& button, const InputDevice* pDevice) const;
+		bool IsButtonUpThisFrame(const Button& button, const InputDevice* pDevice) const;
+		float GetButtonValue(const Button& button, const InputDevice* pDevice) const;
+		bool IsButtonCompatible(const Button& button, const InputDevice* pDevice) const;
 
 	private:
 		std::vector<std::unique_ptr<InputDevice>> m_pDevices{};
-		std::vector<InputAction> m_InputActions{};
+		std::unordered_map<std::string, std::unique_ptr<InputAction>> m_pInputActions{};
 	};
 }

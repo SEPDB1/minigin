@@ -35,10 +35,10 @@ namespace dae
 #pragma region TemplatedFunctions
 		// Creates a new component of the requested type and attaches it to the game object,
 		// the type has to be a component
-		template <typename T, typename... Args>
-		T* AttachComponent(GameObject* pOwner, Args&&... args)
+		template <typename ComponentT, typename... Args> requires std::derived_from<ComponentT, BaseComponent>
+		ComponentT* AttachComponent(GameObject* pOwner, Args&&... args)
 		{
-			auto pUniqueComp = std::make_unique<T>(pOwner, std::forward<Args>(args)...);
+			auto pUniqueComp{ std::make_unique<ComponentT>(pOwner, std::forward<Args>(args)...) };
 			auto pComp = pUniqueComp.get();
 			m_pComponents.push_back(std::move(pUniqueComp));
 			return pComp;
@@ -46,12 +46,12 @@ namespace dae
 
 		// TO DO: mark as cleanup
 		// Removes the reqeusted component if any
-		template <typename T>
+		template <typename ComponentT> requires std::derived_from<ComponentT, BaseComponent>
 		void RemoveComponent()
 		{
 			auto it = std::ranges::find_if(
 				m_pComponents,
-				[](auto comp) { return typeid(T) == typeid(*comp); });
+				[](auto comp) { return typeid(ComponentT) == typeid(*comp); });
 
 			if (it != m_pComponents.end())
 			{
@@ -60,16 +60,16 @@ namespace dae
 		}
 
 		// Returns a raw pointer to the requested component if any, returns a nullptr otherwise
-		template <typename T>
-		T* GetComponent() const
+		template <typename ComponentT> requires std::derived_from<ComponentT, BaseComponent>
+		ComponentT* GetComponent() const
 		{
 			auto it = std::ranges::find_if(
 				m_pComponents,
-				[](const auto& comp) { return typeid(T) == typeid(*comp); });
+				[](const auto& comp) { return typeid(ComponentT) == typeid(*comp); });
 
 			if (it != m_pComponents.end())
 			{
-				return dynamic_cast<T*>((*it).get());
+				return dynamic_cast<ComponentT*>((*it).get());
 			}
 			return nullptr;
 		}

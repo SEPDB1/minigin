@@ -1,4 +1,5 @@
 #pragma once
+#include <string_view>
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <Xinput.h>
@@ -18,11 +19,11 @@ namespace dae
 
 		void Update() override;
 
-		bool IsButtonCompatible(Button button) const override;
+		bool IsButtonCompatible(const Button& button) const;
 
-		bool IsDownThisFrame(Button button) const override;
-		bool IsUpThisFrame(Button button) const override;
-		bool IsPressed(Button button) const override;
+		bool IsDownThisFrame(const Button& button) const override;
+		bool IsUpThisFrame(const Button& button) const override;
+		bool IsPressed(const Button& button) const override;
 
 	private:
 		WORD m_ButtonsPressedThisFrame{ 0 };
@@ -30,5 +31,7 @@ namespace dae
 		DWORD m_DeviceIdx{};
 		_XINPUT_STATE m_CurrentState{};
 		_XINPUT_STATE m_PreviousState{};
+
+		static const std::unordered_map<std::string_view, uint32_t> m_ButtonTable;
 	};
 }

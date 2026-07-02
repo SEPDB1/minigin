@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <memory>
+#include <string>
 #include "BaseComponent.h"
 #include "Command.h"
 
@@ -23,18 +24,20 @@ namespace dae
 		void Render() const override;
 		void Update() override;
 
-		void AddInputAction(const InputAction* pAction);
-		void DeleteInputAction(const InputAction* pActionToDelete);
-
-		// Overwrites the current command binded to pAction
 		template <typename CommandT> requires std::derived_from<CommandT, Command>
-		void AddCommandBinding(const InputAction* pAction, std::unique_ptr<CommandT>&& pCommand)
+		void AddCommandBinding(const std::string& actionName, std::unique_ptr<CommandT> pCommand)
 		{
-			m_CommandBindingTable.insert_or_assign(pAction, std::move(pCommand));
+			assert(pCommand != nullptr && "Command is a nullptr");
+			m_CommandBindingTable.insert_or_assign(actionName, std::move(pCommand));
+		}
+
+		void RemoveCommandBinding(const std::string& actionName)
+		{
+			m_CommandBindingTable.erase(actionName);
 		}
 
 	private:
-		std::unordered_map<const InputAction*, std::unique_ptr<Command>> m_CommandBindingTable{};
+		std::unordered_map<std::string, std::unique_ptr<Command>> m_CommandBindingTable{};
 		const InputDevice* m_pDevice{};
 	};
 }
