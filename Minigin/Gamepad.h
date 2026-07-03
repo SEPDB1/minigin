@@ -1,8 +1,5 @@
 #pragma once
-#include <string_view>
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#include <Xinput.h>
+#include <memory>
 #include "InputDevice.h"
 
 namespace dae
@@ -11,7 +8,7 @@ namespace dae
 	{
 	public:
 		Gamepad();
-		~Gamepad() = default;
+		~Gamepad();
 		Gamepad(const Gamepad& other) = delete;
 		Gamepad(Gamepad&& other) = delete;
 		Gamepad& operator=(const Gamepad& other) = delete;
@@ -26,12 +23,7 @@ namespace dae
 		bool IsPressed(const Button& button) const override;
 
 	private:
-		WORD m_ButtonsPressedThisFrame{ 0 };
-		WORD m_ButtonsReleasedThisFrame{ 0 };
-		DWORD m_DeviceIdx{};
-		_XINPUT_STATE m_CurrentState{};
-		_XINPUT_STATE m_PreviousState{};
-
-		static const std::unordered_map<std::string_view, uint32_t> m_ButtonTable;
+		class GamepadImpl;
+		std::unique_ptr<GamepadImpl> m_pImpl{};
 	};
 }

@@ -1,6 +1,38 @@
 #include "Gamepad.h"
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#include <Xinput.h>
 
-const std::unordered_map<std::string_view, uint32_t> dae::Gamepad::m_ButtonTable
+#pragma region GamepadImpl
+class dae::Gamepad::GamepadImpl final
+{
+public:
+	GamepadImpl();
+	~GamepadImpl() = default;
+	GamepadImpl(const GamepadImpl& other) = delete;
+	GamepadImpl(GamepadImpl&& other) = delete;
+	GamepadImpl& operator=(const GamepadImpl& other) = delete;
+	GamepadImpl& operator=(GamepadImpl&& other) = delete;
+
+	void Update();
+
+	bool IsButtonCompatible(const dae::Button& button) const;
+
+	bool IsDownThisFrame(const dae::Button& button) const;
+	bool IsUpThisFrame(const dae::Button& button) const;
+	bool IsPressed(const dae::Button& button) const;
+
+private:
+	WORD m_ButtonsPressedThisFrame{ 0 };
+	WORD m_ButtonsReleasedThisFrame{ 0 };
+	DWORD m_DeviceIdx{};
+	_XINPUT_STATE m_CurrentState{};
+	_XINPUT_STATE m_PreviousState{};
+
+	static const std::unordered_map<std::string_view, uint32_t> m_ButtonTable;
+};
+
+const std::unordered_map<std::string_view, uint32_t> dae::Gamepad::GamepadImpl::m_ButtonTable
 { 
 	{ "DpadUp",			0x0001 },
 	{ "DpadDown",		0x0002 },
@@ -18,12 +50,12 @@ const std::unordered_map<std::string_view, uint32_t> dae::Gamepad::m_ButtonTable
 	{ "Y",				0x8000 },
 };
 
-dae::Gamepad::Gamepad()
+dae::Gamepad::GamepadImpl::GamepadImpl()
 	: m_DeviceIdx{ 0 }
 {
 }
 
-void dae::Gamepad::Update()
+void dae::Gamepad::GamepadImpl::Update()
 {
 	m_PreviousState = m_CurrentState;
 	m_CurrentState = {};
@@ -37,22 +69,57 @@ void dae::Gamepad::Update()
 	}
 }
 
-bool dae::Gamepad::IsButtonCompatible(const Button& button) const
+bool dae::Gamepad::GamepadImpl::IsButtonCompatible(const dae::Button & button) const
 {
-	return button.deviceType == DeviceType::gamepad;
+	return button.deviceType == dae::DeviceType::gamepad;
 }
 
-bool dae::Gamepad::IsDownThisFrame(const Button& button) const
+bool dae::Gamepad::GamepadImpl::IsDownThisFrame(const dae::Button& button) const
 {
 	return m_ButtonsPressedThisFrame & m_ButtonTable.at(button.name);
 }
 
-bool dae::Gamepad::IsUpThisFrame(const Button& button) const
+bool dae::Gamepad::GamepadImpl::IsUpThisFrame(const dae::Button& button) const
 {
 	return m_ButtonsReleasedThisFrame & m_ButtonTable.at(button.name);
 }
 
-bool dae::Gamepad::IsPressed(const Button& button) const
+bool dae::Gamepad::GamepadImpl::IsPressed(const dae::Button& button) const
 {
 	return m_CurrentState.Gamepad.wButtons & m_ButtonTable.at(button.name);
 }
+#pragma endregion GamepadImpl
+
+#pragma region Gamepad
+dae::Gamepad::Gamepad()
+	: m_pImpl{ std::make_unique<GamepadImpl>() }
+{
+}
+
+dae::Gamepad::~Gamepad() = default;
+
+void dae::Gamepad::Update()
+{
+	m_pImpl->Update();
+}
+
+bool dae::Gamepad::IsButtonCompatible(const Button& button) const
+{
+	return m_pImpl->IsButtonCompatible(button);
+}
+
+bool dae::Gamepad::IsDownThisFrame(const Button& button) const
+{
+	return m_pImpl->IsDownThisFrame(button);
+}
+
+bool dae::Gamepad::IsUpThisFrame(const Button& button) const
+{
+	return m_pImpl->IsUpThisFrame(button);
+}
+
+bool dae::Gamepad::IsPressed(const Button& button) const
+{
+	return m_pImpl->IsPressed(button);
+}
+#pragma endregion Gamepad

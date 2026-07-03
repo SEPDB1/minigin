@@ -30,31 +30,6 @@ void dae::Game::Start()
 	auto pGamepad{ inputManager.CreateInputDevice<dae::Gamepad>() };
 	auto pKeyboard{ inputManager.CreateInputDevice<dae::Keyboard>() };
 
-	//const std::string gamepadActionName{ "GamepadMove" };
-	//const std::string keyboardActionName{ "KeyboardMove" };
-	
-
-
-	//inputManager.AddInputAction(
-	//	gamepadActionName,
-	//	std::make_unique<InputActionAxis2D>(
-	//		Button{ "DpadLeft", DeviceType::gamepad },
-	//		Button{ "DpadRight", DeviceType::gamepad },
-	//		Button{ "DpadUp", DeviceType::gamepad },
-	//		Button{ "DpadDown", DeviceType::gamepad }
-	//	)
-	//);
-
-	//inputManager.AddInputAction(
-	//	keyboardActionName,
-	//	std::make_unique<InputActionAxis2D>(
-	//		Button{ "A", DeviceType::keyboard },
-	//		Button{ "D", DeviceType::keyboard },
-	//		Button{ "W", DeviceType::keyboard },
-	//		Button{ "S", DeviceType::keyboard }
-	//	)
-	//);
-
 	inputManager.AddInputAction(
 		"Move",
 		std::make_unique<InputActionAxis2D>(
