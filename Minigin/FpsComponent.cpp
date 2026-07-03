@@ -18,7 +18,7 @@ dae::FpsComponent::FpsComponent(GameObject* pOwner)
 void dae::FpsComponent::Render() const
 {
 	const auto& pos = BaseComponent::GetOwner()->GetTransform().GetPosition();
-	Renderer::GetInstance().RenderTexture(*m_pTextComponent->GetTexture(), pos.x, pos.y);
+	SDLRenderer::GetInstance().RenderTexture(*m_pTextComponent->GetTexture(), pos.x, pos.y);
 }
 
 void dae::FpsComponent::Update()

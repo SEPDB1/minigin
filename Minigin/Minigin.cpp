@@ -74,13 +74,13 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
 
-	Renderer::GetInstance().Init(g_window);
+	SDLRenderer::GetInstance().Init(g_window);
 	ResourceManager::GetInstance().Init(dataPath);
 }
 
 dae::Minigin::~Minigin()
 {
-	Renderer::GetInstance().Destroy();
+	SDLRenderer::GetInstance().Destroy();
 	SDL_DestroyWindow(g_window);
 	g_window = nullptr;
 	SDL_Quit();
@@ -111,5 +111,5 @@ void dae::Minigin::Update()
 	SceneManager::GetInstance().Update();
 	Timer::GetInstance().Update();
 	m_pGame->Update();
-	Renderer::GetInstance().Render();
+	SDLRenderer::GetInstance().Render();
 }

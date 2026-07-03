@@ -47,7 +47,7 @@ SDL_Texture* dae::Texture2D::LoadTexture(const std::string& path)
     DeleteTexture();
 
     pTexture = SDL_CreateTextureFromSurface(
-        Renderer::GetInstance().GetSDLRenderer(),
+        SDLRenderer::GetInstance().GetSDLRenderer(),
         surface
     );
 

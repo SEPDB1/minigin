@@ -5,9 +5,6 @@ namespace dae
 {
 	class InputDevice
 	{
-	protected:
-		InputDevice() = default;
-
 	public:
 		virtual ~InputDevice() = default;
 		InputDevice(const InputDevice& other) = delete;
@@ -22,5 +19,8 @@ namespace dae
 		virtual bool IsDownThisFrame(const Button& button) const = 0;
 		virtual bool IsUpThisFrame(const Button& button) const = 0;
 		virtual bool IsPressed(const Button& button) const = 0;
+
+	protected:
+		InputDevice() = default;
 	};
 }

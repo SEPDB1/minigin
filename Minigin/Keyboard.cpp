@@ -1,8 +1,8 @@
 #include "Keyboard.h"
 #include <SDL3/SDL_keyboard.h>
-//#include <SDL3/SDL_scancode.h>
 
 #pragma region KeyboardImpl
+
 class dae::Keyboard::KeyboardImpl final
 {
 public:
@@ -113,10 +113,12 @@ bool dae::Keyboard::KeyboardImpl::IsPressed(const Button& button) const
 	auto idx{ m_ButtonTable.at(button.name) };
 	return m_CurrentState[idx];
 }
+
 #pragma endregion KeyboardImpl
 
 #pragma region Keyboard
-dae::Keyboard::Keyboard()
+
+dae::Keyboard::Keyboard() 
 	: m_pImpl{ std::make_unique<KeyboardImpl>() }
 {
 }
@@ -147,4 +149,5 @@ bool dae::Keyboard::IsPressed(const Button& button) const
 {
 	return m_pImpl->IsPressed(button);
 }
+
 #pragma endregion Keyboard

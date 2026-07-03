@@ -1,17 +1,28 @@
 #pragma once
-#include <SDL3/SDL.h>
-#include "Singleton.h"
+#include <memory>
 #include <filesystem>
+#include "Singleton.h"
+
+struct SDL_Window;
+struct SDL_Color;
+struct SDL_Renderer;
 
 namespace dae
 {
-	class Texture2D;
 	/**
 	 * Simple RAII wrapper for the SDL renderer
 	 */
-	class Renderer final : public Singleton<Renderer>
+	class Texture2D;
+	class SDLRenderer final : public Singleton<SDLRenderer>
 	{
 	public:
+		SDLRenderer();
+		~SDLRenderer();
+		SDLRenderer(const SDLRenderer& other) = delete;
+		SDLRenderer(SDLRenderer&& other) = delete;
+		SDLRenderer& operator=(const SDLRenderer& other) = delete;
+		SDLRenderer& operator=(SDLRenderer&& other) = delete;
+
 		void Init(SDL_Window* window);
 		void Render() const;
 		void Destroy();
@@ -26,10 +37,8 @@ namespace dae
 		const std::filesystem::path& GetPath() const;
 
 	private:
-		SDL_Renderer* m_Renderer{};
-		SDL_Window* m_Window{};
-		SDL_Color m_ClearColor{};
-		std::filesystem::path m_Path{};
+		class SDLRendererImpl;
+		std::unique_ptr<SDLRendererImpl> m_pSDLRendererImpl{};
 	};
 }
 
