@@ -3,22 +3,23 @@
 
 void dae::SceneManager::Update()
 {
-	for(auto& scene : m_scenes)
+	for(auto& pScene : m_pScenes)
 	{
-		scene->Update();
+		pScene->Update();
 	}
 }
 
 void dae::SceneManager::Render()
 {
-	for (const auto& scene : m_scenes)
+	for (const auto& pScene : m_pScenes)
 	{
-		scene->Render();
+		pScene->Render();
 	}
 }
 
 dae::Scene& dae::SceneManager::CreateScene()
 {
-	m_scenes.emplace_back(new Scene());
-	return *m_scenes.back();
+	//m_pScenes.emplace_back(std::make_unique<Scene>());
+	m_pScenes.emplace_back(new Scene());
+	return *m_pScenes.back();
 }

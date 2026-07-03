@@ -130,6 +130,8 @@ const std::filesystem::path& dae::SDLRenderer::SDLRendererImpl::GetPath() const
 
 #pragma endregion SDLRendererImpl
 
+#pragma region SDLRenderer
+
 dae::SDLRenderer::SDLRenderer()
 	: m_pSDLRendererImpl{ std::make_unique<SDLRendererImpl>() }
 {
@@ -181,3 +183,5 @@ const std::filesystem::path& dae::SDLRenderer::GetPath() const
 {
 	return m_pSDLRendererImpl->GetPath();
 }
+
+#pragma endregion SDLRenderer

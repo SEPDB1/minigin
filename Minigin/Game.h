@@ -7,12 +7,18 @@ namespace dae
 	class Game final
 	{
 	public:
-		Game(Scene* pScene);
+		Game();
+		~Game() = default;
+		Game(const Game& other) = delete;
+		Game(Game&& other) = delete;
+		Game& operator=(const Game& other) = delete;
+		Game& operator=(Game&& other) = delete;
+
 		void Start();
 		void Update();
 
 	private:
-		Scene* m_pScene;
+		Scene* m_pTestScene{};
 		GameObject* m_pBackground{};
 		GameObject* m_pLogo{};
 		GameObject* m_pTitle{};
