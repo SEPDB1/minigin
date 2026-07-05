@@ -27,28 +27,28 @@ namespace dae
 			);
 
 			// Create background
-			auto pBackground = std::addressof(pTestScene->AddObject());
-			pBackground->AttachComponent<dae::RenderComponent>()->LoadTexture("background.png");
+			auto& background{ pTestScene->AddObject() };
+			background.AttachComponent<RenderComponent>().LoadTexture("background.png");
 
 			// Create movable logo
-			auto pLogo = std::addressof(pTestScene->AddObject());
-			pLogo->SetPosition(glm::vec3(358, 180, 0.f));
-			pLogo->AttachComponent<dae::RenderComponent>()->LoadTexture("logo.png");
-			auto pPlayerInput{ pLogo->AttachComponent<dae::PlayerInputComponent>(pKeyboard) };
-			pPlayerInput->AddCommandBinding("Move", std::make_unique<MoveCommand>(pLogo, 2.f));
+			auto& logo{ pTestScene->AddObject() };
+			logo.SetPosition(glm::vec3(358, 180, 0.f));
+			logo.AttachComponent<dae::RenderComponent>().LoadTexture("logo.png");
+			auto& playerInputLogo{ logo.AttachComponent<PlayerInputComponent>(pKeyboard) };
+			playerInputLogo.AddCommandBinding("Move", std::make_unique<MoveCommand>(std::addressof(logo), 2.f));
 
 			// Create movable title
-			auto pTitle = std::addressof(pTestScene->AddObject());
-			pTitle->SetPosition(glm::vec2(292, 20));
-			pTitle->AttachComponent<dae::TextComponent>()->SetText("Programming 4 Assignment", font).SetColor({ 255, 255, 0, 255 });
-			pPlayerInput = pTitle->AttachComponent<dae::PlayerInputComponent>(pGamepad);
-			pPlayerInput->AddCommandBinding("Move", std::make_unique<MoveCommand>(pTitle, 4.f));
+			auto& title{ pTestScene->AddObject() };
+			title.SetPosition(glm::vec2(292, 20));
+			title.AttachComponent<dae::TextComponent>().SetText("Programming 4 Assignment", font).SetColor({ 255, 255, 0, 255 });
+			auto& playerInputTitle = title.AttachComponent<dae::PlayerInputComponent>(pGamepad);
+			playerInputTitle.AddCommandBinding("Move", std::make_unique<MoveCommand>(std::addressof(title), 4.f));
 
 			// Create FPS object
-			auto pFpsObject = std::addressof(pTestScene->AddObject());
-			auto pTextO = pFpsObject->AttachComponent<dae::TextComponent>();
-			pTextO->SetText("FPS", font).SetColor({ 255, 255, 0, 255 });
-			pFpsObject->AttachComponent<dae::FpsComponent>()->SetTextComponent(pTextO);
+			auto& fpsObj = pTestScene->AddObject();
+			auto& fpsTextComp{ fpsObj.AttachComponent<dae::TextComponent>() };
+			fpsTextComp.SetText("FPS", font).SetColor({ 255, 255, 0, 255 });
+			fpsObj.AttachComponent<FpsComponent>().SetTextComponent(std::addressof(fpsTextComp));
 		}
 	}
 }

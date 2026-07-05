@@ -13,6 +13,7 @@ dae::PlayerInputComponent::PlayerInputComponent(GameObject* pOwner, const InputD
 
 void dae::PlayerInputComponent::Render() const
 {
+
 }
 
 void dae::PlayerInputComponent::Update()

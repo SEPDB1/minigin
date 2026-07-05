@@ -1,4 +1,5 @@
-﻿#include <string>
+﻿#include "GameObject.h"
+#include <string>
 #include <algorithm>
 #include "GameObject.h"
 #include "ResourceManager.h"
@@ -9,6 +10,9 @@
 
 void dae::GameObject::Update()
 {
+	if (!m_IsActive)
+		return;
+
 	for (const auto& pComp : m_pComponents)
 	{
 		pComp->Update();
@@ -17,10 +21,18 @@ void dae::GameObject::Update()
 
 void dae::GameObject::Render() const
 {
+	if (!m_IsActive)
+		return;
+
 	for (const auto& pComp : m_pComponents)
 	{
 		pComp->Render();
 	}
+}
+
+void dae::GameObject::SetActive(bool isActive)
+{
+	m_IsActive = isActive;
 }
 
 dae::GameObject& dae::GameObject::SetPosition(float x, float y)

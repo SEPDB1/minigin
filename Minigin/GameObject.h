@@ -20,6 +20,8 @@ namespace dae
 		void Update();
 		void Render() const;
 
+		void SetActive(bool isActive);
+
 		GameObject& SetPosition(float x, float y);
 		GameObject& SetPosition(const glm::vec2& pos);
 		GameObject& SetRotation(float radians);
@@ -36,12 +38,12 @@ namespace dae
 		// Creates a new component of the requested type and attaches it to the game object,
 		// the type has to be a component
 		template <typename ComponentT, typename... Args> requires std::derived_from<ComponentT, BaseComponent>
-		ComponentT* AttachComponent(Args&&... args)
+		ComponentT& AttachComponent(Args&&... args)
 		{
 			auto pUniqueComp{ std::make_unique<ComponentT>(this, std::forward<Args>(args)...) };
 			auto pComp = pUniqueComp.get();
 			m_pComponents.push_back(std::move(pUniqueComp));
-			return pComp;
+			return *pComp;
 		}
 
 		// TO DO: mark as cleanup
@@ -91,5 +93,6 @@ namespace dae
 		mutable Transform m_GlobalTransform{};
 		Transform m_LocalTransform{};
 		mutable bool m_IsWorldTransformDirty{ false };
+		bool m_IsActive{ true };
 	};
 }
