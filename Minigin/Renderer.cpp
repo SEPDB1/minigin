@@ -23,8 +23,7 @@ public:
 	void Render() const;
 	void Destroy();
 
-	void RenderTexture(const Texture2D& texture, float x, float y) const;
-	void RenderTexture(const Texture2D& texture, float x, float y, float width, float height) const;
+	void RenderTexture(const Texture2D& texture, const Transform& transform) const;
 
 	void SetBackgroundColor(const SDL_Color& color);
 
@@ -89,23 +88,23 @@ void dae::SDLRenderer::SDLRendererImpl::Destroy()
 	}
 }
 
-void dae::SDLRenderer::SDLRendererImpl::RenderTexture(const Texture2D& texture, const float x, const float y) const
+void dae::SDLRenderer::SDLRendererImpl::RenderTexture(const Texture2D& texture, const Transform& transform) const
 {
+	const glm::vec2 scale{ transform.GetScale() };
+	const glm::vec2 center{ transform.GetPosition() };
 	SDL_FRect dst{};
-	dst.x = x;
-	dst.y = y;
-	SDL_GetTextureSize(texture.GetSDLTexture(), &dst.w, &dst.h);
-	SDL_RenderTexture(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
-}
 
-void dae::SDLRenderer::SDLRendererImpl::RenderTexture(const Texture2D& texture, const float x, const float y, const float width, const float height) const
-{
-	SDL_FRect dst{};
-	dst.x = x;
-	dst.y = y;
-	dst.w = width;
-	dst.h = height;
-	SDL_RenderTexture(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
+	SDL_GetTextureSize(texture.GetSDLTexture(), &dst.w, &dst.h);
+
+	dst.x = center.x;
+	dst.y = center.y;
+
+	// Scale texture
+	dst.w *= scale.x;
+	dst.h *= scale.y;
+
+	SDL_RenderTextureRotated(GetSDLRenderer(), texture.GetSDLTexture(), nullptr,
+		std::addressof(dst), transform.GetRotationDegrees(), nullptr, SDL_FLIP_NONE);
 }
 
 void dae::SDLRenderer::SDLRendererImpl::SetBackgroundColor(const SDL_Color& color)
@@ -154,14 +153,9 @@ void dae::SDLRenderer::Destroy()
 	m_pSDLRendererImpl->Destroy();
 }
 
-void dae::SDLRenderer::RenderTexture(const Texture2D& texture, float x, float y) const
+void dae::SDLRenderer::RenderTexture(const Texture2D& texture, const Transform& transform) const
 {
-	m_pSDLRendererImpl->RenderTexture(texture, x, y);
-}
-
-void dae::SDLRenderer::RenderTexture(const Texture2D& texture, float x, float y, float width, float height) const
-{
-	m_pSDLRendererImpl->RenderTexture(texture, x, y, width, height);
+	m_pSDLRendererImpl->RenderTexture(texture, transform);
 }
 
 void dae::SDLRenderer::SetBackgroundColor(const SDL_Color& color)

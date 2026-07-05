@@ -1,12 +1,11 @@
 ﻿#include "GameObject.h"
 #include <string>
 #include <algorithm>
-#include "GameObject.h"
 #include "ResourceManager.h"
 #include "Renderer.h"
 #include "RenderComponent.h"
 #include "TextComponent.h"
-#include  <stdexcept>
+
 
 void dae::GameObject::Update()
 {
@@ -35,11 +34,6 @@ void dae::GameObject::SetActive(bool isActive)
 	m_IsActive = isActive;
 }
 
-dae::GameObject& dae::GameObject::SetPosition(float x, float y)
-{
-	return SetPosition(glm::vec2(x, y));
-}
-
 dae::GameObject& dae::GameObject::SetPosition(const glm::vec2& pos)
 {
 	m_LocalTransform.SetPosition(pos);
@@ -50,13 +44,6 @@ dae::GameObject& dae::GameObject::SetPosition(const glm::vec2& pos)
 dae::GameObject& dae::GameObject::SetRotation(float radians)
 {
 	m_LocalTransform.SetRotation(radians);
-	SetTransformDirty();
-	return *this;
-}
-
-dae::GameObject& dae::GameObject::SetScale(float x, float y)
-{
-	SetScale(glm::vec2(x, y));
 	SetTransformDirty();
 	return *this;
 }
@@ -94,7 +81,7 @@ dae::GameObject& dae::GameObject::SetParent(GameObject* pNewParent, bool keepWor
 			glm::mat3 parentWorldInv = pNewParent->GetTransform().Inversed();
 			m_LocalTransform.SetMatrix(parentWorldInv * m_GlobalTransform.GetMatrix());
 		}
-		else
+		else 
 		{
 			// No parent → local = world
 			m_LocalTransform.SetMatrix(m_GlobalTransform.GetMatrix());
@@ -132,7 +119,8 @@ const dae::Transform& dae::GameObject::GetTransform() const
 {
 	if (m_IsWorldTransformDirty)
 		UpdateWorldTransform();
-	return m_GlobalTransform;
+	return m_LocalTransform;
+	//return m_GlobalTransform;
 }
 
 dae::GameObject* dae::GameObject::GetParent() const

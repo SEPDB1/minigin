@@ -16,7 +16,7 @@ void dae::RotaterComponent::Update()
 	const auto pOwner{ BaseComponent::GetOwner() };
 	const float deltaTime{ Timer::GetInstance().GetElapsedTime() };
 
-	pOwner->SetRotation(pOwner->GetTransform().GetRotation() + m_RotationSpeed * deltaTime);
+	pOwner->SetRotation(pOwner->GetTransform().GetRotationRadians() + m_RotationSpeed * deltaTime);
 }
 
 dae::RotaterComponent& dae::RotaterComponent::SetRotationSpeed(float speed)

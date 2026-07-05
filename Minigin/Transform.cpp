@@ -3,10 +3,6 @@
 # define PI_F           3.1415926536f
 # define PI_F_MUL_2     6.2821853072f
 
-dae::Transform::Transform() = default;
-
-dae::Transform::~Transform() = default;
-
 const glm::mat3x3 dae::Transform::GetMatrix() const
 {
 	if (m_IsMatrixDirty)
@@ -17,12 +13,17 @@ const glm::mat3x3 dae::Transform::GetMatrix() const
 
 glm::vec2 dae::Transform::GetPosition() const
 {
-	return glm::vec3(m_Matrix[0][2], m_Matrix[1][2], 0.f);
+	return glm::vec2(m_Translation);
 }
 
-float dae::Transform::GetRotation() const
+float dae::Transform::GetRotationRadians() const
 {
 	return m_Rotation;
+}
+
+float dae::Transform::GetRotationDegrees() const
+{
+	return glm::degrees(m_Rotation);
 }
 
 glm::vec2 dae::Transform::GetScale() const
@@ -62,16 +63,10 @@ glm::mat3x3 dae::Transform::Inversed() const
 	return inv;
 }
 
-
 void dae::Transform::SetMatrix(const glm::mat3x3& matrix)
 {
 	m_Matrix = matrix;
 	m_IsMatrixDirty = false;
-}
-
-void dae::Transform::SetPosition(float pos_x, float pos_y)
-{
-	SetPosition(glm::vec2(pos_x, pos_y));
 }
 
 void dae::Transform::SetPosition(const glm::vec2& position) 
@@ -84,11 +79,11 @@ void dae::Transform::SetRotation(float radians)
 {
 	m_Rotation = radians;
 
-	while (radians > PI_F_MUL_2)
-		m_Rotation -= PI_F;
+	while (m_Rotation > PI_F_MUL_2)
+		m_Rotation -= PI_F_MUL_2;
 
-	while (radians < -PI_F_MUL_2)
-		m_Rotation += PI_F;
+	while (m_Rotation < -PI_F_MUL_2)
+		m_Rotation += PI_F_MUL_2;
 
 	m_IsMatrixDirty = true;
 }
@@ -97,11 +92,6 @@ void dae::Transform::SetScale(const glm::vec2& scale)
 {
 	m_Scale = scale;
 	m_IsMatrixDirty = true;
-}
-
-void dae::Transform::SetScale(float scale_x, float scale_y)
-{
-	SetScale(glm::vec2(scale_x, scale_y));
 }
 
 glm::mat3x3 dae::Transform::CreateTranslationMatrix() const

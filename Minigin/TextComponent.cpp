@@ -5,6 +5,9 @@
 #include "Texture2D.h"
 #include "Renderer.h"
 #include "GameObject.h"
+#include "Timer.h"
+
+const float dae::TextComponent::m_UpdateTime{ 0.1f };
 
 dae::TextComponent::TextComponent(GameObject* pOwner)
 	: BaseComponent(pOwner)
@@ -14,13 +17,12 @@ dae::TextComponent::TextComponent(GameObject* pOwner)
 
 void dae::TextComponent::Render() const
 {
-	const auto pos{ BaseComponent::GetOwner()->GetTransform().GetPosition() };
-	SDLRenderer::GetInstance().RenderTexture(*m_pTextTexture, pos.x, pos.y);
+	SDLRenderer::GetInstance().RenderTexture(*m_pTextTexture, BaseComponent::GetOwner()->GetTransform());
 }
 
 void dae::TextComponent::Update()
 {
-	if (m_NeedsUpdate)
+	if (m_TextChanged && m_ShouldUpdate)
 	{
 		const auto surf = TTF_RenderText_Blended(m_pFont->GetFont(), m_Text.c_str(), m_Text.length(), m_Color);
 		if (surf == nullptr)
@@ -34,13 +36,24 @@ void dae::TextComponent::Update()
 		}
 		SDL_DestroySurface(surf);
 		m_pTextTexture = std::make_unique<Texture2D>(texture);
-		m_NeedsUpdate = false;
+		m_TextChanged = false;
+		m_ShouldUpdate = false;
+	}
+	else if (!m_ShouldUpdate)
+	{
+		m_ElapsedTime += Timer::GetInstance().GetElapsedTime();
+
+		if (m_ElapsedTime >= m_UpdateTime)
+		{
+			m_ElapsedTime = 0.f;
+			m_ShouldUpdate = true;
+		}
 	}
 }
 
 dae::TextComponent& dae::TextComponent::SetText(const std::string & text, std::shared_ptr<Font> font, const SDL_Color & color)
 {
-	m_NeedsUpdate = true;
+	m_TextChanged = true;
 	m_Text = text;
 	m_pFont = std::move(font);
 	m_Color = color;
@@ -55,7 +68,7 @@ dae::TextComponent& dae::TextComponent::SetText(const std::string& text)
 		throw std::runtime_error(std::string("Font is a nullptr"));
 	}
 
-	m_NeedsUpdate = true;
+	m_TextChanged = true;
 	m_Text = text;
 	return *this;
 }
@@ -63,7 +76,7 @@ dae::TextComponent& dae::TextComponent::SetText(const std::string& text)
 dae::TextComponent& dae::TextComponent::SetColor(const SDL_Color& color)
 {
 	m_Color = color;
-	m_NeedsUpdate = true;
+	m_TextChanged = true;
 	return *this;
 }
 

@@ -13,6 +13,7 @@ namespace dae
 	 * Simple RAII wrapper for the SDL renderer
 	 */
 	class Texture2D;
+	class Transform;
 	class SDLRenderer final : public Singleton<SDLRenderer>
 	{
 	public:
@@ -27,8 +28,7 @@ namespace dae
 		void Render() const;
 		void Destroy();
 
-		void RenderTexture(const Texture2D& texture, float x, float y) const;
-		void RenderTexture(const Texture2D& texture, float x, float y, float width, float height) const;
+		void RenderTexture(const Texture2D& texture, const Transform& transform) const;
 
 		void SetBackgroundColor(const SDL_Color& color);
 

@@ -9,7 +9,7 @@ namespace dae
 		{
 			auto& inputManager{ InputManager::GetInstance() };
 			auto& sceneManager{ SceneManager::GetInstance() };
-			auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+			auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
 			auto pTestScene = std::addressof(sceneManager.CreateScene());
 

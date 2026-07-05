@@ -22,10 +22,8 @@ namespace dae
 
 		void SetActive(bool isActive);
 
-		GameObject& SetPosition(float x, float y);
 		GameObject& SetPosition(const glm::vec2& pos);
 		GameObject& SetRotation(float radians);
-		GameObject& SetScale(float x, float y);
 		GameObject& SetScale(const glm::vec2& scale);
 		GameObject& SetParent(GameObject* pParent, bool keepWorldPosition);
 

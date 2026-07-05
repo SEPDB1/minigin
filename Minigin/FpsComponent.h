@@ -24,7 +24,7 @@ namespace dae
 	private:
 		TextComponent* m_pTextComponent;
 		Timer& m_Timer;
-		bool m_NeedsToUpdate;
 		float m_AccuTime;
+		bool m_NeedsToUpdate;
 	};
 }

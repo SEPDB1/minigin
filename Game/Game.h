@@ -4,6 +4,7 @@ namespace dae
 {
 	class Scene;
 	class GameObject;
+	class TextComponent;
 	class Game final
 	{
 	public:
@@ -18,10 +19,9 @@ namespace dae
 		void Update();
 
 	private:
-		Scene* m_pTestScene{};
-		GameObject* m_pBackground{};
-		GameObject* m_pLogo{};
-		GameObject* m_pTitle{};
-		GameObject* m_pFpsObject{};
+		float m_ElapsedTime{};
+		const float m_RotationSpeed{ 2.f };
+		GameObject* m_pTank{};
+		TextComponent* m_pTankValueDisplay{};
 	};
 }

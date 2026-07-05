@@ -18,10 +18,13 @@ dae::RenderComponent::~RenderComponent()
 void dae::RenderComponent::Render() const
 {
 	if (m_pTexture)
+		SDLRenderer::GetInstance().RenderTexture(*m_pTexture, BaseComponent::GetOwner()->GetTransform());
+
+	/*if (m_pTexture)
 	{
 		const auto& pos = BaseComponent::GetOwner()->GetTransform().GetPosition();
 		SDLRenderer::GetInstance().RenderTexture(*m_pTexture, pos.x, pos.y);
-	}
+	}*/
 }
 
 void dae::RenderComponent::Update()

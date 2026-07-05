@@ -29,10 +29,14 @@ namespace dae
 		Texture2D* GetTexture() const;
 
 	private:
-		bool m_NeedsUpdate{};
 		std::string m_Text{};
 		SDL_Color m_Color{ 255, 255, 255, 255 };
 		std::shared_ptr<Font> m_pFont{};
 		std::unique_ptr<Texture2D> m_pTextTexture{};
+		float m_ElapsedTime{};
+		bool m_TextChanged{};
+		bool m_ShouldUpdate{ true };
+
+		static const float m_UpdateTime;
 	};
 }
