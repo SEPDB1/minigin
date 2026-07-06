@@ -19,6 +19,7 @@ namespace dae
 		void Remove(const GameObject& object);
 		void RemoveAll();
 
+		void Start();
 		void Update();
 		void Render() const;
 

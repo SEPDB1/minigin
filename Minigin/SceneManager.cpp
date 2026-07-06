@@ -1,6 +1,14 @@
 #include "SceneManager.h"
 #include "Scene.h"
 
+void dae::SceneManager::Start()
+{
+	for (auto& pScene : m_pScenes)
+	{
+		pScene->Start();
+	}
+}
+
 void dae::SceneManager::Update()
 {
 	for(auto& pScene : m_pScenes)

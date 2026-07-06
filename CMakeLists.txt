@@ -37,8 +37,6 @@ add_library(${ENGINE_NAME} STATIC
     Minigin/PlayerInputComponent.cpp
     Minigin/Timer.cpp
     Minigin/UiManager.cpp
-    Minigin/Command.cpp
-    Minigin/Gamepad.cpp
     Minigin/Keyboard.cpp
 )
 
@@ -48,6 +46,8 @@ target_compile_features(${ENGINE_NAME} PUBLIC cxx_std_23)
 # --Create executable--
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
     Minigin/Main.cpp
+    Game/PlayerTankComponent.cpp
+    Game/GameCommands.cpp
     Game/Game.cpp)
 
 target_link_libraries(${TARGET_NAME} PRIVATE ${ENGINE_NAME})
@@ -55,6 +55,8 @@ target_link_libraries(${TARGET_NAME} PRIVATE ${ENGINE_NAME})
 target_include_directories(${TARGET_NAME} PRIVATE 
     ${CMAKE_SOURCE_DIR}/Minigin 
     ${CMAKE_SOURCE_DIR}/Game)
+
+target_compile_features(${TARGET_NAME} PUBLIC cxx_std_23)
 # --
 
 include(FetchContent)

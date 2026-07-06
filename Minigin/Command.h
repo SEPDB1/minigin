@@ -16,32 +16,12 @@ namespace dae
 	class GameObjectCommand : public Command
 	{
 	protected:
-		GameObjectCommand(GameObject* pGameObject);
+		GameObjectCommand(GameObject* pGameObject) : m_pGameObject{ pGameObject } {};
 		virtual ~GameObjectCommand() = default;
 
-		void Execute(InputContext ctx) override;
-
-		GameObject* GetGameObject() const;
+		GameObject* GetGameObject() const { return m_pGameObject; };
 
 	private:
 		GameObject* m_pGameObject;
-	};
-
-	class MoveCommand final : public GameObjectCommand
-	{
-	public:
-		MoveCommand(GameObject* pGameObject, float movementSpeed);
-
-		void Execute(InputContext ctx) override;
-	private:
-		float m_MovementSpeed{};
-	};
-
-	class TestCommand final : public GameObjectCommand
-	{
-	public:
-		TestCommand(GameObject* pGameObject);
-
-		void Execute(InputContext ctx) override;
 	};
 }

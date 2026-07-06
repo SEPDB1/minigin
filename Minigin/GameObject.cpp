@@ -6,6 +6,13 @@
 #include "RenderComponent.h"
 #include "TextComponent.h"
 
+void dae::GameObject::Start()
+{
+	for (const auto& pComp : m_pComponents)
+	{
+		pComp->Start();
+	}
+}
 
 void dae::GameObject::Update()
 {

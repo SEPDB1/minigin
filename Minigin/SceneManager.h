@@ -13,6 +13,7 @@ namespace dae
 	public:
 		Scene& CreateScene();
 
+		void Start();
 		void Update();
 		void Render();
 	private:

@@ -25,6 +25,14 @@ void dae::Scene::RemoveAll()
 	m_Objects.clear();
 }
 
+void dae::Scene::Start()
+{
+	for (auto& object : m_Objects)
+	{
+		object->Start();
+	}
+}
+
 void dae::Scene::Update()
 {
 	for(auto& object : m_Objects)
