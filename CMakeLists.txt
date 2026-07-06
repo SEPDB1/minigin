@@ -38,6 +38,7 @@ add_library(${ENGINE_NAME} STATIC
     Minigin/Timer.cpp
     Minigin/UiManager.cpp
     Minigin/Keyboard.cpp
+    Minigin/Gamepad.cpp
 )
 
 target_compile_features(${ENGINE_NAME} PUBLIC cxx_std_23)

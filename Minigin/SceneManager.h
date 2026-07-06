@@ -11,14 +11,18 @@ namespace dae
 	class SceneManager final : public Singleton<SceneManager>
 	{
 	public:
-		Scene& CreateScene();
-
 		void Start();
 		void Update();
 		void Render();
+
+		Scene& CreateScene();
+		Scene& GetActiveScene() const;
+		void SetActiveScene(Scene& scene);
+
 	private:
 		friend class Singleton<SceneManager>;
-		SceneManager() = default;
+		SceneManager();
 		std::vector<std::unique_ptr<Scene>> m_pScenes{};
+		Scene* m_pActiveScene;
 	};
 }

@@ -25,7 +25,7 @@ namespace dae
 		template<typename InputDeviceT> requires std::derived_from<InputDeviceT, InputDevice>
 		const InputDevice* CreateInputDevice()
 		{
-			m_pDevices.push_back(std::move(std::make_unique<InputDeviceT>()));
+			m_pDevices.emplace_back (new InputDeviceT());
 			return m_pDevices.crbegin()->get();
 		}
 

@@ -7,7 +7,6 @@ namespace dae
 	class Keyboard final : public InputDevice
 	{
 	public:
-		Keyboard();
 		~Keyboard();
 		Keyboard(const Keyboard& other) = delete;
 		Keyboard(Keyboard&& other) = delete;
@@ -23,6 +22,9 @@ namespace dae
 		bool IsPressed(const Button& button) const override;
 
 	private:
+		friend class InputManager;
+		Keyboard();
+
 		class KeyboardImpl;
 		std::unique_ptr<KeyboardImpl> m_pImpl{};
 	};

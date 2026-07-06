@@ -102,12 +102,13 @@ void dae::Minigin::Run(const std::function<void()>& load)
 void dae::Minigin::Start()
 {
 	m_pGame->Start();
+	SceneManager::GetInstance().Start();
 }
 void dae::Minigin::Update()
 {
 	m_quit = !InputManager::GetInstance().ProcessInput();
+	m_pGame->Update();
 	SceneManager::GetInstance().Update();
 	Timer::GetInstance().Update();
-	m_pGame->Update();
 	SDLRenderer::GetInstance().Render();
 }

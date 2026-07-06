@@ -11,23 +11,34 @@ void dae::SceneManager::Start()
 
 void dae::SceneManager::Update()
 {
-	for(auto& pScene : m_pScenes)
-	{
-		pScene->Update();
-	}
+	m_pActiveScene->Update();
 }
 
 void dae::SceneManager::Render()
 {
-	for (const auto& pScene : m_pScenes)
-	{
-		pScene->Render();
-	}
+	m_pActiveScene->Render();
 }
 
 dae::Scene& dae::SceneManager::CreateScene()
 {
-	//m_pScenes.emplace_back(std::make_unique<Scene>());
 	m_pScenes.emplace_back(new Scene());
 	return *m_pScenes.back();
+}
+
+dae::Scene& dae::SceneManager::GetActiveScene() const
+{
+	return *m_pActiveScene;
+}
+
+void dae::SceneManager::SetActiveScene(Scene& scene)
+{
+	m_pActiveScene = std::addressof(scene);
+}
+
+dae::SceneManager::SceneManager()
+	: m_pScenes{}
+	, m_pActiveScene{}
+{
+	CreateScene();
+	m_pActiveScene = m_pScenes.back().get();
 }

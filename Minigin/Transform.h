@@ -15,8 +15,7 @@ namespace dae
 
 		const glm::mat3x3 GetMatrix() const;
 		glm::vec2 GetPosition() const;
-		float GetRotationRadians() const;
-		float GetRotationDegrees() const;
+		float GetRotation() const;
 		glm::vec2 GetScale() const;
 		glm::mat3x3 Inversed() const;
 

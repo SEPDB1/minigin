@@ -16,14 +16,9 @@ glm::vec2 dae::Transform::GetPosition() const
 	return glm::vec2(m_Translation);
 }
 
-float dae::Transform::GetRotationRadians() const
+float dae::Transform::GetRotation() const
 {
 	return m_Rotation;
-}
-
-float dae::Transform::GetRotationDegrees() const
-{
-	return glm::degrees(m_Rotation);
 }
 
 glm::vec2 dae::Transform::GetScale() const

@@ -18,8 +18,8 @@ void dae::Timer::Update()
 	m_ElapsedTime = static_cast<float>((m_CurrentTime - m_PreviousTime) * m_SecondsPerCount);
  	m_PreviousTime = m_CurrentTime;
 
-	if (m_ElapsedTime < 0.0f)
-		m_ElapsedTime = 0.0f;
+	if (m_ElapsedTime < 0.f)
+		m_ElapsedTime = 0.f;
 }
 
 float dae::Timer::GetElapsedTime() const

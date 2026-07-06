@@ -7,7 +7,6 @@ namespace dae
 	class Gamepad final : public InputDevice
 	{
 	public:
-		Gamepad();
 		~Gamepad();
 		Gamepad(const Gamepad& other) = delete;
 		Gamepad(Gamepad&& other) = delete;
@@ -23,6 +22,9 @@ namespace dae
 		bool IsPressed(const Button& button) const override;
 
 	private:
+		friend class InputManager;
+		Gamepad();
+
 		class GamepadImpl;
 		std::unique_ptr<GamepadImpl> m_pImpl{};
 	};

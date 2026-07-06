@@ -4,7 +4,7 @@
 
 dae::GameObject& dae::Scene::AddObject()
 {
-	m_Objects.emplace_back(std::make_unique<GameObject>());
+	m_Objects.emplace_back(new GameObject());
 	return *m_Objects.back();
 }
 

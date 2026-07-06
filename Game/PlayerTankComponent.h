@@ -5,12 +5,13 @@
 namespace dae
 {
 	class GameObject;
+	class InputDevice;
 	class RenderComponent;
 	class PlayerInputComponent;
 	class PlayerTankComponent final : public BaseComponent
 	{
 	public:
-		PlayerTankComponent(GameObject* pOwner);
+		PlayerTankComponent(GameObject* pOwner, const InputDevice* pDevice);
 		~PlayerTankComponent() = default;
 		PlayerTankComponent(const PlayerTankComponent& other) = delete;
 		PlayerTankComponent(PlayerTankComponent&& other) = delete;
@@ -22,9 +23,7 @@ namespace dae
 		void Update() override;
 
 	private:
-
-		std::unique_ptr<GameObject> m_TankObj;
 		RenderComponent& m_RenderComp;
-		PlayerInputComponent* m_PlayerInput;
+		PlayerInputComponent& m_PlayerInput;
 	};
 }

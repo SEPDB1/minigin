@@ -104,7 +104,7 @@ void dae::SDLRenderer::SDLRendererImpl::RenderTexture(const Texture2D& texture, 
 	dst.h *= scale.y;
 
 	SDL_RenderTextureRotated(GetSDLRenderer(), texture.GetSDLTexture(), nullptr,
-		std::addressof(dst), transform.GetRotationDegrees(), nullptr, SDL_FLIP_NONE);
+		std::addressof(dst), glm::degrees(transform.GetRotation()), nullptr, SDL_FLIP_NONE);
 }
 
 void dae::SDLRenderer::SDLRendererImpl::SetBackgroundColor(const SDL_Color& color)

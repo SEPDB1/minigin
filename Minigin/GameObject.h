@@ -10,7 +10,6 @@ namespace dae
 	class GameObject final
 	{
 	public:
-		GameObject() = default;
 		~GameObject() = default;
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
@@ -41,7 +40,7 @@ namespace dae
 		{
 			auto pUniqueComp{ std::make_unique<ComponentT>(this, std::forward<Args>(args)...) };
 			auto pComp = pUniqueComp.get();
-			m_pComponents.push_back(std::move(pUniqueComp));
+			m_pComponents.emplace_back(std::move(pUniqueComp));
 			return *pComp;
 		}
 
@@ -77,6 +76,9 @@ namespace dae
 #pragma endregion TemplatedFunctions
 
 	private:
+		friend class Scene;
+		explicit GameObject() = default;
+
 		void AddChild(GameObject* pChild);
 		void RemoveChild(GameObject* pChild);
 		void SetTransformDirty() const;
