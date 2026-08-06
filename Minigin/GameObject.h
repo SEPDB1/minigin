@@ -25,7 +25,7 @@ namespace dae
 		GameObject& SetPosition(const glm::vec2& pos);
 		GameObject& SetRotation(float radians);
 		GameObject& SetScale(const glm::vec2& scale);
-		GameObject& SetParent(GameObject* pParent, bool keepWorldPosition);
+		GameObject& SetParent(GameObject* pParent, bool keepWorldPosition = true);
 
 		const Transform& GetTransform() const;
 		GameObject* GetParent() const;
@@ -41,6 +41,7 @@ namespace dae
 			auto pUniqueComp{ std::make_unique<ComponentT>(this, std::forward<Args>(args)...) };
 			auto pComp = pUniqueComp.get();
 			m_pComponents.emplace_back(std::move(pUniqueComp));
+
 			return *pComp;
 		}
 
@@ -68,9 +69,8 @@ namespace dae
 				[](const auto& comp) { return typeid(ComponentT) == typeid(*comp); });
 
 			if (it != m_pComponents.end())
-			{
 				return dynamic_cast<ComponentT*>((*it).get());
-			}
+
 			return nullptr;
 		}
 #pragma endregion TemplatedFunctions

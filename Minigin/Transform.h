@@ -13,11 +13,10 @@ namespace dae
 		Transform& operator=(const Transform& other) = delete;
 		Transform& operator=(Transform&& other) = delete;
 
-		const glm::mat3x3 GetMatrix() const;
+		const glm::mat3x3& GetMatrix() const;
 		glm::vec2 GetPosition() const;
 		float GetRotation() const;
 		glm::vec2 GetScale() const;
-		glm::mat3x3 Inversed() const;
 
 		void SetMatrix(const glm::mat3x3& matrix);
 		void SetPosition(const glm::vec2& position);

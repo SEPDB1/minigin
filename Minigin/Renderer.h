@@ -2,6 +2,7 @@
 #include <memory>
 #include <filesystem>
 #include "Singleton.h"
+#include <glm/vec2.hpp>
 
 struct SDL_Window;
 struct SDL_Color;
@@ -28,7 +29,7 @@ namespace dae
 		void Render() const;
 		void Destroy();
 
-		void RenderTexture(const Texture2D& texture, const Transform& transform) const;
+		void RenderTexture(const Texture2D& texture, const Transform& transform, const glm::vec2& offset = glm::vec2(0.f, 0.f)) const;
 
 		void SetBackgroundColor(const SDL_Color& color);
 

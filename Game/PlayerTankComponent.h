@@ -23,7 +23,9 @@ namespace dae
 		void Update() override;
 
 	private:
-		RenderComponent& m_RenderComp;
+		RenderComponent& m_RenderCompTank;
+		GameObject& m_GunObject;
+		RenderComponent& m_RenderCompGun;
 		PlayerInputComponent& m_PlayerInput;
 	};
 }

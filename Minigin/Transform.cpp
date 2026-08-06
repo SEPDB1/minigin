@@ -3,7 +3,7 @@
 # define PI_F           3.1415926536f
 # define PI_F_MUL_2     6.2821853072f
 
-const glm::mat3x3 dae::Transform::GetMatrix() const
+const glm::mat3x3& dae::Transform::GetMatrix() const
 {
 	if (m_IsMatrixDirty)
 		UpdateMatrix();
@@ -13,7 +13,7 @@ const glm::mat3x3 dae::Transform::GetMatrix() const
 
 glm::vec2 dae::Transform::GetPosition() const
 {
-	return glm::vec2(m_Translation);
+	return m_Translation;
 }
 
 float dae::Transform::GetRotation() const
@@ -26,41 +26,18 @@ glm::vec2 dae::Transform::GetScale() const
 	return m_Scale;
 }
 
-glm::mat3x3 dae::Transform::Inversed() const
-{
-	glm::mat3x3 inv;
-
-	const float a = m_Matrix[0][0];
-	const float b = m_Matrix[0][1];
-	const float tx = m_Matrix[0][2];
-	const float c = m_Matrix[1][0];
-	const float d = m_Matrix[1][1];
-	const float ty = m_Matrix[1][2];
-
-	const float det = a * d - b * c;
-	const float invDet = 1.0f / det;
-
-	// Inverse of the 2x2 rotation-scale block
-	inv[0][0] = d * invDet;
-	inv[0][1] = -b * invDet;
-	inv[1][0] = -c * invDet;
-	inv[1][1] = a * invDet;
-
-	// Inverse translation
-	inv[0][2] = (b * ty - d * tx) * invDet;
-	inv[1][2] = (c * tx - a * ty) * invDet;
-
-	// Last row stays the same
-	inv[2][0] = 0.0f;
-	inv[2][1] = 0.0f;
-	inv[2][2] = 1.0f;
-
-	return inv;
-}
-
 void dae::Transform::SetMatrix(const glm::mat3x3& matrix)
 {
+	const float scaleX{ glm::length(glm::vec2(matrix[0][0], matrix[1][0])) };
+	const float scaleY{ glm::length(glm::vec2(matrix[0][1], matrix[1][1])) };
+
+	// ✅ translation is in row 2 (index 2) of columns 0 and 1
+	m_Translation = { matrix[0][2], matrix[1][2] };
+
+	m_Rotation = std::atan2(matrix[1][0], matrix[0][0]);
+	m_Scale = { scaleX, scaleY };
 	m_Matrix = matrix;
+
 	m_IsMatrixDirty = false;
 }
 
@@ -115,8 +92,11 @@ glm::mat3x3 dae::Transform::CreateScaleMatrix() const
 
 void dae::Transform::UpdateMatrix() const
 {
-	if (!m_IsMatrixDirty) return;
+	if (!m_IsMatrixDirty) 
+		return;
 
-	m_Matrix = CreateTranslationMatrix() * CreateRotationMatrix() * CreateScaleMatrix();
+	//m_Matrix = CreateTranslationMatrix() * CreateRotationMatrix() * CreateScaleMatrix();
+	m_Matrix = CreateScaleMatrix() * CreateRotationMatrix() * CreateTranslationMatrix();
+
 	m_IsMatrixDirty = false;
 }

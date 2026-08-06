@@ -12,7 +12,7 @@ void dae::TankMoveCommand::Execute(InputContext ctx)
 	GameObject* pObj{ GameObjectCommand::GetGameObject() };
 	glm::vec2 input{ std::get<glm::vec2>(ctx.value) };
 
-	if (input.length() > 0.f)
+	if (glm::length(input) > 0.f)
 	{
 		float eTime{ Timer::GetInstance().GetElapsedTime() };
 		pObj->SetPosition(pObj->GetTransform().GetPosition() + input * m_MovementSpeed * eTime);

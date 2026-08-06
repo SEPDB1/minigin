@@ -9,9 +9,7 @@
 void dae::GameObject::Start()
 {
 	for (const auto& pComp : m_pComponents)
-	{
 		pComp->Start();
-	}
 }
 
 void dae::GameObject::Update()
@@ -20,9 +18,7 @@ void dae::GameObject::Update()
 		return;
 
 	for (const auto& pComp : m_pComponents)
-	{
 		pComp->Update();
-	}
 }
 
 void dae::GameObject::Render() const
@@ -31,9 +27,7 @@ void dae::GameObject::Render() const
 		return;
 
 	for (const auto& pComp : m_pComponents)
-	{
 		pComp->Render();
-	}
 }
 
 void dae::GameObject::SetActive(bool isActive)
@@ -45,6 +39,7 @@ dae::GameObject& dae::GameObject::SetPosition(const glm::vec2& pos)
 {
 	m_LocalTransform.SetPosition(pos);
 	SetTransformDirty();
+
 	return *this;
 }
 
@@ -52,6 +47,7 @@ dae::GameObject& dae::GameObject::SetRotation(float radians)
 {
 	m_LocalTransform.SetRotation(radians);
 	SetTransformDirty();
+
 	return *this;
 }
 
@@ -59,6 +55,7 @@ dae::GameObject& dae::GameObject::SetScale(const glm::vec2& scale)
 {
 	m_LocalTransform.SetScale(scale);
 	SetTransformDirty();
+
 	return *this;
 }
 
@@ -67,30 +64,16 @@ dae::GameObject& dae::GameObject::SetParent(GameObject* pNewParent, bool keepWor
 	if (pNewParent == this || pNewParent == m_pParent || IsChild(pNewParent))
 		return *this;
 
-	//if (!pNewParent)
-	//{
-	//	SetPosition(GetWorldPosition());
-	//}
-	//else
-	//{
-	//	if (keepWorldPosition)
-	//		SetPosition(GetWorldPosition() - pNewParent->GetWorldPosition());
-
-	//	SetTransformDirty();
-	//}
-
-	// TO DO fix this ****
 	if (keepWorldPosition)
 	{
 		if (pNewParent)
 		{
 			// local = inverse(parentWorld) * world
-			glm::mat3 parentWorldInv = pNewParent->GetTransform().Inversed();
-			m_LocalTransform.SetMatrix(parentWorldInv * m_GlobalTransform.GetMatrix());
+			m_LocalTransform.SetMatrix(glm::inverse(pNewParent->GetTransform().GetMatrix() * m_GlobalTransform.GetMatrix()));
 		}
 		else 
 		{
-			// No parent → local = world
+			// No parent => local = world
 			m_LocalTransform.SetMatrix(m_GlobalTransform.GetMatrix());
 		}
 	}
@@ -98,13 +81,15 @@ dae::GameObject& dae::GameObject::SetParent(GameObject* pNewParent, bool keepWor
 	SetTransformDirty();
 
 	// Remove itself from the previous parent
-	if (m_pParent) m_pParent->RemoveChild(this);
+	if (m_pParent) 
+		m_pParent->RemoveChild(this);
 
 	// Add parent
 	m_pParent = pNewParent;
 
 	// Add itself as child
-	if (m_pParent) m_pParent->AddChild(this);
+	if (m_pParent) 
+		m_pParent->AddChild(this);
 
 	// Update transform
 	return *this;
@@ -125,9 +110,12 @@ void dae::GameObject::SetTransformDirty() const
 const dae::Transform& dae::GameObject::GetTransform() const
 {
 	if (m_IsWorldTransformDirty)
+	{
 		UpdateWorldTransform();
-	return m_LocalTransform;
-	//return m_GlobalTransform;
+		m_IsWorldTransformDirty = false;
+	}
+
+	return m_GlobalTransform;
 }
 
 dae::GameObject* dae::GameObject::GetParent() const
@@ -160,20 +148,20 @@ void dae::GameObject::AddChild(GameObject* pNewChild)
 
 	// Remove newChild from previous parent
 	GameObject* pParent{ pNewChild->GetParent() };
-	if (pParent) pParent->RemoveChild(pNewChild);
+	if (pParent) 
+		pParent->RemoveChild(pNewChild);
 
 	// Set itself as new parent
-	pNewChild->SetParent(this, true);
+	pNewChild->SetParent(this);
 
 	// add to children
 	m_pChildren.push_back(pNewChild);
-
-	// Update transform
 }
 
 void dae::GameObject::RemoveChild(GameObject* pChild)
 {
-	if (!pChild || !IsChild(pChild)) return;
+	if (!pChild || !IsChild(pChild)) 
+		return;
 
 	// Remove child from the list
 	m_pChildren.erase(std::ranges::find(m_pChildren, pChild));
@@ -198,9 +186,7 @@ bool dae::GameObject::IsChild(GameObject* pGameObject) const
 	for (const auto pChild : m_pChildren)
 	{
 		if (pGameObject == pChild || pChild->IsChild(pGameObject))
-		{
 			return true;
-		}
 	}
 	return false;
 }

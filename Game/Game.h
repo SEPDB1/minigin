@@ -19,9 +19,7 @@ namespace dae
 		void Update();
 
 	private:
-		float m_ElapsedTime{};
-		const float m_RotationSpeed{ 2.f };
-		GameObject* m_pTank{};
+		GameObject* m_pTank;
 		TextComponent* m_pTankValueDisplay{};
 	};
 }
