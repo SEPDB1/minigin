@@ -11,5 +11,17 @@ namespace dae
 		void Execute(InputContext ctx) override;
 	private:
 		float m_MovementSpeed{};
+		GameObject& m_GunObj;
+	};
+
+	class GunRotateCommand final : public GameObjectCommand
+	{
+	public:
+		GunRotateCommand(GameObject* pGameObject);
+
+		void Execute(InputContext ctx) override;
+
+	private:
+		GameObject& m_TankObj;
 	};
 }

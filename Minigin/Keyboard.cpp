@@ -15,11 +15,10 @@ public:
 
 	void Update();
 
-	bool IsButtonCompatible(const dae::Button& button) const;
-
 	bool IsDownThisFrame(const dae::Button& button) const;
 	bool IsUpThisFrame(const dae::Button& button) const;
 	bool IsPressed(const dae::Button& button) const;
+	glm::vec2 GetAxisValue(Axis axis) const ;
 
 private:
 	uint8_t m_CurrentState[SDL_SCANCODE_COUNT]{};
@@ -91,11 +90,6 @@ void dae::Keyboard::KeyboardImpl::Update()
 	std::memcpy(m_CurrentState, SDL_GetKeyboardState(nullptr), sizeof(m_CurrentState));
 }
 
-bool dae::Keyboard::KeyboardImpl::IsButtonCompatible(const Button& button) const
-{
-	return button.deviceType == DeviceType::keyboard;
-}
-
 bool dae::Keyboard::KeyboardImpl::IsDownThisFrame(const Button& button) const
 {
 	auto idx{ m_ButtonTable.at(button.name) };
@@ -114,6 +108,11 @@ bool dae::Keyboard::KeyboardImpl::IsPressed(const Button& button) const
 	return m_CurrentState[idx];
 }
 
+glm::vec2 dae::Keyboard::KeyboardImpl::GetAxisValue(Axis) const
+{
+	return glm::vec2();
+}
+
 #pragma endregion KeyboardImpl
 
 #pragma region Keyboard
@@ -130,11 +129,6 @@ void dae::Keyboard::Update()
 	m_pImpl->Update();
 }
 
-bool dae::Keyboard::IsButtonCompatible(const Button& button) const
-{
-	return m_pImpl->IsButtonCompatible(button);
-}
-
 bool dae::Keyboard::IsDownThisFrame(const Button& button) const
 {
 	return m_pImpl->IsDownThisFrame(button);
@@ -148,6 +142,11 @@ bool dae::Keyboard::IsUpThisFrame(const Button& button) const
 bool dae::Keyboard::IsPressed(const Button& button) const
 {
 	return m_pImpl->IsPressed(button);
+}
+
+glm::vec2 dae::Keyboard::GetAxisValue(Axis axis) const
+{
+	return m_pImpl->GetAxisValue(axis);
 }
 
 #pragma endregion Keyboard

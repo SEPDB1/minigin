@@ -33,10 +33,8 @@ add_library(${ENGINE_NAME} STATIC
     Minigin/RenderComponent.cpp
     Minigin/TextComponent.cpp
     Minigin/FpsComponent.cpp
-    Minigin/RotaterComponent.cpp
     Minigin/PlayerInputComponent.cpp
     Minigin/Timer.cpp
-    Minigin/UiManager.cpp
     Minigin/Keyboard.cpp
     Minigin/Gamepad.cpp
 )

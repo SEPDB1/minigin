@@ -19,7 +19,7 @@ namespace dae
 		void Update();
 
 	private:
-		GameObject* m_pTank;
+		GameObject* m_pTank{};
 		TextComponent* m_pTankValueDisplay{};
 	};
 }

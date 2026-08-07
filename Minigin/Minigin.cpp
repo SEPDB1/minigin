@@ -54,7 +54,6 @@ void PrintSDLVersion()
 }
 
 dae::Minigin::Minigin(const std::filesystem::path& dataPath)
-	: m_pGame{ std::make_unique<Game>() }
 {
 	PrintSDLVersion();
 	
@@ -101,6 +100,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 void dae::Minigin::Start()
 {
+	m_pGame = std::make_unique<Game>();
 	m_pGame->Start();
 	SceneManager::GetInstance().Start();
 }

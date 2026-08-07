@@ -4,22 +4,30 @@
 #include "GameObject.h"
 #include "ResourceManager.h"
 
-const std::unordered_map<dae::RenderComponent::Pivot, glm::vec2> dae::RenderComponent::m_OffsetTable
+const std::unordered_map<dae::RenderComponent::PivotType, glm::vec2> dae::RenderComponent::m_PivotTable
 {
-	{ dae::RenderComponent::Pivot::topLeft,		glm::vec2{ 0.0f, 0.0f } },
-	{ dae::RenderComponent::Pivot::top,			glm::vec2{ 0.5f, 0.0f } },
-	{ dae::RenderComponent::Pivot::topRight,	glm::vec2{ 1.0f, 0.0f } },
-	{ dae::RenderComponent::Pivot::right,		glm::vec2{ 1.0f, 0.5f } },
-	{ dae::RenderComponent::Pivot::bottomRight,	glm::vec2{ 1.0f, 1.0f } },
-	{ dae::RenderComponent::Pivot::bottom,		glm::vec2{ 0.5f, 1.0f } },
-	{ dae::RenderComponent::Pivot::bottomLeft,	glm::vec2{ 0.0f, 1.0f } },
-	{ dae::RenderComponent::Pivot::left,		glm::vec2{ 0.0f, 0.5f } },
-	{ dae::RenderComponent::Pivot::center,		glm::vec2{ 0.5f, 0.5f } }
+	{ dae::RenderComponent::PivotType::topLeft,		glm::vec2{ 0.0f, 0.0f } },
+	{ dae::RenderComponent::PivotType::top,			glm::vec2{ 0.5f, 0.0f } },
+	{ dae::RenderComponent::PivotType::topRight,	glm::vec2{ 1.0f, 0.0f } },
+	{ dae::RenderComponent::PivotType::right,		glm::vec2{ 1.0f, 0.5f } },
+	{ dae::RenderComponent::PivotType::bottomRight,	glm::vec2{ 1.0f, 1.0f } },
+	{ dae::RenderComponent::PivotType::bottom,		glm::vec2{ 0.5f, 1.0f } },
+	{ dae::RenderComponent::PivotType::bottomLeft,	glm::vec2{ 0.0f, 1.0f } },
+	{ dae::RenderComponent::PivotType::left,		glm::vec2{ 0.0f, 0.5f } },
+	{ dae::RenderComponent::PivotType::center,		glm::vec2{ 0.5f, 0.5f } }
 };
 
-dae::RenderComponent::RenderComponent(GameObject* pOwner, Pivot pivot)
+dae::RenderComponent::RenderComponent(GameObject* pOwner, PivotType type)
 	: BaseComponent(pOwner)
-	, m_Pivot{ pivot }
+	, m_PivotType{ type }
+	, m_Pivot{ m_PivotTable.at(type) }
+{
+}
+
+dae::RenderComponent::RenderComponent(GameObject* pOwner, const glm::vec2& customPivot)
+	: BaseComponent(pOwner)
+	, m_Pivot{ customPivot }
+	, m_PivotType{ PivotType::custom }
 {
 }
 
@@ -30,7 +38,7 @@ dae::RenderComponent::~RenderComponent()
 void dae::RenderComponent::Render() const
 {
 	if (m_pTexture)
-		SDLRenderer::GetInstance().RenderTexture(*m_pTexture, BaseComponent::GetOwner()->GetTransform(), m_OffsetTable.at(m_Pivot));
+		SDLRenderer::GetInstance().RenderTexture(*m_pTexture, BaseComponent::GetOwner()->GetTransform(), m_Pivot);
 }
 
 void dae::RenderComponent::Update()
@@ -44,9 +52,16 @@ std::shared_ptr<dae::Texture2D> dae::RenderComponent::LoadTexture(const std::str
 	return m_pTexture;
 }
 
-void dae::RenderComponent::SetPivot(Pivot newPivot)
+void dae::RenderComponent::SetPivot(PivotType newPivot)
 {
-	m_Pivot = newPivot;
+	m_PivotType = newPivot;
+	m_Pivot = m_PivotTable.at(newPivot);
+}
+
+void dae::RenderComponent::SetCustomPivot(const glm::vec2& customPivot)
+{
+	m_Pivot = customPivot;
+	m_PivotType = PivotType::custom;
 }
 
 dae::Texture2D* dae::RenderComponent::GetTexture() const

@@ -55,7 +55,7 @@ float dae::InputManager::GetButtonValue(const Button& button, const InputDevice*
 	return static_cast<float>(IsButtonPressed(button, pDevice));
 }
 
-bool dae::InputManager::IsButtonCompatible(const Button& button, const InputDevice* pDevice) const
+glm::vec2 dae::InputManager::GetAxisValue(Axis axis, const InputDevice* pDevice) const
 {
-	return pDevice->IsButtonCompatible(button);
+	return pDevice->GetAxisValue(axis);
 }

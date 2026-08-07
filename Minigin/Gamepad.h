@@ -15,11 +15,10 @@ namespace dae
 
 		void Update() override;
 
-		bool IsButtonCompatible(const Button& button) const;
-
 		bool IsDownThisFrame(const Button& button) const override;
 		bool IsUpThisFrame(const Button& button) const override;
 		bool IsPressed(const Button& button) const override;
+		glm::vec2 GetAxisValue(Axis axis) const override;
 
 	private:
 		friend class InputManager;

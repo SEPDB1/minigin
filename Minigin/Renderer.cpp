@@ -12,7 +12,6 @@
 // project includes
 #include "Renderer.h"
 #include "SceneManager.h"
-#include "UiManager.h"
 
 #pragma region SDLRendererImpl
 

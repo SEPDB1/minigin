@@ -68,8 +68,7 @@ dae::GameObject& dae::GameObject::SetParent(GameObject* pNewParent, bool keepWor
 	{
 		if (pNewParent)
 		{
-			// local = inverse(parentWorld) * world
-			m_LocalTransform.SetMatrix(glm::inverse(pNewParent->GetTransform().GetMatrix() * m_GlobalTransform.GetMatrix()));
+			m_LocalTransform.SetMatrix(m_GlobalTransform.GetMatrix() * glm::inverse(pNewParent->GetTransform().GetMatrix()));
 		}
 		else 
 		{
@@ -172,10 +171,10 @@ void dae::GameObject::RemoveChild(GameObject* pChild)
 
 void dae::GameObject::UpdateWorldTransform() const
 {
-	if (!m_pParent) 
-		m_GlobalTransform.SetMatrix(m_LocalTransform.GetMatrix()); 
-	else 
-		m_GlobalTransform.SetMatrix(m_pParent->GetTransform().GetMatrix() * m_LocalTransform.GetMatrix());
+	if (!m_pParent)
+		m_GlobalTransform.SetMatrix(m_LocalTransform.GetMatrix());
+	else
+		m_GlobalTransform.SetMatrix(m_LocalTransform.GetMatrix() * m_pParent->GetTransform().GetMatrix());
 }
 
 bool dae::GameObject::IsChild(GameObject* pGameObject) const

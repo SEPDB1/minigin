@@ -22,14 +22,11 @@ namespace dae
 	{
 	public:
 		explicit InputActionButton(const Button& button);
-		explicit InputActionButton(const std::vector<Button>& buttons);
-
-		void AddButton(const Button& button);
 
 		InputContext GetActionContext(const InputDevice* pDevice) const override;
 
 	private:
-		std::vector<Button> m_Buttons{};
+		Button m_Button{};
 	};
 
 	class InputActionAxis2D final : public InputAction
@@ -37,34 +34,17 @@ namespace dae
 	public:
 		InputActionAxis2D() = default;
 		InputActionAxis2D(const Button& left, const Button& right, const Button& up, const Button& down);
-		InputActionAxis2D(const std::vector<Button>& leftButtons, const std::vector<Button>& rightButtons,
-			const std::vector<Button>& upButtons, const std::vector<Button>& downButtons);
-
-		void AddConfiguration(const Button& left, const Button& right, const Button& up, const Button& down);
+		InputActionAxis2D(const Axis& axis);
 
 		InputContext GetActionContext(const InputDevice* pDevice) const override;
 
 	private:
-		static float GetHighestValue(const std::vector<Button>& buttons, const InputDevice* pDevice);
 
-		std::vector<Button> m_LeftButtons{};
-		std::vector<Button> m_RightButtons{};
-		std::vector<Button> m_UpButtons{};
-		std::vector<Button> m_DownButtons{};
+		Button m_LeftButton{};
+		Button m_RightButton{};
+		Button m_UpButton{};
+		Button m_DownButton{};
+		Axis m_Axis{};
+		bool m_UsesButtons{};
 	};
-
-#pragma region InputActionAxis1D
-	//class InputActionAxis1D final : public InputAction
-	//{
-	//public: 
-	//	InputActionAxis1D(const Button& left, const Button& right);
-
-	//	InputContext GetActionContext(const InputDevice* pDevice) const override;
-
-
-	//private:
-	//	Button m_LeftButtons{};
-	//	Button m_RightButtons{};
-	//};
-#pragma endregion InputActionAxis1D
 }

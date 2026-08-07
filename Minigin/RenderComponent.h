@@ -12,8 +12,9 @@ namespace dae
 	class RenderComponent final : public BaseComponent
 	{
 	public:
-		enum class Pivot
+		enum class PivotType
 		{
+			center,
 			topLeft,
 			top,
 			topRight,
@@ -22,10 +23,11 @@ namespace dae
 			bottom,
 			bottomLeft,
 			left,
-			center
+			custom
 		};
 
-		RenderComponent(GameObject* pOwner, Pivot pivot = Pivot::center);
+		RenderComponent(GameObject* pOwner, PivotType pivot = PivotType::center);
+		RenderComponent(GameObject* pOwner, const glm::vec2& customPivot);
 		~RenderComponent();
 		RenderComponent(const RenderComponent& other) = delete;
 		RenderComponent(RenderComponent&& other) = delete;
@@ -37,14 +39,21 @@ namespace dae
 
 		std::shared_ptr<Texture2D> LoadTexture(const std::string& path);
 
-		void SetPivot(Pivot newPivot);
+		/// Lets you set the pivot by selecting a type from PivotType.
+		/// Do not use this function if you want a custom pivot, use SetCustomPivot instead.
+		void SetPivot(PivotType type);
+
+		/// Lets you set a custom pivot.
+		/// (0, 0) is the topLeft corner of the texture, (1, 1) is the bottomRight corner. 
+		void SetCustomPivot(const glm::vec2& customPivot);
 
 		Texture2D* GetTexture() const;
 
 	private:
 		std::shared_ptr<Texture2D> m_pTexture{};
-		Pivot m_Pivot;
+		glm::vec2 m_Pivot{};
+		PivotType m_PivotType{};
 
-		const static std::unordered_map<Pivot, glm::vec2> m_OffsetTable;
+		const static std::unordered_map<PivotType, glm::vec2> m_PivotTable;
 	};
 }

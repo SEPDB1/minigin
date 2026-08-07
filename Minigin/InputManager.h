@@ -21,20 +21,20 @@ namespace dae
 
 		bool ProcessInput();
 
-		// Creates and stores an new instance of the requested input device which must derive from InputDevice
+		/// Creates a new InputDevice of type InputDeviceT.
+		/// InputDeviceT must derive from InputDevice.
 		template<typename InputDeviceT> requires std::derived_from<InputDeviceT, InputDevice>
 		const InputDevice* CreateInputDevice()
 		{
-			m_pDevices.emplace_back (new InputDeviceT());
+			m_pDevices.emplace_back(new InputDeviceT());
 			return m_pDevices.crbegin()->get();
 		}
 
-		// Creates a new InputAction of the requested type by forwarding args to the InputAction's constructor 
-		// and maps it to the name, the requested type has to derive from InputAction
+		/// Creates a new InputAction with gets mapped to name.
+		/// If there is already an InputAction with the same name, it will be overwritten.
 		template <typename ActionT> requires std::derived_from<ActionT, InputAction>
 		void AddInputAction(const std::string& name, std::unique_ptr<ActionT> pAction)
 		{
-			assert(pAction != nullptr && "InputAction should not be null");
 			m_pInputActions.insert_or_assign(name, std::move(pAction));
 		}
 
@@ -44,7 +44,7 @@ namespace dae
 		bool IsButtonDownThisFrame(const Button& button, const InputDevice* pDevice) const;
 		bool IsButtonUpThisFrame(const Button& button, const InputDevice* pDevice) const;
 		float GetButtonValue(const Button& button, const InputDevice* pDevice) const;
-		bool IsButtonCompatible(const Button& button, const InputDevice* pDevice) const;
+		glm::vec2 GetAxisValue(Axis axis, const InputDevice* pDevice) const;
 
 	private:
 		std::vector<std::unique_ptr<InputDevice>> m_pDevices{};

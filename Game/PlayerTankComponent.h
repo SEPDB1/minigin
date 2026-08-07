@@ -24,7 +24,7 @@ namespace dae
 
 	private:
 		RenderComponent& m_RenderCompTank;
-		GameObject& m_GunObject;
+		GameObject& m_GunObj;
 		RenderComponent& m_RenderCompGun;
 		PlayerInputComponent& m_PlayerInput;
 	};

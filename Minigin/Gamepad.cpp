@@ -16,13 +16,14 @@ public:
 
 	void Update();
 
-	bool IsButtonCompatible(const dae::Button& button) const;
-
 	bool IsDownThisFrame(const dae::Button& button) const;
 	bool IsUpThisFrame(const dae::Button& button) const;
 	bool IsPressed(const dae::Button& button) const;
+	glm::vec2 GetAxisValue(Axis axis) const;
 
 private:
+	float NormaliseAxis(SHORT value, SHORT deadzone) const;
+
 	WORD m_ButtonsPressedThisFrame{ 0 };
 	WORD m_ButtonsReleasedThisFrame{ 0 };
 	DWORD m_DeviceIdx{};
@@ -69,28 +70,75 @@ void dae::Gamepad::GamepadImpl::Update()
 	}
 }
 
-bool dae::Gamepad::GamepadImpl::IsButtonCompatible(const dae::Button & button) const
-{
-	return button.deviceType == dae::DeviceType::gamepad;
-}
-
 bool dae::Gamepad::GamepadImpl::IsDownThisFrame(const dae::Button& button) const
 {
-	return m_ButtonsPressedThisFrame & m_ButtonTable.at(button.name);
+	auto it = m_ButtonTable.find(button.name);
+
+	if (it != m_ButtonTable.end())
+		return m_ButtonsPressedThisFrame & it->second;
+
+	return false;
 }
 
 bool dae::Gamepad::GamepadImpl::IsUpThisFrame(const dae::Button& button) const
 {
-	return m_ButtonsReleasedThisFrame & m_ButtonTable.at(button.name);
+	auto it = m_ButtonTable.find(button.name);
+
+	if (it != m_ButtonTable.end())
+		return m_ButtonsReleasedThisFrame & it->second;
+
+	return false;
 }
 
 bool dae::Gamepad::GamepadImpl::IsPressed(const dae::Button& button) const
 {
-	return m_CurrentState.Gamepad.wButtons & m_ButtonTable.at(button.name);
+	auto it = m_ButtonTable.find(button.name);
+
+	if (it != m_ButtonTable.end())
+		return m_CurrentState.Gamepad.wButtons & it->second;
+
+	return false;
+
+}
+glm::vec2 dae::Gamepad::GamepadImpl::GetAxisValue(Axis axis) const
+{
+	glm::vec2 value{};
+
+	if (axis == Axis::leftStick)
+	{
+		value.x = NormaliseAxis(m_CurrentState.Gamepad.sThumbLX, XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+		value.y = -NormaliseAxis(m_CurrentState.Gamepad.sThumbLY, XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+	}
+	else
+	{
+		value.x = NormaliseAxis(m_CurrentState.Gamepad.sThumbRX, XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
+		value.y = -NormaliseAxis(m_CurrentState.Gamepad.sThumbRY, XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
+	}
+
+	return value;
+}
+float dae::Gamepad::GamepadImpl::NormaliseAxis(SHORT value, SHORT deadzone) const
+{
+	// Apply deadzone
+	if (value > -deadzone && value < deadzone)
+		return 0.f;
+
+	// Normalise
+	float normalisedValue{ value / 32768.f };
+
+	// Clamp
+	if (normalisedValue < -1.f)
+		return -1.f;
+
+	if (normalisedValue > 1.f)
+		return 1.f;
+
+	return normalisedValue;
 }
 #pragma endregion GamepadImpl
 
 #pragma region Gamepad
+
 dae::Gamepad::Gamepad()
 	: m_pImpl{ std::make_unique<GamepadImpl>() }
 {
@@ -101,11 +149,6 @@ dae::Gamepad::~Gamepad() = default;
 void dae::Gamepad::Update()
 {
 	m_pImpl->Update();
-}
-
-bool dae::Gamepad::IsButtonCompatible(const Button& button) const
-{
-	return m_pImpl->IsButtonCompatible(button);
 }
 
 bool dae::Gamepad::IsDownThisFrame(const Button& button) const
@@ -121,5 +164,10 @@ bool dae::Gamepad::IsUpThisFrame(const Button& button) const
 bool dae::Gamepad::IsPressed(const Button& button) const
 {
 	return m_pImpl->IsPressed(button);
+}
+
+glm::vec2 dae::Gamepad::GetAxisValue(Axis axis) const
+{
+	return m_pImpl->GetAxisValue(axis);
 }
 #pragma endregion Gamepad

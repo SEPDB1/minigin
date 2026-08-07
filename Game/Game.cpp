@@ -14,10 +14,13 @@ void dae::Game::Start()
 	auto& scene{ sceneManager.GetActiveScene() };
 
 	inputManager.AddInputAction("Move", std::make_unique<InputActionAxis2D>(
-		Button{ "DpadLeft", DeviceType::gamepad },
-		Button{ "DpadRight", DeviceType::gamepad },
-		Button{ "DpadUp", DeviceType::gamepad },
-		Button{ "DpadDown", DeviceType::gamepad }
+		Button{ "DpadLeft" },
+		Button{ "DpadRight" },
+		Button{ "DpadUp" },
+		Button{ "DpadDown" }
+	));
+	inputManager.AddInputAction("Aim", std::make_unique<InputActionAxis2D>(
+		Axis::rightStick
 	));
 
 	// Tank
