@@ -2,6 +2,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <Xinput.h>
+#include <unordered_map>
 
 #pragma region GamepadImpl
 class dae::Gamepad::GamepadImpl final
@@ -100,6 +101,7 @@ bool dae::Gamepad::GamepadImpl::IsPressed(const dae::Button& button) const
 	return false;
 
 }
+
 glm::vec2 dae::Gamepad::GamepadImpl::GetAxisValue(Axis axis) const
 {
 	glm::vec2 value{};

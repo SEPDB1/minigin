@@ -1,5 +1,6 @@
 #include "Keyboard.h"
 #include <SDL3/SDL_keyboard.h>
+#include <unordered_map>
 
 #pragma region KeyboardImpl
 
@@ -92,20 +93,32 @@ void dae::Keyboard::KeyboardImpl::Update()
 
 bool dae::Keyboard::KeyboardImpl::IsDownThisFrame(const Button& button) const
 {
-	auto idx{ m_ButtonTable.at(button.name) };
-	return !m_PreviousState[idx] && m_CurrentState[idx];
+	auto it = m_ButtonTable.find(button.name);
+
+	if (it != m_ButtonTable.end())
+		return !m_PreviousState[it->second] && m_CurrentState[it->second];
+	
+	return false;
 }
 
 bool dae::Keyboard::KeyboardImpl::IsUpThisFrame(const Button& button) const
 {
-	auto idx{ m_ButtonTable.at(button.name) };
-	return m_PreviousState[idx] && !m_CurrentState[idx];
+	auto it = m_ButtonTable.find(button.name);
+	
+	if (it != m_ButtonTable.end())
+		return m_PreviousState[it->second] && !m_CurrentState[it->second];
+	
+	return false;
 }
 
 bool dae::Keyboard::KeyboardImpl::IsPressed(const Button& button) const
 {
-	auto idx{ m_ButtonTable.at(button.name) };
-	return m_CurrentState[idx];
+	auto it = m_ButtonTable.find(button.name);
+	
+	if (it != m_ButtonTable.end())
+		return m_CurrentState[it->second];
+	
+	return false;
 }
 
 glm::vec2 dae::Keyboard::KeyboardImpl::GetAxisValue(Axis) const

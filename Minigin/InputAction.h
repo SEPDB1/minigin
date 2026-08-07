@@ -1,6 +1,7 @@
 #pragma once
 #include "InputUtility.h"
 #include <vector>
+#include <memory>
 
 namespace dae
 {
@@ -15,7 +16,6 @@ namespace dae
 
 	protected:
 		InputAction() = default;
-		static float GetButtonValue(const Button& button, const InputDevice* pDevice);
 	};
 
 	class InputActionButton final : public InputAction
@@ -32,19 +32,12 @@ namespace dae
 	class InputActionAxis2D final : public InputAction
 	{
 	public:
-		InputActionAxis2D() = default;
-		InputActionAxis2D(const Button& left, const Button& right, const Button& up, const Button& down);
-		InputActionAxis2D(const Axis& axis);
+		explicit InputActionAxis2D(std::unique_ptr<CompoundControl> pControl);
+		explicit InputActionAxis2D(std::vector<std::unique_ptr<CompoundControl>> controls);
 
 		InputContext GetActionContext(const InputDevice* pDevice) const override;
 
 	private:
-
-		Button m_LeftButton{};
-		Button m_RightButton{};
-		Button m_UpButton{};
-		Button m_DownButton{};
-		Axis m_Axis{};
-		bool m_UsesButtons{};
+		std::vector<std::unique_ptr<CompoundControl>> m_Controls{};
 	};
 }

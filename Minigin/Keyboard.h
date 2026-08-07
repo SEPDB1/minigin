@@ -1,3 +1,4 @@
+#pragma once
 #include <memory>
 #include "InputDevice.h"
 #include "InputUtility.h"

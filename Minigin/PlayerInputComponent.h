@@ -1,5 +1,6 @@
 #pragma once
 #include <unordered_map>
+#include <vector>
 #include <memory>
 #include <string>
 #include "BaseComponent.h"
@@ -14,6 +15,7 @@ namespace dae
 	{
 	public:
 		PlayerInputComponent(GameObject* pOwner, const InputDevice* pDevice);
+		PlayerInputComponent(GameObject* pOwner, std::vector<const InputDevice*> pDevices);
 		~PlayerInputComponent() = default;
 
 		PlayerInputComponent(const PlayerInputComponent& other) = delete;
@@ -38,6 +40,6 @@ namespace dae
 
 	private:
 		std::unordered_map<std::string, std::unique_ptr<Command>> m_CommandBindingTable{};
-		const InputDevice* m_pDevice{};
+		std::vector<const InputDevice*> m_pDevices{};
 	};
 }

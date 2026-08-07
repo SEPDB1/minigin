@@ -2,13 +2,24 @@
 #include "MiniginEngine.h"
 #include "GameCommands.h"
 
-dae::PlayerTankComponent::PlayerTankComponent(GameObject* pOwner, const InputDevice* pDevice)
+dae::PlayerTankComponent::PlayerTankComponent(GameObject* pOwner, const InputDevice* pDevice, const glm::vec2& spawnPos)
 	: BaseComponent(pOwner)
 	, m_RenderCompTank{ pOwner->AttachComponent<RenderComponent>() }
 	, m_GunObj{ SceneManager::GetInstance().GetActiveScene().AddObject() }
 	, m_RenderCompGun{ m_GunObj.AttachComponent<RenderComponent>() }
 	, m_PlayerInput{ pOwner->AttachComponent<PlayerInputComponent>(pDevice) }
 {
+	pOwner->SetPosition(spawnPos);
+}
+
+dae::PlayerTankComponent::PlayerTankComponent(GameObject* pOwner, std::vector<const InputDevice*> pDevices, const glm::vec2& spawnPos)
+	: BaseComponent(pOwner)
+	, m_RenderCompTank{ pOwner->AttachComponent<RenderComponent>() }
+	, m_GunObj{ SceneManager::GetInstance().GetActiveScene().AddObject() }
+	, m_RenderCompGun{ m_GunObj.AttachComponent<RenderComponent>() }
+	, m_PlayerInput{ pOwner->AttachComponent<PlayerInputComponent>(pDevices) }
+{
+	pOwner->SetPosition(spawnPos);
 }
 
 void dae::PlayerTankComponent::Start()
@@ -20,7 +31,6 @@ void dae::PlayerTankComponent::Start()
 	m_GunObj.SetPosition(glm::vec2( -3.f, 0.f));
 
 	tank.SetScale(glm::vec2(4.f, 4.f));
-	tank.SetPosition(glm::vec2(100.f, 100.f));
 
 	// Assign textures
 	m_RenderCompTank.LoadTexture("Sprites/RedTank.png");

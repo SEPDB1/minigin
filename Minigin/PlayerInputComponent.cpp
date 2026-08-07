@@ -7,7 +7,13 @@
 
 dae::PlayerInputComponent::PlayerInputComponent(GameObject* pOwner, const InputDevice* pDevice)
 	: BaseComponent(pOwner)
-	, m_pDevice{ pDevice }
+	, m_pDevices{ pDevice }
+{
+}
+
+dae::PlayerInputComponent::PlayerInputComponent(GameObject* pOwner, std::vector<const InputDevice*> pDevices)
+	: BaseComponent(pOwner)
+	, m_pDevices{ pDevices }
 {
 }
 
@@ -20,6 +26,7 @@ void dae::PlayerInputComponent::Update()
 {
 	for (auto& binding : m_CommandBindingTable)
 	{
-		binding.second->Execute(InputManager::GetInstance().GetActionByName(binding.first)->GetActionContext(m_pDevice));
+		for (auto pDevice : m_pDevices)
+			binding.second->Execute(InputManager::GetInstance().GetActionByName(binding.first)->GetActionContext(pDevice));
 	}
 }

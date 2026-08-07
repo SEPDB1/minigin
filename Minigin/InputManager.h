@@ -2,10 +2,13 @@
 #include <memory>
 #include <vector>
 #include <string>
+
 #include "Singleton.h"
 #include "InputAction.h"
 #include "InputUtility.h"
 #include "Gamepad.h"
+#include "Keyboard.h"
+#include "Mouse.h"
 
 namespace dae
 {

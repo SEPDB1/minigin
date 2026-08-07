@@ -1,7 +1,8 @@
 #pragma once
 #include <memory>
+#include <vector>
 #include "BaseComponent.h"
-
+#include <glm/vec2.hpp>
 namespace dae
 {
 	class GameObject;
@@ -11,7 +12,8 @@ namespace dae
 	class PlayerTankComponent final : public BaseComponent
 	{
 	public:
-		PlayerTankComponent(GameObject* pOwner, const InputDevice* pDevice);
+		PlayerTankComponent(GameObject* pOwner, const InputDevice* pDevice, const glm::vec2& spawnPos);
+		PlayerTankComponent(GameObject* pOwner, std::vector<const InputDevice*> pDevices, const glm::vec2& spawnPos);
 		~PlayerTankComponent() = default;
 		PlayerTankComponent(const PlayerTankComponent& other) = delete;
 		PlayerTankComponent(PlayerTankComponent&& other) = delete;

@@ -17,9 +17,9 @@ bool dae::InputManager::ProcessInput()
 		ImGui_ImplSDL3_ProcessEvent(&e);
 	}
 
-	for (auto& m_pDevice : m_pDevices)
+	for (auto& pDevice : m_pDevices)
 	{
-		m_pDevice->Update();
+		pDevice->Update();
 	}
 
 	return true;

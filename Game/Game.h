@@ -1,4 +1,5 @@
 #pragma once
+#include "InputUtility.h"
 
 namespace dae
 {
@@ -19,7 +20,15 @@ namespace dae
 		void Update();
 
 	private:
-		GameObject* m_pTank{};
-		TextComponent* m_pTankValueDisplay{};
+		enum class GameMode : uint8_t
+		{
+			singlePlayer,
+			coop,
+			versus
+		};
+
+		static const GameMode m_GameMode{ GameMode::singlePlayer };
+		static const DeviceType m_PlayerOneDevice{ DeviceType::gamepad };
+		static const DeviceType m_PlayerTwoDevice{ DeviceType::gamepad };
 	};
 }

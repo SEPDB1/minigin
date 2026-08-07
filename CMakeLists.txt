@@ -19,6 +19,7 @@ endif()
 add_library(${ENGINE_NAME} STATIC
     Minigin/Font.cpp
     Minigin/GameObject.cpp
+    Minigin/InputUtility.cpp
     Minigin/InputAction.cpp
     Minigin/InputManager.cpp
     Minigin/Minigin.cpp
@@ -37,6 +38,7 @@ add_library(${ENGINE_NAME} STATIC
     Minigin/Timer.cpp
     Minigin/Keyboard.cpp
     Minigin/Gamepad.cpp
+    Minigin/Mouse.cpp
 )
 
 target_compile_features(${ENGINE_NAME} PUBLIC cxx_std_23)
