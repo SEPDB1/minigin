@@ -63,12 +63,9 @@ void dae::Gamepad::GamepadImpl::Update()
 	m_CurrentState = {};
 	XInputGetState(m_DeviceIdx, &m_CurrentState);
 
-	if (m_CurrentState.dwPacketNumber != m_PreviousState.dwPacketNumber)
-	{
-		WORD buttonChanges = m_CurrentState.Gamepad.wButtons ^ m_PreviousState.Gamepad.wButtons;
-		m_ButtonsPressedThisFrame = buttonChanges & m_CurrentState.Gamepad.wButtons;
-		m_ButtonsReleasedThisFrame = buttonChanges & (~m_CurrentState.Gamepad.wButtons);
-	}
+	WORD buttonChanges = m_CurrentState.Gamepad.wButtons ^ m_PreviousState.Gamepad.wButtons;
+	m_ButtonsPressedThisFrame = buttonChanges & m_CurrentState.Gamepad.wButtons;
+	m_ButtonsReleasedThisFrame = buttonChanges & (~m_CurrentState.Gamepad.wButtons);
 }
 
 bool dae::Gamepad::GamepadImpl::IsDownThisFrame(const dae::Button& button) const

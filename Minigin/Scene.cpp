@@ -5,7 +5,13 @@
 dae::GameObject& dae::Scene::AddObject()
 {
 	m_Objects.emplace_back(new GameObject());
-	return *m_Objects.back();
+
+	GameObject& newObj{ *m_Objects.back() };
+
+	if (m_IsStarted)
+		newObj.Start();
+
+	return newObj;
 }
 
 void dae::Scene::Remove(const GameObject& object)
@@ -27,25 +33,21 @@ void dae::Scene::RemoveAll()
 
 void dae::Scene::Start()
 {
-	for (auto& object : m_Objects)
-	{
-		object->Start();
-	}
+	m_IsStarted = true;
+
+	for (size_t i{ 0 }; i < m_Objects.size(); ++i)
+		m_Objects[i]->Start();
 }
 
 void dae::Scene::Update()
 {
-	for(auto& object : m_Objects)
-	{
-		object->Update();
-	}
+	for (size_t i{ 0 }; i < m_Objects.size(); ++i)
+		m_Objects[i]->Update();
 }
 
 void dae::Scene::Render() const
 {
 	for (const auto& object : m_Objects)
-	{
 		object->Render();
-	}
 }
 

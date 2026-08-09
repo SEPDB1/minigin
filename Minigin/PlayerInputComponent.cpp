@@ -11,7 +11,7 @@ dae::PlayerInputComponent::PlayerInputComponent(GameObject* pOwner, const InputD
 {
 }
 
-dae::PlayerInputComponent::PlayerInputComponent(GameObject* pOwner, std::vector<const InputDevice*> pDevices)
+dae::PlayerInputComponent::PlayerInputComponent(GameObject* pOwner, std::vector<const InputDevice*>&& pDevices)
 	: BaseComponent(pOwner)
 	, m_pDevices{ pDevices }
 {

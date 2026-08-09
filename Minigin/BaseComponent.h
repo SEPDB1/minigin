@@ -17,10 +17,9 @@ namespace dae
 		virtual void Render() const = 0;
 		virtual void Update() = 0;
 
-	protected:
 		GameObject* GetOwner() const;
 
 	private:
-		GameObject* const m_pOwner;
+		GameObject* m_pOwner;
 	};
 }

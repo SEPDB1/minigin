@@ -28,6 +28,7 @@ namespace dae
 		explicit Scene() = default;
 
 		std::vector<std::unique_ptr<GameObject>> m_Objects{};
+		bool m_IsStarted{ false };
 	};
 
 }

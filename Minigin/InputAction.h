@@ -22,18 +22,20 @@ namespace dae
 	{
 	public:
 		explicit InputActionButton(const Button& button);
+		explicit InputActionButton(const std::vector<Button>& buttons);
+		explicit InputActionButton(std::vector<Button>&& buttons);
 
 		InputContext GetActionContext(const InputDevice* pDevice) const override;
 
 	private:
-		Button m_Button{};
+		std::vector<Button> m_Buttons{};
 	};
 
 	class InputActionAxis2D final : public InputAction
 	{
 	public:
 		explicit InputActionAxis2D(std::unique_ptr<CompoundControl> pControl);
-		explicit InputActionAxis2D(std::vector<std::unique_ptr<CompoundControl>> controls);
+		explicit InputActionAxis2D(std::vector<std::unique_ptr<CompoundControl>>&& controls);
 
 		InputContext GetActionContext(const InputDevice* pDevice) const override;
 

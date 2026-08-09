@@ -15,7 +15,7 @@ namespace dae
 	{
 	public:
 		PlayerInputComponent(GameObject* pOwner, const InputDevice* pDevice);
-		PlayerInputComponent(GameObject* pOwner, std::vector<const InputDevice*> pDevices);
+		PlayerInputComponent(GameObject* pOwner, std::vector<const InputDevice*>&& pDevices);
 		~PlayerInputComponent() = default;
 
 		PlayerInputComponent(const PlayerInputComponent& other) = delete;

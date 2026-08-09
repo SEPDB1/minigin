@@ -47,7 +47,8 @@ target_compile_features(${ENGINE_NAME} PUBLIC cxx_std_23)
 # --Create executable--
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
     Minigin/Main.cpp
-    Game/PlayerTankComponent.cpp
+    "Game/PlayerTank.cpp"
+    "Game/Bullet.cpp"
     Game/GameCommands.cpp
     Game/Game.cpp)
 

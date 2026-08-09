@@ -27,8 +27,8 @@ namespace dae
 			versus
 		};
 
-		static const GameMode m_GameMode{ GameMode::singlePlayer };
-		static const DeviceType m_PlayerOneDevice{ DeviceType::gamepad };
-		static const DeviceType m_PlayerTwoDevice{ DeviceType::gamepad };
+		static inline const GameMode m_GameMode{ GameMode::singlePlayer };
+		static inline const DeviceType m_PlayerOneDevice{ DeviceType::gamepad };
+		static inline const DeviceType m_PlayerTwoDevice{ DeviceType::gamepad };
 	};
 }

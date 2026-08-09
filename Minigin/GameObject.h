@@ -20,12 +20,14 @@ namespace dae
 		void Update();
 		void Render() const;
 
-		void SetActive(bool isActive);
+		void SetActiveSelf(bool isActive);
 
 		GameObject& SetPosition(const glm::vec2& pos);
 		GameObject& SetRotation(float radians);
 		GameObject& SetScale(const glm::vec2& scale);
 		GameObject& SetParent(GameObject* pParent, bool keepWorldPosition = true);
+		bool IsActive() const;
+		bool IsActiveSelf() const;
 
 		const Transform& GetTransform() const;
 		GameObject* GetParent() const;
@@ -79,9 +81,14 @@ namespace dae
 		friend class Scene;
 		explicit GameObject() = default;
 
+		void SetActive(bool isActive);
+		void EnableActiveChildren();
+
 		void AddChild(GameObject* pChild);
 		void RemoveChild(GameObject* pChild);
 		void SetTransformDirty() const;
+		// Is there an inactive object in the hierachy?
+		bool HasInactiveParent() const;
 
 		void UpdateWorldTransform() const;
 
@@ -94,6 +101,8 @@ namespace dae
 		mutable Transform m_GlobalTransform{};
 		Transform m_LocalTransform{};
 		mutable bool m_IsWorldTransformDirty{ false };
+
+		bool m_IsActiveSelf{ true };
 		bool m_IsActive{ true };
 	};
 }

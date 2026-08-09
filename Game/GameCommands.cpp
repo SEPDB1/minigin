@@ -1,10 +1,12 @@
 #include "GameCommands.h"
 #include "MiniginEngine.h"
+#include "Bullet.h"
+#include "PlayerTank.h"
 
 dae::TankMoveCommand::TankMoveCommand(GameObject* pGameObject, float movementSpeed)
 	: GameObjectCommand(pGameObject)
 	, m_MovementSpeed{ movementSpeed }
-	, m_GunObj{ *pGameObject->GetChildAt(0) } 
+	, m_pGunSpriteObj{ *pGameObject->GetChildAt(0) } 
 {
 }
 
@@ -17,7 +19,7 @@ void dae::TankMoveCommand::Execute(InputContext ctx)
 	{
 		const float eTime{ Timer::GetInstance().GetElapsedTime() };
 		float worldAngleTank{};
-		const float worldAngleGun{ m_GunObj.GetTransform().GetRotation() };
+		const float worldAngleGun{ m_pGunSpriteObj.GetTransform().GetRotation() };
 
 		pObj->SetPosition(pObj->GetTransform().GetPosition() + input * m_MovementSpeed * eTime);
 
@@ -38,7 +40,7 @@ void dae::TankMoveCommand::Execute(InputContext ctx)
 		pObj->SetRotation(newTankAngle);
 
 		// Reset the angle original world angle of the gun
-		m_GunObj.SetRotation(worldAngleGun - newTankAngle);
+		m_pGunSpriteObj.SetRotation(worldAngleGun - newTankAngle);
 	}
 }
 
@@ -58,5 +60,19 @@ void dae::GunRotateCommand::Execute(InputContext ctx)
 		const float tankRotation{ m_TankObj.GetTransform().GetRotation() };
 		float eTime{ Timer::GetInstance().GetElapsedTime() };
 		pObj->SetRotation(std::atan2f(input.y, input.x) - tankRotation);
+	}
+}
+
+dae::TankShootCommand::TankShootCommand(GameObject* pGameObject, float bulletSpeed)
+	: GameObjectCommand(pGameObject)
+	, m_BulletSpeed{ bulletSpeed }
+{
+}
+
+void dae::TankShootCommand::Execute(InputContext ctx)
+{
+	if (std::get<bool>(ctx.value))
+	{
+		GameObjectCommand::GetGameObject()->GetComponent<PlayerTank>()->Shoot();
 	}
 }

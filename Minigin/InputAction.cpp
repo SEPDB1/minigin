@@ -2,7 +2,17 @@
 #include "InputManager.h"
 
 dae::InputActionButton::InputActionButton(const Button& button)
-	: m_Button{ button }
+	: m_Buttons{ button }
+{
+}
+
+dae::InputActionButton::InputActionButton(const std::vector<Button>& buttons)
+	: m_Buttons{ buttons }
+{
+}
+
+dae::InputActionButton::InputActionButton(std::vector<Button>&& buttons)
+	: m_Buttons{ std::move(buttons) }
 {
 }
 
@@ -10,11 +20,22 @@ dae::InputContext dae::InputActionButton::GetActionContext(const InputDevice* pD
 {
 	const auto& inputManager{ InputManager::GetInstance() };
 
-	return InputContext{
-		inputManager.IsButtonPressed(m_Button, pDevice),
-		inputManager.IsButtonDownThisFrame(m_Button, pDevice),
-		inputManager.IsButtonUpThisFrame(m_Button, pDevice)
-	};
+	for (const Button& button : m_Buttons)
+	{
+		const bool isPressed{ inputManager.IsButtonPressed(button, pDevice) };
+
+		InputContext ctx
+		{
+			isPressed,
+			inputManager.IsButtonDownThisFrame(button, pDevice),
+			inputManager.IsButtonUpThisFrame(button, pDevice)
+		};
+
+		if (isPressed || ctx.isDownThisFrame || ctx.isUpThisFrame)
+			return ctx;
+	}
+
+	return InputContext{};
 }
 
 dae::InputActionAxis2D::InputActionAxis2D(std::unique_ptr<CompoundControl> pControl)
@@ -23,7 +44,7 @@ dae::InputActionAxis2D::InputActionAxis2D(std::unique_ptr<CompoundControl> pCont
 	m_Controls.push_back(std::move(pControl));
 }
 
-dae::InputActionAxis2D::InputActionAxis2D(std::vector<std::unique_ptr<CompoundControl>> controls)
+dae::InputActionAxis2D::InputActionAxis2D(std::vector<std::unique_ptr<CompoundControl>>&& controls)
 	: m_Controls{ std::move(controls) }
 {
 }

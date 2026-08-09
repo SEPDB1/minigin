@@ -30,9 +30,40 @@ void dae::GameObject::Render() const
 		pComp->Render();
 }
 
-void dae::GameObject::SetActive(bool isActive)
+void dae::GameObject::SetActiveSelf(bool isActive)
 {
-	m_IsActive = isActive;
+	// Do nothing when the state is the same
+	if (m_IsActiveSelf == isActive)
+		return;
+
+	m_IsActiveSelf = isActive;
+	
+	// Disble
+	if (!isActive)
+	{
+		m_IsActive = false;
+
+		// Disable all children
+		for (auto pChild : m_pChildren)
+		{
+			if (pChild)
+				pChild->SetActive(false);
+		}
+	}
+	// Enable
+	else
+	{
+		// Enable all active children
+		if (!HasInactiveParent())
+		{
+			EnableActiveChildren();
+		}
+		// Disabled because one of the parents is disabled
+		else
+		{
+			m_IsActive = false;
+		}
+	}
 }
 
 dae::GameObject& dae::GameObject::SetPosition(const glm::vec2& pos)
@@ -94,6 +125,16 @@ dae::GameObject& dae::GameObject::SetParent(GameObject* pNewParent, bool keepWor
 	return *this;
 }
 
+bool dae::GameObject::IsActive() const
+{
+	return m_IsActive;
+}
+
+bool dae::GameObject::IsActiveSelf() const
+{
+	return m_IsActiveSelf;
+}
+
 
 void dae::GameObject::SetTransformDirty() const
 {
@@ -104,6 +145,26 @@ void dae::GameObject::SetTransformDirty() const
 		for (auto pChild : m_pChildren)
 			pChild->SetTransformDirty();
 	}
+}
+
+bool dae::GameObject::HasInactiveParent() const
+{
+	if (m_pParent)
+	{
+		// If the parent is inactive, the answer is found
+		if (!m_pParent->IsActiveSelf())
+		{
+			return true;
+		}
+		// Look further in the hierachy
+		else
+		{
+			return m_pParent->HasInactiveParent();
+		}
+	}
+
+	// No parent means no inactive parent found
+	return false;
 }
 
 const dae::Transform& dae::GameObject::GetTransform() const
@@ -136,6 +197,25 @@ dae::GameObject* dae::GameObject::GetChildAt(int index) const
 	catch (const std::out_of_range& e)
 	{
 		throw std::runtime_error(std::string(e.what()));
+	}
+}
+
+void dae::GameObject::SetActive(bool isActive)
+{
+	m_IsActive = isActive;
+}
+
+void dae::GameObject::EnableActiveChildren()
+{
+	m_IsActive = m_IsActiveSelf;
+
+	if (m_IsActive)
+	{
+		for (auto pChild : m_pChildren)
+		{
+			if (pChild)
+				pChild->EnableActiveChildren();
+		}
 	}
 }
 
