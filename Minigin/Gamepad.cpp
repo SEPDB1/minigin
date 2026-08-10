@@ -96,7 +96,6 @@ bool dae::Gamepad::GamepadImpl::IsPressed(const dae::Button& button) const
 		return m_CurrentState.Gamepad.wButtons & it->second;
 
 	return false;
-
 }
 
 glm::vec2 dae::Gamepad::GamepadImpl::GetAxisValue(Axis axis) const

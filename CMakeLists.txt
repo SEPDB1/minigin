@@ -25,6 +25,7 @@ add_library(${ENGINE_NAME} STATIC
     Minigin/Minigin.cpp
     Minigin/Main.cpp
     Minigin/Renderer.cpp
+    Minigin/SoundSystem.cpp
     Minigin/ResourceManager.cpp
     Minigin/Scene.cpp
     Minigin/SceneManager.cpp
@@ -138,6 +139,21 @@ if(NOT SDL3_ttf_FOUND)
   endif()
 endif()
 
+# Add SDL3_mixer
+find_package(SDL3_mixer 3.2 CONFIG QUIET)
+if(NOT SDL3_mixer_FOUND)
+  FetchContent_Declare(
+    SDL3_mixer
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL_mixer.git
+    GIT_TAG release-3.2.4
+    GIT_SHALLOW TRUE
+    GIT_PROGRESS TRUE
+  )
+  set(SDL3MIXER_INSTALL OFF)
+  set(SDL3MIXER_VENDORED ON)   # bundle codec deps (Ogg/Vorbis/FLAC/etc.) instead of requiring system libs
+  FetchContent_MakeAvailable(SDL3_mixer)
+endif()
+
 # Add ImGui
 FetchContent_Declare(
   imgui
@@ -204,6 +220,7 @@ target_include_directories(${ENGINE_NAME} PUBLIC
 target_link_libraries(${ENGINE_NAME} PUBLIC 
   SDL3::SDL3 
   SDL3_ttf::SDL3_ttf
+  SDL3_mixer::SDL3_mixer
   imgui
   imgui_plot
   Xinput
@@ -248,6 +265,7 @@ elseif(WIN32)
   set(SDL_RUNTIME_DLLS
     SDL3::SDL3
     SDL3_ttf::SDL3_ttf
+    SDL3_mixer::SDL3_mixer
   )
 
   foreach(dllTarget IN LISTS SDL_RUNTIME_DLLS)

@@ -7,12 +7,13 @@
 #include "RenderComponent.h"
 #include "HitboxComponent.h"
 
-// Singletons
+// Singletons/locators
 #include "Renderer.h"
 #include "SceneManager.h"
 #include "InputManager.h"
 #include "Timer.h"
 #include "ResourceManager.h"
+#include "SoundSystem.h"
 
 // Types
 #include "GameObject.h"

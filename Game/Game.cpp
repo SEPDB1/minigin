@@ -112,6 +112,7 @@ void dae::Game::Start()
 	}
 
 	// Test obstacle
+	SoundLocator::GetSoundSystem().Play("Sounds/MainMenuMusic.mp3", 0.f);
 }
 
 void dae::Game::Update()

@@ -17,6 +17,7 @@
 #include "Timer.h"
 #include "Game.h"
 #include "CollisionHandler.h"
+#include "SoundSystem.h"
 
 SDL_Window* g_window{};
 
@@ -77,6 +78,10 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 
 	SDLRenderer::GetInstance().Init(g_window);
 	ResourceManager::GetInstance().Init(dataPath);
+	SoundLocator::RegisterSoundSystem<SDLSoundSystem>();
+	m_pGame = std::make_unique<Game>();
+	m_pGame->Start();
+	SceneManager::GetInstance().Start();
 }
 
 dae::Minigin::~Minigin()
@@ -90,7 +95,6 @@ dae::Minigin::~Minigin()
 void dae::Minigin::Run(const std::function<void()>& load)
 {
 	load();
-	Start();
 #ifndef __EMSCRIPTEN__
 	while (!m_quit)
 		Update();
@@ -99,12 +103,6 @@ void dae::Minigin::Run(const std::function<void()>& load)
 #endif
 }
 
-void dae::Minigin::Start()
-{
-	m_pGame = std::make_unique<Game>();
-	m_pGame->Start();
-	SceneManager::GetInstance().Start();
-}
 void dae::Minigin::Update()
 {
 	m_quit = !InputManager::GetInstance().ProcessInput();
