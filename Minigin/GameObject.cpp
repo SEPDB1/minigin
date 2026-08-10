@@ -30,6 +30,12 @@ void dae::GameObject::Render() const
 		pComp->Render();
 }
 
+void dae::GameObject::OnCollision(const CollisionInfo& info)
+{
+	for (const auto& pComp : m_pComponents)
+		pComp->OnCollision(info);
+}
+
 void dae::GameObject::SetActiveSelf(bool isActive)
 {
 	// Do nothing when the state is the same

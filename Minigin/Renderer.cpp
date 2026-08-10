@@ -12,6 +12,7 @@
 // project includes
 #include "Renderer.h"
 #include "SceneManager.h"
+#include "CollisionUtility.h"
 
 #pragma region SDLRendererImpl
 
@@ -29,6 +30,7 @@ public:
 	SDL_Renderer* GetSDLRenderer() const;
 	const SDL_Color& GetBackgroundColor() const;
 	const std::filesystem::path& GetPath() const;
+	Rect GetScreenBounds() const;
 
 private:
 	SDL_Renderer* m_Renderer{};
@@ -133,6 +135,14 @@ const std::filesystem::path& dae::SDLRenderer::SDLRendererImpl::GetPath() const
 	return m_Path;
 }
 
+dae::Rect dae::SDLRenderer::SDLRendererImpl::GetScreenBounds() const
+{
+	int width{}, height{};
+
+	SDL_GetWindowSize(m_pWindow, std::addressof(width), std::addressof(height));
+	return Rect(0.f, 0.f, static_cast<float>(width), static_cast<float>(height));
+}
+
 #pragma endregion SDLRendererImpl
 
 #pragma region SDLRenderer
@@ -182,6 +192,11 @@ const SDL_Color& dae::SDLRenderer::GetBackgroundColor() const
 const std::filesystem::path& dae::SDLRenderer::GetPath() const
 {
 	return m_pSDLRendererImpl->GetPath();
+}
+
+dae::Rect dae::SDLRenderer::GetScreenBounds() const
+{
+	return m_pSDLRendererImpl->GetScreenBounds();
 }
 
 #pragma endregion SDLRenderer

@@ -16,6 +16,7 @@
 #include "ResourceManager.h"
 #include "Timer.h"
 #include "Game.h"
+#include "CollisionHandler.h"
 
 SDL_Window* g_window{};
 
@@ -66,7 +67,7 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 	g_window = SDL_CreateWindow(
 		"Programming 4 assignment",
 		1024,
-		576,
+		1024,
 		SDL_WINDOW_OPENGL
 	);
 	if (g_window == nullptr) 
@@ -110,5 +111,6 @@ void dae::Minigin::Update()
 	m_pGame->Update();
 	SceneManager::GetInstance().Update();
 	Timer::GetInstance().Update();
+	CollisionHandler::GetInstance().Update();
 	SDLRenderer::GetInstance().Render();
 }

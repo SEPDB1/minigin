@@ -7,6 +7,8 @@
 
 namespace dae
 {
+	struct CollisionInfo;
+
 	class GameObject final
 	{
 	public:
@@ -19,6 +21,7 @@ namespace dae
 		void Start();
 		void Update();
 		void Render() const;
+		void OnCollision(const CollisionInfo& info);
 
 		void SetActiveSelf(bool isActive);
 

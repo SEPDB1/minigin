@@ -5,6 +5,7 @@
 #include "TextComponent.h"
 #include "PlayerInputComponent.h"
 #include "RenderComponent.h"
+#include "HitboxComponent.h"
 
 // Singletons
 #include "Renderer.h"

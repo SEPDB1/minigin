@@ -15,6 +15,7 @@ namespace dae
 	 */
 	class Texture2D;
 	class Transform;
+	struct Rect;
 	class SDLRenderer final : public Singleton<SDLRenderer>
 	{
 	public:
@@ -36,6 +37,7 @@ namespace dae
 		SDL_Renderer* GetSDLRenderer() const;
 		const SDL_Color& GetBackgroundColor() const;
 		const std::filesystem::path& GetPath() const;
+		Rect GetScreenBounds() const;
 
 	private:
 		class SDLRendererImpl;

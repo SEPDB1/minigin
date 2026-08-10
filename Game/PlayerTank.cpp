@@ -39,7 +39,9 @@ void dae::PlayerTank::Start()
 
 	m_pGunBarrelObj.SetParent(std::addressof(m_pGunSpriteObj));
 	m_pGunBarrelObj.SetPosition(glm::vec2(25.f, 0.f));
+
 	tank.SetScale(glm::vec2(4.f, 4.f));
+	//tank.AttachComponent<HitboxComponent>(32.f, 32.f, false);
 
 	// Assign textures
 	m_pRenderCompTank.LoadTexture("Sprites/RedTank.png");

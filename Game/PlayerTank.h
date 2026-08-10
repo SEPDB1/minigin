@@ -32,7 +32,7 @@ namespace dae
 	private:
 		void InitialiseBulletPool();
 
-		std::array<GameObject*, 10> m_BulletPool{};
+		std::array<GameObject*, 40> m_BulletPool{};
 
 		RenderComponent& m_pRenderCompTank;
 		GameObject& m_pGunSpriteObj;
@@ -44,6 +44,6 @@ namespace dae
 		bool m_CanShoot{ true };
 
 		static inline const float m_BulletSpeed{ 650.f };
-		static inline const float m_ShotCooldown{ 0.3f };
+		static inline const float m_ShotCooldown{ 0.12f };
 	};
 }

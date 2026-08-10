@@ -5,6 +5,7 @@
 namespace dae
 {
 	class GameObject;
+	struct CollisionInfo;
 	class RenderComponent;
 	class Bullet final : public BaseComponent
 	{
@@ -17,14 +18,16 @@ namespace dae
 		Bullet& operator=(Bullet&& other) = delete;
 
 		void Start() override;
-		void Render() const override;
 		void Update() override;
+		void OnCollision(const CollisionInfo& info) override;
 
 	private:
 		RenderComponent& m_RenderCompBullet;
+		glm::vec2 m_MovementNormal{};
 		float m_MovementSpeed{};
 		float m_AccuTime{};
+		//bool m_CanBounce{ true };
 
-		inline const static float m_Timer{ 1.5f };
+		inline const static float m_Timer{ 3.f };
 	};
 }
