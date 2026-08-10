@@ -24,7 +24,8 @@ void dae::Game::Start()
 	// Create devices
 	const auto pKeyboard{ inputManager.CreateInputDevice<Keyboard>() };
 	const auto pMouse{ inputManager.CreateInputDevice<Mouse>() };
-	const auto pGamepad{ inputManager.CreateInputDevice<Gamepad>() };
+	const auto pGamepad1{ inputManager.CreateInputDevice<Gamepad>() };
+	const auto pGamepad2{ inputManager.CreateInputDevice<Gamepad>() };
 
 	// Move action
 	auto keyboardMoveControl{ 
@@ -75,11 +76,11 @@ void dae::Game::Start()
 	scene.AddObject().AttachComponent<Grid>();
 
 	// Tank1
-	scene.AddObject().AttachComponent<PlayerTank>(pGamepad, glm::vec2(screenBounds.GetCenter().x - 300.f, 200.f));
+	scene.AddObject().AttachComponent<RedPlayerTank>(pGamepad1, glm::vec2(screenBounds.GetCenter().x - 300.f, 200.f));
 
 	// Tank2
-	//std::vector<const InputDevice*> devicesTank1{ pKeyboard, pMouse };
-	//scene.AddObject().AttachComponent<PlayerTank>(std::move(devicesTank1), glm::vec2(500.f, 200.f));
+	std::vector<const InputDevice*> devicesTank1{ pKeyboard, pMouse };
+	scene.AddObject().AttachComponent<BluePlayerTank>(pGamepad2, glm::vec2(500.f, 200.f));
 
 	constexpr size_t size{ 17 };
 	std::array<glm::vec2, size> spawnPoints

@@ -32,6 +32,7 @@ private:
 	_XINPUT_STATE m_PreviousState{};
 
 	static const std::unordered_map<std::string_view, uint32_t> m_ButtonTable;
+	inline static uint8_t m_NextIdx{ 0 };
 };
 
 const std::unordered_map<std::string_view, uint32_t> dae::Gamepad::GamepadImpl::m_ButtonTable
@@ -53,7 +54,7 @@ const std::unordered_map<std::string_view, uint32_t> dae::Gamepad::GamepadImpl::
 };
 
 dae::Gamepad::GamepadImpl::GamepadImpl()
-	: m_DeviceIdx{ 0 }
+	: m_DeviceIdx{ m_NextIdx++ }
 {
 }
 

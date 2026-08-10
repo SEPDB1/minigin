@@ -69,14 +69,16 @@ namespace dae
 		template <typename ComponentT> requires std::derived_from<ComponentT, BaseComponent>
 		ComponentT* GetComponent() const
 		{
+			ComponentT* pComp{};
 			auto it = std::ranges::find_if(
 				m_pComponents,
-				[](const auto& comp) { return typeid(ComponentT) == typeid(*comp); });
+				[&pComp](const auto& comp)
+				{
+					pComp = dynamic_cast<ComponentT*>(comp.get());
+					return pComp != nullptr;
+				});
 
-			if (it != m_pComponents.end())
-				return dynamic_cast<ComponentT*>((*it).get());
-
-			return nullptr;
+			return pComp;
 		}
 #pragma endregion TemplatedFunctions
 

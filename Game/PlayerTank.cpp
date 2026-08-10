@@ -3,7 +3,14 @@
 #include "GameCommands.h"
 #include "Bullet.h"
 
-dae::PlayerTank::PlayerTank(GameObject* pOwner, const InputDevice* pDevice, const glm::vec2& spawnPos)
+dae::PlayerTank::TankProperties::TankProperties(const std::string& filePathTank, const std::string& filePathGun, const glm::vec2& spawnPos)
+	: filePathTank{ filePathTank }
+	, filePathGun{ filePathGun }
+	, spawnPos{ spawnPos }
+{
+}
+
+dae::PlayerTank::PlayerTank(GameObject* pOwner, const InputDevice* pDevice, const TankProperties& properties)
 	: BaseComponent(pOwner)
 	, m_BulletPool{}
 	, m_pRenderCompTank{ pOwner->AttachComponent<RenderComponent>() }
@@ -12,11 +19,15 @@ dae::PlayerTank::PlayerTank(GameObject* pOwner, const InputDevice* pDevice, cons
 	, m_pGunBarrelObj{ SceneManager::GetInstance().GetActiveScene().AddObject() }
 	, m_PlayerInput{ pOwner->AttachComponent<PlayerInputComponent>(pDevice) }
 {
-	pOwner->SetPosition(spawnPos);
+	pOwner->SetPosition(properties.spawnPos);
 	InitialiseBulletPool();
+
+	// Assign textures
+	m_pRenderCompTank.LoadTexture(properties.filePathTank);
+	m_pRenderCompGun.LoadTexture(properties.filePathGun);
 }
 
-dae::PlayerTank::PlayerTank(GameObject* pOwner, std::vector<const InputDevice*>&& pDevices, const glm::vec2& spawnPos)
+dae::PlayerTank::PlayerTank(GameObject* pOwner, std::vector<const InputDevice*>&& pDevices, const TankProperties& properties)
 	: BaseComponent(pOwner)
 	, m_BulletPool{}
 	, m_pRenderCompTank{ pOwner->AttachComponent<RenderComponent>() }
@@ -25,8 +36,12 @@ dae::PlayerTank::PlayerTank(GameObject* pOwner, std::vector<const InputDevice*>&
 	, m_pGunBarrelObj{ SceneManager::GetInstance().GetActiveScene().AddObject() }
 	, m_PlayerInput{ pOwner->AttachComponent<PlayerInputComponent>(std::move(pDevices)) }
 {
-	pOwner->SetPosition(spawnPos);
+	pOwner->SetPosition(properties.spawnPos);
 	InitialiseBulletPool();
+
+	// Assign textures
+	m_pRenderCompTank.LoadTexture(properties.filePathTank);
+	m_pRenderCompGun.LoadTexture(properties.filePathGun);
 }
 
 void dae::PlayerTank::Start()
@@ -42,10 +57,6 @@ void dae::PlayerTank::Start()
 
 	tank.SetScale(glm::vec2(4.f, 4.f));
 	//tank.AttachComponent<HitboxComponent>(32.f, 32.f, false);
-
-	// Assign textures
-	m_pRenderCompTank.LoadTexture("Sprites/RedTank.png");
-	m_pRenderCompGun.LoadTexture("Sprites/RedTankGun.png");
 	m_PlayerInput.AddCommandBinding("Move", std::make_unique<TankMoveCommand>(std::addressof(tank), 400.f));
 	m_PlayerInput.AddCommandBinding("Aim", std::make_unique<GunRotateCommand>(std::addressof(m_pGunSpriteObj)));
 	m_PlayerInput.AddCommandBinding("Shoot", std::make_unique<TankShootCommand>(std::addressof(tank), m_BulletSpeed));
@@ -111,4 +122,34 @@ void dae::PlayerTank::InitialiseBulletPool()
 		pBullet->AttachComponent<Bullet>(m_BulletSpeed);
 		pBullet->SetActiveSelf(false);
 	}
+}
+
+dae::RedPlayerTank::RedPlayerTank(GameObject* pOwner, const InputDevice* pDevice, const glm::vec2& spawnPos)
+	: PlayerTank(pOwner, pDevice, TankProperties{ "Sprites/RedTank.png", "Sprites/RedTankGun.png", spawnPos })
+{
+}
+
+dae::RedPlayerTank::RedPlayerTank(GameObject* pOwner, std::vector<const InputDevice*>&& pDevices, const glm::vec2& spawnPos)
+	: PlayerTank(pOwner, std::move(pDevices), TankProperties{ "Sprites/RedTank.png", "Sprites/RedTankGun.png", spawnPos })
+{
+}
+
+dae::BluePlayerTank::BluePlayerTank(GameObject* pOwner, const InputDevice* pDevice, const glm::vec2& spawnPos)
+	: PlayerTank(pOwner, pDevice, TankProperties{ "Sprites/BlueTank.png", "Sprites/BlueTankGun.png", spawnPos })
+{
+}
+
+dae::BluePlayerTank::BluePlayerTank(GameObject* pOwner, std::vector<const InputDevice*>&& pDevices, const glm::vec2& spawnPos)
+	: PlayerTank(pOwner, std::move(pDevices), TankProperties{ "Sprites/BlueTank.png", "Sprites/BlueTankGun.png", spawnPos })
+{
+}
+
+dae::GreenPlayerTank::GreenPlayerTank(GameObject* pOwner, const InputDevice* pDevice, const glm::vec2& spawnPos)
+	: PlayerTank(pOwner, pDevice, TankProperties{ "Sprites/GreenTank.png", "Sprites/RedTankGun.png", spawnPos })
+{
+}
+
+dae::GreenPlayerTank::GreenPlayerTank(GameObject* pOwner, std::vector<const InputDevice*>&& pDevices, const glm::vec2& spawnPos)
+	: PlayerTank(pOwner, std::move(pDevices), TankProperties{ "Sprites/GreenTank.png", "Sprites/RedTankGun.png", spawnPos })
+{
 }
