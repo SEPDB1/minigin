@@ -1,6 +1,8 @@
 #include "HitboxComponent.h"
 #include "GameObject.h"
 #include "CollisionHandler.h"
+#include "SceneManager.h"
+#include "Scene.h"
 
 const dae::CollisionHandler dae::HitboxComponent::m_Handler{};
 
@@ -15,7 +17,7 @@ dae::HitboxComponent::HitboxComponent(GameObject* pOwner, float width, float hei
 	, m_Height{ height }
 	, m_IsStatic{ isStatic }
 {
-	CollisionHandler::GetInstance().AddHitbox(this);
+	SceneManager::GetInstance().GetActiveScene().GetCollisionHandler().AddHitbox(this);
 }
 
 void dae::HitboxComponent::Update()

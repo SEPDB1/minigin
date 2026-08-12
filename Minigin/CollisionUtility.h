@@ -4,6 +4,7 @@
 namespace dae
 {
 	class HitboxComponent;
+	struct CollisionInfo;
 
 	struct Rect
 	{
@@ -11,7 +12,7 @@ namespace dae
 		Rect(float left, float top, float width, float height);
 
 		bool IsOverlapping(const Rect& r) const;
-		glm::vec2 GetCollisionNormal(const glm::vec2& point) const;
+		CollisionInfo CreateCollisionInfo(const glm::vec2& point) const;
 		glm::vec2 GetCenter() const;
 
 		float left{};
@@ -23,9 +24,10 @@ namespace dae
 	struct CollisionInfo
 	{
 		CollisionInfo() = default;
-		CollisionInfo(const glm::vec2& surfaceNormal, const HitboxComponent* pCollider);
+		CollisionInfo(const glm::vec2& surfaceNormal, const HitboxComponent* pCollider, float distanceToWall);
 
 		glm::vec2 surfaceNormal{};
 		const HitboxComponent* pCollider{};
+		float distanceToWall{};
 	};
 }

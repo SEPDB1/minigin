@@ -17,6 +17,9 @@ dae::TextComponent::TextComponent(GameObject* pOwner)
 
 void dae::TextComponent::Render() const
 {
+	if (!m_pTextTexture)
+		return;
+
 	SDLRenderer::GetInstance().RenderTexture(*m_pTextTexture, BaseComponent::GetOwner()->GetTransform());
 }
 

@@ -1,16 +1,18 @@
 #pragma once
-#include "InputUtility.h"
+//#include "InputUtility.h"
+#include <memory>
 
 namespace dae
 {
 	class Scene;
 	class GameObject;
 	class TextComponent;
+	class IGameState;
 	class Game final
 	{
 	public:
 		Game();
-		~Game() = default;
+		~Game();
 		Game(const Game& other) = delete;
 		Game(Game&& other) = delete;
 		Game& operator=(const Game& other) = delete;
@@ -20,15 +22,10 @@ namespace dae
 		void Update();
 
 	private:
-		enum class GameMode : uint8_t
-		{
-			singlePlayer,
-			coop,
-			versus
-		};
+		std::unique_ptr<IGameState> m_pCurrentState;
 
-		static inline const GameMode m_GameMode{ GameMode::singlePlayer };
-		static inline const DeviceType m_PlayerOneDevice{ DeviceType::gamepad };
-		static inline const DeviceType m_PlayerTwoDevice{ DeviceType::gamepad };
+		//static inline const GameMode m_GameMode{ GameMode::singlePlayer };
+		//static inline const DeviceType m_PlayerOneDevice{ DeviceType::gamepad };
+		//static inline const DeviceType m_PlayerTwoDevice{ DeviceType::gamepad };
 	};
 }

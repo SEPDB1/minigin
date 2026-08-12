@@ -1,9 +1,7 @@
 #include "InputManager.h"
-#include "Gamepad.h"
-#include "Keyboard.h"
-#include <backends/imgui_impl_sdl3.h>
+#include "InputDevice.h"
+//#include <backends/imgui_impl_sdl3.h>
 #include <SDL3/SDL.h>
-#include <iostream>
 
 bool dae::InputManager::ProcessInput()
 {
@@ -14,7 +12,7 @@ bool dae::InputManager::ProcessInput()
 			return false;
 
 		//process event for IMGUI
-		ImGui_ImplSDL3_ProcessEvent(&e);
+		//ImGui_ImplSDL3_ProcessEvent(&e);
 	}
 
 	for (auto& pDevice : m_pDevices)

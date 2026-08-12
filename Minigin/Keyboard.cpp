@@ -20,6 +20,7 @@ public:
 	bool IsUpThisFrame(const dae::Button& button) const;
 	bool IsPressed(const dae::Button& button) const;
 	glm::vec2 GetAxisValue(Axis axis) const ;
+	DeviceType GetType() const;
 
 private:
 	uint8_t m_CurrentState[SDL_SCANCODE_COUNT]{};
@@ -126,6 +127,11 @@ glm::vec2 dae::Keyboard::KeyboardImpl::GetAxisValue(Axis) const
 	return glm::vec2();
 }
 
+dae::DeviceType dae::Keyboard::KeyboardImpl::GetType() const
+{
+	return DeviceType::keyboard;
+}
+
 #pragma endregion KeyboardImpl
 
 #pragma region Keyboard
@@ -160,6 +166,11 @@ bool dae::Keyboard::IsPressed(const Button& button) const
 glm::vec2 dae::Keyboard::GetAxisValue(Axis axis) const
 {
 	return m_pImpl->GetAxisValue(axis);
+}
+
+dae::DeviceType dae::Keyboard::GetType() const
+{
+	return m_pImpl->GetType();
 }
 
 #pragma endregion Keyboard

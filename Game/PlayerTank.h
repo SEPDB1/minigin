@@ -23,8 +23,8 @@ namespace dae
 		PlayerTank& operator=(PlayerTank&& other) = delete;
 
 		void Start() override;
-		void Render() const override;
 		void Update() override;
+		void OnCollision(const CollisionInfo& info);
 
 		void Shoot();
 

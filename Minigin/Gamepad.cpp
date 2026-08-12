@@ -21,6 +21,7 @@ public:
 	bool IsUpThisFrame(const dae::Button& button) const;
 	bool IsPressed(const dae::Button& button) const;
 	glm::vec2 GetAxisValue(Axis axis) const;
+	DeviceType GetType() const;
 
 private:
 	float NormaliseAxis(SHORT value, SHORT deadzone) const;
@@ -116,6 +117,12 @@ glm::vec2 dae::Gamepad::GamepadImpl::GetAxisValue(Axis axis) const
 
 	return value;
 }
+
+dae::DeviceType dae::Gamepad::GamepadImpl::GetType() const
+{
+	return DeviceType::gamepad;
+}
+
 float dae::Gamepad::GamepadImpl::NormaliseAxis(SHORT value, SHORT deadzone) const
 {
 	// Apply deadzone
@@ -169,4 +176,10 @@ glm::vec2 dae::Gamepad::GetAxisValue(Axis axis) const
 {
 	return m_pImpl->GetAxisValue(axis);
 }
+
+dae::DeviceType dae::Gamepad::GetType() const
+{
+	return m_pImpl->GetType();
+}
+
 #pragma endregion Gamepad

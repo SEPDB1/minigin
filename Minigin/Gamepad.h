@@ -19,6 +19,7 @@ namespace dae
 		bool IsUpThisFrame(const Button& button) const override;
 		bool IsPressed(const Button& button) const override;
 		glm::vec2 GetAxisValue(Axis axis) const override;
+		DeviceType GetType() const override;
 
 	private:
 		friend class InputManager;

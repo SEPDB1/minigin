@@ -1,13 +1,9 @@
 #include "InputUtility.h"
 #include "InputManager.h"
 
-dae::InputContext::InputContext(ActionValue value)
+dae::InputContext::InputContext(ActionValue value, const InputDevice* pDevice, bool isDownThisFrame, bool isUpThisFrame)
 	: value{ value }
-{
-}
-
-dae::InputContext::InputContext(ActionValue value, bool isDownThisFrame, bool isUpThisFrame)
-	: value{ value }
+	, pDevice{ pDevice }
 	, isDownThisFrame{ isDownThisFrame }
 	, isUpThisFrame{ isUpThisFrame }
 {
@@ -40,10 +36,10 @@ dae::InputContext dae::CompoundControlButton::GetActionContext(const InputDevice
 	const float upValue{ inputManager.GetButtonValue(m_Up, pDevice) };
 	const float downValue{ inputManager.GetButtonValue(m_Down, pDevice) };
 
-	return InputContext{ glm::vec2{ -leftValue + rightValue, -upValue + downValue } };
+	return InputContext{ glm::vec2{ -leftValue + rightValue, -upValue + downValue }, pDevice };
 }
 
 dae::InputContext dae::CompoundControlAxis::GetActionContext(const InputDevice* pDevice) const
 {
-	return InputContext{ InputManager::GetInstance().GetAxisValue(m_Axis, pDevice) };
+	return InputContext{ InputManager::GetInstance().GetAxisValue(m_Axis, pDevice), pDevice };
 }

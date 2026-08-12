@@ -109,6 +109,5 @@ void dae::Minigin::Update()
 	m_pGame->Update();
 	SceneManager::GetInstance().Update();
 	Timer::GetInstance().Update();
-	CollisionHandler::GetInstance().Update();
 	SDLRenderer::GetInstance().Render();
 }

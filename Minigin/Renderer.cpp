@@ -4,9 +4,9 @@
 #include <iostream>
 
 // library includes
-#include <imgui.h>
-#include <backends/imgui_impl_sdl3.h>
-#include <backends/imgui_impl_sdlrenderer3.h>
+//#include <imgui.h>
+//#include <backends/imgui_impl_sdl3.h>
+//#include <backends/imgui_impl_sdlrenderer3.h>
 #include <SDL3/SDL.h>
 
 // project includes
@@ -51,19 +51,19 @@ void dae::SDLRenderer::SDLRendererImpl::Init(SDL_Window* pWindow)
 		throw std::runtime_error(std::string("SDL_CreateRenderer Error: ") + SDL_GetError());
 	}
 
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	//IMGUI_CHECKVERSION();
+	//ImGui::CreateContext();
+	//ImGuiIO& io = ImGui::GetIO(); (void)io;
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 #if __EMSCRIPTEN__
 	// For an Emscripten build we are disabling file-system access, so let's not attempt to do a fopen() of the imgui.ini file.
 	// You may manually call LoadIniSettingsFromMemory() to load settings from your own storage.
 	io.IniFilename = NULL;
 #endif
 
-	ImGui_ImplSDL3_InitForSDLRenderer(pWindow, m_Renderer);
-	ImGui_ImplSDLRenderer3_Init(m_Renderer);
+	//ImGui_ImplSDL3_InitForSDLRenderer(pWindow, m_Renderer);
+	//ImGui_ImplSDLRenderer3_Init(m_Renderer);
 }
 
 void dae::SDLRenderer::SDLRendererImpl::Render() const
@@ -79,9 +79,9 @@ void dae::SDLRenderer::SDLRendererImpl::Render() const
 
 void dae::SDLRenderer::SDLRendererImpl::Destroy()
 {
-	ImGui_ImplSDLRenderer3_Shutdown();
-	ImGui_ImplSDL3_Shutdown();
-	ImGui::DestroyContext();
+	//ImGui_ImplSDLRenderer3_Shutdown();
+	//ImGui_ImplSDL3_Shutdown();
+	//ImGui::DestroyContext();
 
 	if (m_Renderer)
 	{

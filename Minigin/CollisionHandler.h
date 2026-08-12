@@ -1,11 +1,10 @@
 #pragma once
-#include "Singleton.h"
 #include <vector>
 
 namespace dae
 {
 	class HitboxComponent;
-	class CollisionHandler final : public Singleton<CollisionHandler>
+	class CollisionHandler final
 	{
 	public:
 		CollisionHandler() = default;
@@ -15,14 +14,16 @@ namespace dae
 		CollisionHandler& operator=(const CollisionHandler& other) = delete;
 		CollisionHandler& operator=(CollisionHandler&& other) = delete;
 
+	private:
+		friend class Scene;
 		void Update();
 
-		void AddHitbox(HitboxComponent* pHitboxComp);
+		friend class HitboxComponent;
+		void AddHitbox(const HitboxComponent* pHitboxComp);
 
-	private:
-		void HandleCollision(HitboxComponent* pCollider1, HitboxComponent* pCollider2);
+		void HandleCollision(const HitboxComponent* pCollider1, const HitboxComponent* pCollider2) const;
 
-		std::vector<HitboxComponent*> m_pStaticHitboxes{};
-		std::vector<HitboxComponent*> m_pDynamicHitboxes{};
+		std::vector<const HitboxComponent*> m_pStaticHitboxes{};
+		std::vector<const HitboxComponent*> m_pDynamicHitboxes{};
 	};
 }

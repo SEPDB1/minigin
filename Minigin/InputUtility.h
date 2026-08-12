@@ -11,14 +11,16 @@ namespace dae
 	/// Should be cast to bool with a InputActionButton, to a glm::vec2 with InputActionAxis2D.
 	using ActionValue = std::variant<bool, glm::vec2>;
 	
+	class InputDevice;
+
 	/// Struct that is passed to the execute function of commands
 	struct InputContext final
 	{
 		InputContext() = default;
-		InputContext(ActionValue value);
-		InputContext(ActionValue value, bool isDownThisFrame, bool isUpThisFrame);
+		InputContext(ActionValue value, const InputDevice* pDevice , bool isDownThisFrame = false, bool isUpThisFrame = false);
 
 		ActionValue value{};
+		const InputDevice* pDevice{};
 		bool isDownThisFrame{ false };
 		bool isUpThisFrame{ false };
 	};

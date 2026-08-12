@@ -27,6 +27,7 @@ dae::InputContext dae::InputActionButton::GetActionContext(const InputDevice* pD
 		InputContext ctx
 		{
 			isPressed,
+			pDevice,
 			inputManager.IsButtonDownThisFrame(button, pDevice),
 			inputManager.IsButtonUpThisFrame(button, pDevice)
 		};
@@ -61,5 +62,5 @@ dae::InputContext dae::InputActionAxis2D::GetActionContext(const InputDevice* pD
 			return ctx;
 	}
 
-	return InputContext{ glm::vec2() };
+	return InputContext{ glm::vec2(), pDevice };
 }

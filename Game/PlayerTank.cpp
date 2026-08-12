@@ -56,14 +56,10 @@ void dae::PlayerTank::Start()
 	m_pGunBarrelObj.SetPosition(glm::vec2(25.f, 0.f));
 
 	tank.SetScale(glm::vec2(4.f, 4.f));
-	//tank.AttachComponent<HitboxComponent>(32.f, 32.f, false);
+	tank.AttachComponent<HitboxComponent>(32.f, 32.f, false);
 	m_PlayerInput.AddCommandBinding("Move", std::make_unique<TankMoveCommand>(std::addressof(tank), 400.f));
 	m_PlayerInput.AddCommandBinding("Aim", std::make_unique<GunRotateCommand>(std::addressof(m_pGunSpriteObj)));
 	m_PlayerInput.AddCommandBinding("Shoot", std::make_unique<TankShootCommand>(std::addressof(tank), m_BulletSpeed));
-}
-
-void dae::PlayerTank::Render() const
-{
 }
 
 void dae::PlayerTank::Update()
@@ -78,6 +74,13 @@ void dae::PlayerTank::Update()
 			m_CanShoot = true;
 		}
 	}
+}
+
+void dae::PlayerTank::OnCollision(const CollisionInfo& info)
+{
+	auto pOwner{ BaseComponent::GetOwner() };
+
+	pOwner->SetPosition(pOwner->GetTransform().GetPosition() + info.surfaceNormal * info.distanceToWall);
 }
 
 void dae::PlayerTank::Shoot()

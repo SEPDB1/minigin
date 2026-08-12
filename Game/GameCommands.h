@@ -30,7 +30,7 @@ namespace dae
 		GameObject& m_TankObj;
 	};
 
-	// Manages the bullets of the tank
+	// Assumes that a PlayerTank component is attached to the game object.
 	class TankShootCommand final : public GameObjectCommand
 	{
 	public:
@@ -40,5 +40,32 @@ namespace dae
 
 	private:
 		float m_BulletSpeed{};
+	};
+
+	// Assumes that a StartScreen component is attached to the game object.
+	class JoinCommand final : public GameObjectCommand
+	{
+	public:
+		JoinCommand(GameObject* pGameObject);
+
+		void Execute(InputContext ctx) override;
+	};
+
+	// Assumes that a StartScreen component is attached to the game object.
+	class LeaveCommand final : public GameObjectCommand
+	{
+	public:
+		LeaveCommand(GameObject* pGameObject);
+
+		void Execute(InputContext ctx) override;
+	};
+
+	// Assumes that a StartScreen component is attached to the game object.
+	class ReadyUpCommand final : public GameObjectCommand
+	{
+	public:
+		ReadyUpCommand(GameObject* pGameObject);
+
+		void Execute(InputContext ctx) override;
 	};
 }

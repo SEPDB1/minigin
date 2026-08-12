@@ -10,6 +10,6 @@ dae::Grid::Grid(GameObject* pOwner)
 
 void dae::Grid::Start()
 {
-	m_BgSprite.LoadTexture("Sprites/Background.png");
-	m_BgObj.SetScale(glm::vec2(m_Scale * m_TileSize, m_Scale * m_TileSize));
+	m_BgSprite.LoadTexture("Sprites/Background2.png");
+	//m_BgObj.SetScale(glm::vec2(m_Scale * m_TileSize, m_Scale * m_TileSize));
 }

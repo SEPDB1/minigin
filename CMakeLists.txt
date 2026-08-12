@@ -43,6 +43,7 @@ add_library(${ENGINE_NAME} STATIC
     Minigin/Keyboard.cpp
     Minigin/Gamepad.cpp
     Minigin/Mouse.cpp
+    Minigin/Subject.cpp
 )
 
 target_compile_features(${ENGINE_NAME} PUBLIC cxx_std_23)
@@ -55,7 +56,12 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
     Game/Grid.cpp
     Game/Bullet.cpp
     Game/GameCommands.cpp
-    Game/Game.cpp)
+    Game/Game.cpp
+    Game/GameState.cpp
+    Game/StartScreen.cpp
+    Game/DeviceSlot.cpp
+    Game/DeviceSlotView.cpp
+)
 
 target_link_libraries(${TARGET_NAME} PRIVATE ${ENGINE_NAME})
 
@@ -164,36 +170,36 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(imgui)
 
 # Add ImGui_Plot
-include(FetchContent)
-FetchContent_Declare(
-    imgui_plot
-    GIT_REPOSITORY https://github.com/soulthreads/imgui-plot.git)
-FetchContent_MakeAvailable(imgui_plot)
-
-# --Make imgui into static library--
-add_library(imgui STATIC
-  ${imgui_SOURCE_DIR}/imgui.cpp
-  ${imgui_SOURCE_DIR}/imgui_draw.cpp
-  ${imgui_SOURCE_DIR}/imgui_tables.cpp
-  ${imgui_SOURCE_DIR}/imgui_widgets.cpp
-  ${imgui_SOURCE_DIR}/imgui_demo.cpp
-  ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp
-  ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp)
-
-target_include_directories(imgui PUBLIC 
-    ${imgui_SOURCE_DIR} 
-    ${sdl3_SOURCE_DIR}/include)
-target_link_libraries(imgui PUBLIC SDL3::SDL3)
-
-target_include_directories(imgui_plot PUBLIC 
-    ${imgui_SOURCE_DIR} 
-    ${imgui_plot}/include)
-
-target_link_libraries(imgui_plot PUBLIC imgui)
-
-target_compile_definitions(imgui PUBLIC IMGUI_DEFINE_MATH_OPERATORS)
-
-target_compile_features(imgui PUBLIC cxx_std_23)
+#include(FetchContent)
+#FetchContent_Declare(
+#    imgui_plot
+#    GIT_REPOSITORY https://github.com/soulthreads/imgui-plot.git)
+#FetchContent_MakeAvailable(imgui_plot)
+#
+## --Make imgui into static library--
+#add_library(imgui STATIC
+#  ${imgui_SOURCE_DIR}/imgui.cpp
+#  ${imgui_SOURCE_DIR}/imgui_draw.cpp
+#  ${imgui_SOURCE_DIR}/imgui_tables.cpp
+#  ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+#  ${imgui_SOURCE_DIR}/imgui_demo.cpp
+#  ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp
+#  ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp)
+#
+#target_include_directories(imgui PUBLIC 
+#    ${imgui_SOURCE_DIR} 
+#    ${sdl3_SOURCE_DIR}/include)
+#target_link_libraries(imgui PUBLIC SDL3::SDL3)
+#
+#target_include_directories(imgui_plot PUBLIC 
+#    ${imgui_SOURCE_DIR} 
+#    ${imgui_plot}/include)
+#
+#target_link_libraries(imgui_plot PUBLIC imgui)
+#
+#target_compile_definitions(imgui PUBLIC IMGUI_DEFINE_MATH_OPERATORS)
+#
+#target_compile_features(imgui PUBLIC cxx_std_23)
 # --
 
 if (WIN32)
@@ -212,8 +218,8 @@ target_include_directories(${ENGINE_NAME} PUBLIC
   ${sdl3_SOURCE_DIR}/include
   ${sdl3_image_SOURCE_DIR}/include
   ${sdl3_ttf_SOURCE_DIR}/include
-  ${imgui_SOURCE_DIR}
-  ${imgui_plot_SOURCE_DIR}/include
+  #${imgui_SOURCE_DIR}
+  #${imgui_plot_SOURCE_DIR}/include
   ${VLD_INCLUDE_DIR}
 )
 
@@ -221,8 +227,8 @@ target_link_libraries(${ENGINE_NAME} PUBLIC
   SDL3::SDL3 
   SDL3_ttf::SDL3_ttf
   SDL3_mixer::SDL3_mixer
-  imgui
-  imgui_plot
+  #imgui
+  #imgui_plot
   Xinput
   ${VLD_LIBRARIES}
 )

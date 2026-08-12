@@ -1,6 +1,31 @@
 #include <algorithm>
 #include "Scene.h"
 #include "BaseComponent.h"
+#include "CollisionHandler.h"
+
+dae::Scene::~Scene() = default;
+
+void dae::Scene::Start()
+{
+	m_IsStarted = true;
+
+	for (size_t i{ 0 }; i < m_Objects.size(); ++i)
+		m_Objects[i]->Start();
+}
+
+void dae::Scene::Update()
+{
+	for (size_t i{ 0 }; i < m_Objects.size(); ++i)
+		m_Objects[i]->Update();
+
+	m_pCollisionHandler->Update();
+}
+
+void dae::Scene::Render() const
+{
+	for (const auto& object : m_Objects)
+		object->Render();
+}
 
 dae::GameObject& dae::Scene::AddObject()
 {
@@ -31,23 +56,14 @@ void dae::Scene::RemoveAll()
 	m_Objects.clear();
 }
 
-void dae::Scene::Start()
+dae::CollisionHandler& dae::Scene::GetCollisionHandler() const
 {
-	m_IsStarted = true;
-
-	for (size_t i{ 0 }; i < m_Objects.size(); ++i)
-		m_Objects[i]->Start();
+	return *m_pCollisionHandler;
 }
 
-void dae::Scene::Update()
-{
-	for (size_t i{ 0 }; i < m_Objects.size(); ++i)
-		m_Objects[i]->Update();
-}
 
-void dae::Scene::Render() const
+dae::Scene::Scene()
+	: m_pCollisionHandler{ std::make_unique<CollisionHandler>() }
 {
-	for (const auto& object : m_Objects)
-		object->Render();
-}
 
+}

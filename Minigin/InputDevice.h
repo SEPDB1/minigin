@@ -19,6 +19,7 @@ namespace dae
 		virtual bool IsUpThisFrame(const Button& button) const = 0;
 		virtual bool IsPressed(const Button& button) const = 0;
 		virtual glm::vec2 GetAxisValue(Axis axis) const = 0;
+		virtual DeviceType GetType() const = 0;
 
 	protected:
 		InputDevice() = default;

@@ -23,7 +23,7 @@ namespace dae
 		void Render() const;
 		void OnCollision(const CollisionInfo& info);
 
-		void SetActiveSelf(bool isActive);
+		dae::GameObject& SetActiveSelf(bool isActive);
 
 		GameObject& SetPosition(const glm::vec2& pos);
 		GameObject& SetRotation(float radians);

@@ -44,7 +44,7 @@ void dae::CollisionHandler::Update()
 	}
 }
 
-void dae::CollisionHandler::AddHitbox(HitboxComponent* pHitboxComp)
+void dae::CollisionHandler::AddHitbox(const HitboxComponent* pHitboxComp)
 {
 	if (pHitboxComp->IsStatic())
 		m_pStaticHitboxes.push_back(pHitboxComp);
@@ -52,14 +52,16 @@ void dae::CollisionHandler::AddHitbox(HitboxComponent* pHitboxComp)
 		m_pDynamicHitboxes.push_back(pHitboxComp);
 }
 
-void dae::CollisionHandler::HandleCollision(HitboxComponent* pCollider1, HitboxComponent* pCollider2)
+void dae::CollisionHandler::HandleCollision(const HitboxComponent* pCollider1, const HitboxComponent* pCollider2) const
 {
 	const Rect bounds1{ pCollider1->GetBounds() };
 	const Rect bounds2{ pCollider2->GetBounds() };
 	
-	dae::CollisionInfo info1{ bounds2.GetCollisionNormal(bounds1.GetCenter()), pCollider2 };
-	pCollider1->GetOwner()->OnCollision(info1);
+	dae::CollisionInfo info{ std::move(bounds2.CreateCollisionInfo(bounds1.GetCenter())) };
+	info.pCollider = pCollider2;
+	pCollider1->GetOwner()->OnCollision(info);
 
-	dae::CollisionInfo info2{ bounds1.GetCollisionNormal(bounds2.GetCenter()), pCollider1 };
-	pCollider2->GetOwner()->OnCollision(info2);
+	info = std::move(bounds1.CreateCollisionInfo(bounds2.GetCenter()));
+	info.pCollider = pCollider1;
+	pCollider2->GetOwner()->OnCollision(info);
 }

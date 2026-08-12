@@ -6,28 +6,32 @@
 
 namespace dae
 {
+	class CollisionHandler;
 	class Scene final
 	{
 	public:
-		~Scene() = default;
+		~Scene();
 		Scene(const Scene& other) = delete;
 		Scene(Scene&& other) = delete;
 		Scene& operator=(const Scene& other) = delete;
 		Scene& operator=(Scene&& other) = delete;
 
-		GameObject& AddObject();
-		void Remove(const GameObject& object);
-		void RemoveAll();
-
 		void Start();
 		void Update();
 		void Render() const;
 
+		GameObject& AddObject();
+		void Remove(const GameObject& object);
+		void RemoveAll();
+
+		CollisionHandler& GetCollisionHandler() const;
+
 	private:
 		friend class SceneManager;
-		explicit Scene() = default;
+		explicit Scene();
 
 		std::vector<std::unique_ptr<GameObject>> m_Objects{};
+		std::unique_ptr<CollisionHandler> m_pCollisionHandler{};
 		bool m_IsStarted{ false };
 	};
 

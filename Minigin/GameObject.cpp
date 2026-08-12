@@ -36,11 +36,11 @@ void dae::GameObject::OnCollision(const CollisionInfo& info)
 		pComp->OnCollision(info);
 }
 
-void dae::GameObject::SetActiveSelf(bool isActive)
+dae::GameObject& dae::GameObject::SetActiveSelf(bool isActive)
 {
 	// Do nothing when the state is the same
 	if (m_IsActiveSelf == isActive)
-		return;
+		return *this;
 
 	m_IsActiveSelf = isActive;
 	
@@ -70,6 +70,8 @@ void dae::GameObject::SetActiveSelf(bool isActive)
 			m_IsActive = false;
 		}
 	}
+
+	return *this;
 }
 
 dae::GameObject& dae::GameObject::SetPosition(const glm::vec2& pos)

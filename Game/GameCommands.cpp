@@ -2,6 +2,7 @@
 #include "MiniginEngine.h"
 #include "Bullet.h"
 #include "PlayerTank.h"
+#include "StartScreen.h"
 
 dae::TankMoveCommand::TankMoveCommand(GameObject* pGameObject, float movementSpeed)
 	: GameObjectCommand(pGameObject)
@@ -74,5 +75,44 @@ void dae::TankShootCommand::Execute(InputContext ctx)
 	if (std::get<bool>(ctx.value))
 	{
 		GameObjectCommand::GetGameObject()->GetComponent<PlayerTank>()->Shoot();
+	}
+}
+
+dae::JoinCommand::JoinCommand(GameObject* pGameObject)
+	: GameObjectCommand(pGameObject)
+{
+}
+
+void dae::JoinCommand::Execute(InputContext ctx)
+{
+	if (ctx.isUpThisFrame)
+	{
+		GameObjectCommand::GetGameObject()->GetComponent<StartScreen>()->AddDevice(ctx.pDevice);
+	}
+}
+
+dae::LeaveCommand::LeaveCommand(GameObject* pGameObject)
+	: GameObjectCommand(pGameObject)
+{
+}
+
+void dae::LeaveCommand::Execute(InputContext ctx)
+{
+	if (ctx.isUpThisFrame)
+	{
+		GameObjectCommand::GetGameObject()->GetComponent<StartScreen>()->RemoveDevice(ctx.pDevice);
+	}
+}
+
+dae::ReadyUpCommand::ReadyUpCommand(GameObject* pGameObject)
+	: GameObjectCommand(pGameObject)
+{
+}
+
+void dae::ReadyUpCommand::Execute(InputContext ctx)
+{
+	if (ctx.isUpThisFrame)
+	{
+		GameObjectCommand::GetGameObject()->GetComponent<StartScreen>()->ReadyUp(ctx.pDevice);
 	}
 }
