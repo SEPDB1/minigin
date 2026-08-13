@@ -53,20 +53,20 @@ target_compile_features(${ENGINE_NAME} PUBLIC cxx_std_23)
 
 # --Create executable--
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
+    Game/Bullet.cpp
+    Game/DeviceSlot.cpp
+    Game/DeviceSlotView.cpp
     Minigin/Main.cpp
     Game/PlayerTank.cpp
-    
-    Game/Bullet.cpp
     Game/GameCommands.cpp
     Game/Game.cpp
     Game/GameState.cpp
     Game/StartScreen.cpp
-    Game/DeviceSlot.cpp
-    Game/DeviceSlotView.cpp
     Game/Level.cpp
     Game/LevelManager.cpp
     Game/Map.cpp
     Game/Tiles.cpp
+    Game/Enemies.cpp
 )
 
 target_link_libraries(${TARGET_NAME} PRIVATE ${ENGINE_NAME})

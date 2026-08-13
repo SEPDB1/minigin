@@ -5,7 +5,7 @@
 #include "GameCommands.h"
 #include "StartScreen.h"
 #include "LevelManager.h"
-
+#include "Enemies.h"
 dae::GameState::GameState()
 {
 	// Cache singletons
@@ -75,6 +75,13 @@ dae::GameState::GameState()
 	// Tank2
 	std::vector<const InputDevice*> devicesTank1{ pKeyboard, pMouse };
 	scene.AddObject().AttachComponent<BluePlayerTank>(pGamepad2, glm::vec2(screenBounds.width - 64.f, screenBounds.height - 64.f));
+
+	// Tank1
+	scene.AddObject().AttachComponent<EnemyTank>(glm::vec2(300.f, 400.f));
+	
+	// Recognizer1
+	scene.AddObject().AttachComponent<Recognizer>(glm::vec2(600.f, 400.f));
+
 
 	SoundLocator::GetSoundSystem().Play("Sounds/MainMenuMusic.mp3");
 }
