@@ -208,6 +208,11 @@ dae::GameObject* dae::GameObject::GetChildAt(int index) const
 	}
 }
 
+void dae::GameObject::RemoveAllComponents()
+{
+	m_pComponents.clear();
+}
+
 void dae::GameObject::SetActive(bool isActive)
 {
 	m_IsActive = isActive;

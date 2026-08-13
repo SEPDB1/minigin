@@ -4,6 +4,7 @@
 #include <memory>
 #include <map>
 #include "Singleton.h"
+#include <nlohmann/json.hpp>
 
 struct MIX_Mixer;
 struct MIX_Audio;
@@ -20,6 +21,27 @@ namespace dae
 		std::shared_ptr<Texture2D> LoadTexture(const std::string& file);
 		std::shared_ptr<Font> LoadFont(const std::string& file, uint8_t size);
 		MIX_Audio* LoadAudio(const std::string& file, MIX_Mixer* mixer);
+
+		template <typename T>
+		T ParseData(const std::string& jsonFile)
+		{
+			const auto fullname = m_DataPath / jsonFile;
+			const auto filename = std::filesystem::path(fullname).filename().string();
+			std::ifstream f(fullname);
+
+			if (!f.is_open())
+				throw std::runtime_error("Could not open file: " + jsonFile);
+
+			try
+			{
+				return nlohmann::json::parse(f).get<T>();
+			}
+			catch (const nlohmann::json::exception& e)
+			{
+				throw std::runtime_error("JSON parse error in " + jsonFile + ": " + e.what());
+			}
+		}
+
 	private:
 		friend class Singleton<ResourceManager>;
 		ResourceManager() = default;

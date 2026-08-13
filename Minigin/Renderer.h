@@ -32,7 +32,7 @@ namespace dae
 
 		void RenderTexture(const Texture2D& texture, const Transform& transform, const glm::vec2& offset = glm::vec2(0.f, 0.f)) const;
 
-		void SetBackgroundColor(const SDL_Color& color);
+		void SetBackgroundColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 
 		SDL_Renderer* GetSDLRenderer() const;
 		const SDL_Color& GetBackgroundColor() const;

@@ -27,6 +27,7 @@ namespace dae
 		Rect GetBounds() const;
 		bool IsStatic() const;
 
+		Rect CalculateBounds(const glm::vec2& center);
 	private:
 		Rect m_Bounds{};
 		float m_Width{};

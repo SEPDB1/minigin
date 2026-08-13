@@ -53,7 +53,7 @@ target_compile_features(${ENGINE_NAME} PUBLIC cxx_std_23)
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
     Minigin/Main.cpp
     Game/PlayerTank.cpp
-    Game/Grid.cpp
+    
     Game/Bullet.cpp
     Game/GameCommands.cpp
     Game/Game.cpp
@@ -61,6 +61,10 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
     Game/StartScreen.cpp
     Game/DeviceSlot.cpp
     Game/DeviceSlotView.cpp
+    Game/Level.cpp
+    Game/LevelManager.cpp
+    Game/Map.cpp
+    Game/Tiles.cpp
 )
 
 target_link_libraries(${TARGET_NAME} PRIVATE ${ENGINE_NAME})
@@ -160,14 +164,22 @@ if(NOT SDL3_mixer_FOUND)
   FetchContent_MakeAvailable(SDL3_mixer)
 endif()
 
-# Add ImGui
+# Add 
 FetchContent_Declare(
-  imgui
-  GIT_REPOSITORY https://github.com/ocornut/imgui
-  GIT_TAG v1.92.5-docking
-  GIT_SHALLOW TRUE
+    nlohmann_json
+    URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz
 )
-FetchContent_MakeAvailable(imgui)
+
+FetchContent_MakeAvailable(nlohmann_json)
+
+# Add ImGui
+#FetchContent_Declare(
+#  imgui
+#  GIT_REPOSITORY https://github.com/ocornut/imgui
+#  GIT_TAG v1.92.5-docking
+#  GIT_SHALLOW TRUE
+#)
+#FetchContent_MakeAvailable(imgui)
 
 # Add ImGui_Plot
 #include(FetchContent)
@@ -227,6 +239,7 @@ target_link_libraries(${ENGINE_NAME} PUBLIC
   SDL3::SDL3 
   SDL3_ttf::SDL3_ttf
   SDL3_mixer::SDL3_mixer
+  nlohmann_json::nlohmann_json
   #imgui
   #imgui_plot
   Xinput

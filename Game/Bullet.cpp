@@ -11,7 +11,7 @@ dae::Bullet::Bullet(GameObject* pOwner, float speed)
 void dae::Bullet::Start()
 {
 	m_RenderCompBullet.LoadTexture("Sprites/BulletPlayer.png");
-	BaseComponent::GetOwner()->AttachComponent<HitboxComponent>(12.f, 12.f, false);
+	BaseComponent::GetOwner()->SetScale(glm::vec2(2.f, 2.f)).AttachComponent<HitboxComponent>(m_HitboxSize, m_HitboxSize, false);
 }
 
 void dae::Bullet::Update()
@@ -23,32 +23,28 @@ void dae::Bullet::Update()
 
 	pGameObj->SetPosition(pGameObj->GetTransform().GetPosition() + eTime * m_MovementSpeed * m_MovementNormal);
 
-	m_AccuTime += eTime;
-
-	//if (!m_CanBounce && m_AccuTime >= 0.1f)
-	//{
-	//	m_AccuTime = 0.f;
-	//	m_CanBounce = true;
-	//}
-	if (m_AccuTime >= m_Timer)
+	if (m_AccuTime += eTime >= m_AliveTimer)
 	{
 		m_AccuTime = 0.f;
-		pGameObj->SetActiveSelf(false);
+		DespawnBullet();
 	}
 }
 
 void dae::Bullet::OnCollision(const CollisionInfo& info)
 {
-	//if (!m_CanBounce)
-	//	return;
-
-	// Reflect the movement normal
 	const glm::vec2 r{ m_MovementNormal - 2.f * glm::dot(m_MovementNormal, info.surfaceNormal) * info.surfaceNormal };
 	const float angle{ std::atan2f(r.y, r.x) };
 
-
-	// Rotate the bullet
 	BaseComponent::GetOwner()->SetRotation(angle);
 
-	//m_CanBounce = false;
+	if (++m_BounceCount >= m_MaxBounceCount)
+	{
+		m_BounceCount = 0;
+		DespawnBullet();
+	}
+}
+
+void dae::Bullet::DespawnBullet()
+{
+	BaseComponent::GetOwner()->SetActiveSelf(false);
 }

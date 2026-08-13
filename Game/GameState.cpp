@@ -1,10 +1,10 @@
 #include "GameState.h"
 #include "MiniginEngine.h"
 #include "PlayerTank.h"
-#include "Grid.h"
 #include "CollisionUtility.h"
 #include "GameCommands.h"
 #include "StartScreen.h"
+#include "LevelManager.h"
 
 dae::GameState::GameState()
 {
@@ -67,47 +67,15 @@ dae::GameState::GameState()
 	auto pShootAction{ std::make_unique<InputActionButton>(std::move(shootButtons)) };
 	inputManager.AddInputAction("Shoot", std::move(pShootAction));
 
-	// Grid
-	scene.AddObject().AttachComponent<Grid>();
+	scene.AddObject().AttachComponent<LevelManager>();
 
 	// Tank1
-	scene.AddObject().AttachComponent<RedPlayerTank>(pGamepad1, glm::vec2(screenBounds.GetCenter().x - 300.f, 200.f));
+	scene.AddObject().AttachComponent<RedPlayerTank>(pGamepad1, glm::vec2(64.f, 64.f));
 
 	// Tank2
 	std::vector<const InputDevice*> devicesTank1{ pKeyboard, pMouse };
-	scene.AddObject().AttachComponent<BluePlayerTank>(pGamepad2, glm::vec2(500.f, 200.f));
+	scene.AddObject().AttachComponent<BluePlayerTank>(pGamepad2, glm::vec2(screenBounds.width - 64.f, screenBounds.height - 64.f));
 
-	constexpr size_t size{ 17 };
-	std::array<glm::vec2, size> spawnPoints
-	{
-		glm::vec2(screenBounds.GetCenter().x + 128.f, 100.f),
-		glm::vec2(screenBounds.GetCenter().x + 128.f, 100.f + 1.f * 128.f),
-		glm::vec2(screenBounds.GetCenter().x + 128.f, 100.f + 2.f * 128.f),
-		glm::vec2(screenBounds.GetCenter().x + 128.f, 100.f + 3.f * 128.f),
-		glm::vec2(screenBounds.GetCenter().x + 128.f, 100.f + 4.f * 128.f),
-		glm::vec2(screenBounds.GetCenter().x + 400.f, 100.f),
-		glm::vec2(screenBounds.GetCenter().x + 400.f, 100.f + 1.f * 128.f),
-		glm::vec2(screenBounds.GetCenter().x + 400.f, 100.f + 2.f * 128.f),
-		glm::vec2(screenBounds.GetCenter().x + 400.f, 100.f + 3.f * 128.f),
-		glm::vec2(screenBounds.GetCenter().x + 400.f, 100.f + 4.f * 128.f),
-		glm::vec2(screenBounds.GetCenter().x + 400.f, 100.f + 5.f * 128.f),
-		glm::vec2(screenBounds.GetCenter().x + 400.f, 100.f + 6.f * 128.f),
-		glm::vec2(screenBounds.GetCenter().x + 400.f - 0.f * 128.f, 100.f + 6.f * 128.f),
-		glm::vec2(screenBounds.GetCenter().x + 400.f - 1.f * 128.f, 100.f + 6.f * 128.f),
-		glm::vec2(screenBounds.GetCenter().x + 400.f - 2.f * 128.f, 100.f + 6.f * 128.f),
-		glm::vec2(screenBounds.GetCenter().x + 400.f - 3.f * 128.f, 100.f + 6.f * 128.f),
-		glm::vec2(screenBounds.GetCenter().x + 400.f - 4.f * 128.f, 100.f + 6.f * 128.f),
-	};
-
-	for (const auto& v : spawnPoints)
-	{
-		auto& obstacle{ scene.AddObject() };
-		obstacle.SetPosition(v).SetScale(glm::vec2(4.f, 4.f));
-		obstacle.AttachComponent<RenderComponent>().LoadTexture("Sprites/BlueTank.png");
-		obstacle.AttachComponent<HitboxComponent>(32.f, 32.f, true);
-	}
-
-	// Test obstacle
 	SoundLocator::GetSoundSystem().Play("Sounds/MainMenuMusic.mp3", 0.f);
 }
 

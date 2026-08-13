@@ -3,6 +3,7 @@
 
 namespace dae
 {
+	struct Rect;
 	class HitboxComponent;
 	class CollisionHandler final
 	{
@@ -13,6 +14,9 @@ namespace dae
 		CollisionHandler(CollisionHandler&& other) = delete;
 		CollisionHandler& operator=(const CollisionHandler& other) = delete;
 		CollisionHandler& operator=(CollisionHandler&& other) = delete;
+
+		// Checks whether r is overlapping with a static HitboxComponent. 
+		bool IsOverlapping(const Rect& r) const;
 
 	private:
 		friend class Scene;

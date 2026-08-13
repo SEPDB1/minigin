@@ -24,7 +24,6 @@ namespace dae
 
 		void Start() override;
 		void Update() override;
-		void OnCollision(const CollisionInfo& info);
 
 		void Shoot();
 
@@ -45,19 +44,23 @@ namespace dae
 	private:
 		void InitialiseBulletPool();
 
+
 		std::array<GameObject*, 20> m_BulletPool{};
 
-		RenderComponent& m_pRenderCompTank;
-		GameObject& m_pGunSpriteObj;
-		RenderComponent& m_pRenderCompGun;
-		GameObject& m_pGunBarrelObj;
+		RenderComponent& m_SpriteTank;
+		GameObject& m_ObjGun;
+		RenderComponent& m_SpriteGun;
+		GameObject& m_ObjBarrel;
+		HitboxComponent& m_HitboxComponent;
 
 		PlayerInputComponent& m_PlayerInput;
 		float m_AccuTime{ 0.f };
 		bool m_CanShoot{ true };
 
-		static inline const float m_BulletSpeed{ 650.f };
-		static inline const float m_ShotCooldown{ 0.12f };
+		static inline constexpr float m_BulletSpeed{ 250.f };
+		static inline constexpr float m_ShotCooldown{ 0.12f };
+		static inline constexpr float m_HitboxSize{ 26.f };
+		static inline constexpr float m_MovementSpeed{ 175.f };
 	};
 
 	class RedPlayerTank final : public PlayerTank

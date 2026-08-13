@@ -3,6 +3,23 @@
 #include "CollisionUtility.h"
 #include "GameObject.h"
 
+bool dae::CollisionHandler::IsOverlapping(const Rect& r) const
+{
+	const size_t staticSize{ m_pStaticHitboxes.size() };
+
+	for (size_t staticIdx{ 0 }; staticIdx < staticSize; ++staticIdx)
+	{
+		const auto pStaticHitbox{ m_pStaticHitboxes[staticIdx] };
+
+		if (!pStaticHitbox->GetOwner()->IsActive())
+			continue;
+
+		if (pStaticHitbox->GetBounds().IsOverlapping(r))
+			return true;
+	}
+	return false;
+}
+
 void dae::CollisionHandler::Update()
 {
 	const size_t staticSize{ m_pStaticHitboxes.size() };

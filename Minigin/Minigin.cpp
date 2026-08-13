@@ -65,12 +65,8 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
 	}
 
-	g_window = SDL_CreateWindow(
-		"Programming 4 assignment",
-		1024,
-		1024,
-		SDL_WINDOW_OPENGL
-	);
+	g_window = SDL_CreateWindow("Tron", 960, 896, SDL_WINDOW_OPENGL);
+
 	if (g_window == nullptr) 
 	{
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());

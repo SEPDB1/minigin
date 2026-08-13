@@ -8,7 +8,6 @@
 //#include <backends/imgui_impl_sdl3.h>
 //#include <backends/imgui_impl_sdlrenderer3.h>
 #include <SDL3/SDL.h>
-
 // project includes
 #include "Renderer.h"
 #include "SceneManager.h"
@@ -25,7 +24,7 @@ public:
 
 	void RenderTexture(const Texture2D& texture, const Transform& transform, const glm::vec2& offset) const;
 
-	void SetBackgroundColor(const SDL_Color& color);
+	void SetBackgroundColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 
 	SDL_Renderer* GetSDLRenderer() const;
 	const SDL_Color& GetBackgroundColor() const;
@@ -115,9 +114,9 @@ void dae::SDLRenderer::SDLRendererImpl::RenderTexture(const Texture2D& texture, 
 		std::addressof(dst), glm::degrees(transform.GetRotation()), std::addressof(pivot), SDL_FLIP_NONE);
 }
 
-void dae::SDLRenderer::SDLRendererImpl::SetBackgroundColor(const SDL_Color& color)
+void dae::SDLRenderer::SDLRendererImpl::SetBackgroundColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
-	m_ClearColor = color;
+	m_ClearColor = SDL_Color{ r, g, b, a };
 }
 
 SDL_Renderer* dae::SDLRenderer::SDLRendererImpl::GetSDLRenderer() const
@@ -174,9 +173,9 @@ void dae::SDLRenderer::RenderTexture(const Texture2D& texture, const Transform& 
 	m_pSDLRendererImpl->RenderTexture(texture, transform, offset);
 }
 
-void dae::SDLRenderer::SetBackgroundColor(const SDL_Color& color)
+void dae::SDLRenderer::SetBackgroundColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
-	m_pSDLRendererImpl->SetBackgroundColor(color);
+	m_pSDLRendererImpl->SetBackgroundColor(r, g, b, a);
 }
 
 SDL_Renderer* dae::SDLRenderer::GetSDLRenderer() const

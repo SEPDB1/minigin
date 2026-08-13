@@ -45,7 +45,7 @@ namespace dae
 		{
 			auto pUniqueComp{ std::make_unique<ComponentT>(this, std::forward<Args>(args)...) };
 			auto pComp = pUniqueComp.get();
-			m_pComponents.emplace_back(std::move(pUniqueComp));
+			m_pComponents.push_back(std::move(pUniqueComp));
 
 			return *pComp;
 		}
@@ -81,6 +81,8 @@ namespace dae
 			return pComp;
 		}
 #pragma endregion TemplatedFunctions
+
+		void RemoveAllComponents();
 
 	private:
 		friend class Scene;

@@ -5,17 +5,19 @@
 namespace dae
 {
 	class Transform;
+	class HitboxComponent;
 
 	// Converts axis input to the tank's rotation
 	class TankMoveCommand final : public GameObjectCommand
 	{
 	public:
-		TankMoveCommand(GameObject* pGameObject, float movementSpeed);
+		TankMoveCommand(GameObject* pGameObject, float movementSpeed, HitboxComponent* pHitbox);
 
 		void Execute(InputContext ctx) override;
 	private:
 		float m_MovementSpeed{};
-		GameObject& m_pGunSpriteObj;
+		GameObject& m_ObjGun;
+		HitboxComponent* m_pHitboxComponent{};
 	};
 
 	// Converts axis input to the gun's rotation

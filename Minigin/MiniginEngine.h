@@ -17,7 +17,9 @@
 
 // Types
 #include "GameObject.h"
+#include "CollisionHandler.h"
 
 // InputDevices
 #include "Gamepad.h"
 #include "Keyboard.h"
+#include "Mouse.h"
