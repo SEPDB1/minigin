@@ -76,7 +76,7 @@ dae::GameState::GameState()
 	std::vector<const InputDevice*> devicesTank1{ pKeyboard, pMouse };
 	scene.AddObject().AttachComponent<BluePlayerTank>(pGamepad2, glm::vec2(screenBounds.width - 64.f, screenBounds.height - 64.f));
 
-	SoundLocator::GetSoundSystem().Play("Sounds/MainMenuMusic.mp3", 0.f);
+	SoundLocator::GetSoundSystem().Play("Sounds/MainMenuMusic.mp3");
 }
 
 dae::GameState::~GameState()

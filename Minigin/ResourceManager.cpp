@@ -1,18 +1,20 @@
-﻿#include <stdexcept>
+﻿#include "ResourceManager.h"
+#include <stdexcept>
 #include <iostream>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <SDL3_mixer/SDL_mixer.h>
-#include "ResourceManager.h"
 #include "Renderer.h"
 #include "Texture2D.h"
 #include "Font.h"
+#include "Audio.h"
+#include "Mixer.h"
 
 namespace fs = std::filesystem;
 
 dae::ResourceManager::~ResourceManager()
 {
-	for (const auto& pair : m_LoadedAudio)
-		MIX_DestroyAudio(pair.second);
+	MIX_Quit();
+	TTF_Quit();
 }
 
 void dae::ResourceManager::Init(const std::filesystem::path& dataPath)
@@ -22,6 +24,11 @@ void dae::ResourceManager::Init(const std::filesystem::path& dataPath)
 	if (!TTF_Init())
 	{
 		throw std::runtime_error(std::string("Failed to load support for fonts: ") + SDL_GetError());
+	}
+
+	if (!MIX_Init())
+	{
+		throw std::runtime_error(std::string("Failed to load support for audio: ") + SDL_GetError());
 	}
 }
 
@@ -49,22 +56,14 @@ std::shared_ptr<dae::Font> dae::ResourceManager::LoadFont(const std::string& fil
 	return m_LoadedFonts.at(key);
 }
 
-MIX_Audio* dae::ResourceManager::LoadAudio(const std::string& file, MIX_Mixer* pMixer)
+std::shared_ptr<dae::Audio> dae::ResourceManager::LoadAudio(const std::string& file, MIX_Mixer* pMixer)
 {
 	const auto fullPath = m_DataPath / file;
 	const auto filename = fs::path(fullPath).filename().string();
 
 	if (m_LoadedAudio.find(filename) == m_LoadedAudio.end())
 	{
-		const auto pAudio{ MIX_LoadAudio(pMixer, fullPath.string().c_str(), false)};
-
-		if (!pAudio)
-		{
-			std::cout << "Failed to load in audio: " << SDL_GetError() << "\n";
-			throw std::runtime_error(std::string("MIX_LoadAudio Error: ") + SDL_GetError());
-		}
-
-		m_LoadedAudio.insert(std::pair(filename, pAudio));
+		m_LoadedAudio.insert(std::pair(filename, std::make_shared<Audio>(fullPath.string(), pMixer)));
 	}
 
 	return m_LoadedAudio.at(filename);

@@ -7,12 +7,14 @@
 #include <nlohmann/json.hpp>
 
 struct MIX_Mixer;
-struct MIX_Audio;
 
 namespace dae
 {
 	class Texture2D;
 	class Font;
+	class Audio;
+	class Mixer;
+
 	class ResourceManager final : public Singleton<ResourceManager>
 	{
 	public:
@@ -20,7 +22,7 @@ namespace dae
 		void Init(const std::filesystem::path& data);
 		std::shared_ptr<Texture2D> LoadTexture(const std::string& file);
 		std::shared_ptr<Font> LoadFont(const std::string& file, uint8_t size);
-		MIX_Audio* LoadAudio(const std::string& file, MIX_Mixer* mixer);
+		std::shared_ptr<Audio> LoadAudio(const std::string& file, MIX_Mixer* pMixer);
 
 		template <typename T>
 		T ParseData(const std::string& jsonFile)
@@ -51,6 +53,6 @@ namespace dae
 		std::filesystem::path m_DataPath;
 		std::map<std::string, std::shared_ptr<Texture2D>> m_LoadedTextures{};
 		std::map<std::pair<std::string, uint8_t>, std::shared_ptr<Font>> m_LoadedFonts{};
-		std::map<std::string, MIX_Audio*> m_LoadedAudio{};
+		std::map<std::string, std::shared_ptr<Audio>> m_LoadedAudio{};
 	};
 }

@@ -17,7 +17,7 @@ dae::StartScreen::StartScreen(GameObject* pGameObject)
 
 	m_pActivatedDevices[0].second->GetOwner()->SetPosition(glm::vec2(200.f, 550.f)).SetScale(glm::vec2(2.5f, 2.5));
 	m_pActivatedDevices[1].second->GetOwner()->SetPosition(glm::vec2(800.f, 550.f)).SetScale(glm::vec2(2.5f, 2.5f));
-	SoundLocator::GetSoundSystem().Play("Sounds/MainMenuMusic.mp3", 0.f);
+	SoundLocator::GetSoundSystem().Play("Sounds/MainMenuMusic.mp3");
 }
 
 void dae::StartScreen::AddDevice(const dae::InputDevice* pDevice)

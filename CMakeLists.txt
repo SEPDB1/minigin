@@ -30,6 +30,8 @@ add_library(${ENGINE_NAME} STATIC
     Minigin/Scene.cpp
     Minigin/SceneManager.cpp
     Minigin/Texture2D.cpp
+    Minigin/Audio.cpp
+    Minigin/Mixer.cpp
     Minigin/Transform.cpp
     Minigin/BaseComponent.cpp
     Minigin/RenderComponent.cpp

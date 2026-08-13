@@ -4,6 +4,8 @@
 #include <iostream>
 #include <array>
 #include <algorithm>
+#include "Audio.h"
+#include "Mixer.h"
 
 std::unique_ptr<dae::SoundSystem> dae::SoundLocator::m_pSoundSystem{};
 
@@ -13,43 +15,25 @@ class dae::SDLSoundSystem::SDLSoundSystemImpl final
 {
 public:
 	SDLSoundSystemImpl();
-	~SDLSoundSystemImpl();
+	~SDLSoundSystemImpl() = default;
 
-	void Play(const std::string& file, float);
+	void Play(const std::string& file);
 
 private:
-	MIX_Mixer* m_pMixer{};
+	std::unique_ptr<Mixer> m_pMixer;
 };
 
 dae::SDLSoundSystem::SDLSoundSystemImpl::SDLSoundSystemImpl()
+	: m_pMixer{ std::make_unique<Mixer>() }
 {
-	if (!MIX_Init())
-	{
-		std::cout << "Failed to initialise SDL_mixer: " << SDL_GetError() << "\n";
-		throw std::runtime_error(std::string("MIX_Init Error: ") + SDL_GetError());
-	}
-
-	m_pMixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
-
-	if (!m_pMixer)
-	{
-		std::cout << "Failed to create the mixer: " << SDL_GetError() << "\n";
-		throw std::runtime_error(std::string("MIX_CreateMixerDevice Error: ") + SDL_GetError());
-	}
 }
 
-dae::SDLSoundSystem::SDLSoundSystemImpl::~SDLSoundSystemImpl()
+void dae::SDLSoundSystem::SDLSoundSystemImpl::Play(const std::string& file)
 {
-	MIX_DestroyMixer(m_pMixer);
+	auto pMixer{ m_pMixer->GetMixer() };
+	auto pAudio{ ResourceManager::GetInstance().LoadAudio(file, pMixer) };
 
-	MIX_Quit();
-}
-
-void dae::SDLSoundSystem::SDLSoundSystemImpl::Play(const std::string& file, float)
-{
-	auto pAudio{ ResourceManager::GetInstance().LoadAudio(file, m_pMixer) };
-
-	if (!MIX_PlayAudio(m_pMixer, pAudio))
+	if (!MIX_PlayAudio(pMixer, pAudio->GetAudio()))
 	{
 		std::cout << "Failed to play the audio: " << SDL_GetError() << "\n";
 		throw std::runtime_error(std::string("MIX_PlayAudio Error: ") + SDL_GetError());
@@ -58,7 +42,7 @@ void dae::SDLSoundSystem::SDLSoundSystemImpl::Play(const std::string& file, floa
 
 #pragma endregion SDLSoundSystemImpl
 
-void dae::NullSoundSystem::Play(const std::string&, float)
+void dae::NullSoundSystem::Play(const std::string&)
 {
 }
 
@@ -69,9 +53,9 @@ dae::SDLSoundSystem::SDLSoundSystem()
 
 dae::SDLSoundSystem::~SDLSoundSystem() = default;
 
-void dae::SDLSoundSystem::Play(const std::string& file, float volume)
+void dae::SDLSoundSystem::Play(const std::string& file)
 {
-	m_pImpl->Play(file, volume);
+	m_pImpl->Play(file);
 }
 
 dae::SoundSystem& dae::SoundLocator::GetSoundSystem()

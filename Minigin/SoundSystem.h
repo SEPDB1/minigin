@@ -10,14 +10,14 @@ namespace dae
 	{
 	public:
 		virtual ~SoundSystem() = default;
-		virtual void Play(const std::string&, float) = 0;
+		virtual void Play(const std::string& file) = 0;
 	};
 
 	class NullSoundSystem final : public SoundSystem
 	{
 	public:
 		~NullSoundSystem() = default;
-		void Play(const std::string& file, float) override;
+		void Play(const std::string& file) override;
 	};
 
 	class SDLSoundSystem final: public SoundSystem
@@ -25,7 +25,7 @@ namespace dae
 	public:
 		SDLSoundSystem();
 		~SDLSoundSystem();
-		void Play(const std::string&, float volume);
+		void Play(const std::string& path) override;
 
 	private:
 		class SDLSoundSystemImpl;

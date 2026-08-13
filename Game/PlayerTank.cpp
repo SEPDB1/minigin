@@ -111,7 +111,7 @@ void dae::PlayerTank::Shoot()
 	pUnusedBullet->SetRotation(transformGunBarrel.GetRotation());
 	pUnusedBullet->SetActiveSelf(true);
 
-	SoundLocator::GetSoundSystem().Play("Sounds/Shoot.mp3", 0.f);
+	SoundLocator::GetSoundSystem().Play("Sounds/Shoot.mp3");
 
 	m_CanShoot = false;
 }
